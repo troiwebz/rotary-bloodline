@@ -2920,7 +2920,7 @@ document.addEventListener('click',function(e){
 // ── FORM WIZARD ───────────────────────────────────────────────────────────────
 // ══════════════════════════════════════════════════════════════════════════════
 const BT_DESCS={'O+':'Donor · common','O-':'Universal donor','A+':'Common','A-':'Rare','B+':'Common','B-':'Rare','AB+':'Universal recip.','AB-':'Rare'};
-let _wizType='', _wizStep=1;
+let _wizType='', _wizStep=1, _wizData={};
 
 const WSTEP_LABELS={
   request:['Who?','Blood','Hospital','Confirm'],
@@ -3098,7 +3098,7 @@ function fwizPickUrg(btn,gridId,selId){
 window.fwizPickUrg=fwizPickUrg;
 
 function openWizard(type){
-  _wizType=type; _wizStep=1;
+  _wizType=type; _wizStep=1; _wizData={};
   const hd=document.getElementById('fwizHd');
   const ico=document.getElementById('fwizIco');
   const title=document.getElementById('fwizTitle');
@@ -3175,28 +3175,31 @@ function _wizRender(){
 }
 
 function _wizBuildSummary(){
+  // All field values come from _wizData — previous step panels are no longer in DOM
   if(_wizType==='request'){
     const el=document.getElementById('reqSummary'); if(!el) return;
     const urgLbl={normal:'Normal',urgent:'⚡ Urgent',critical:'🚨 Critical'};
-    const rad=document.getElementById('r-radius')?.value||'50';
+    const rad=_wizData.radiusKm||'50';
     const radLbl=rad==='100'?'All of Tamil Nadu':`Within ${rad} km`;
-    const units=document.getElementById('r-units')?.value||'1';
+    const units=_wizData.units||'1';
+    const phone=_wizData.phone||'';
     el.innerHTML=`<div class="fwiz-sum-title">Your Request Summary</div>
-      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Name</span><span class="fwiz-sum-val">${esc(v('r-name'))}</span></div>
-      <div class="fwiz-sum-row"><span class="fwiz-sum-key">WhatsApp</span><span class="fwiz-sum-val">+91 ${esc(document.getElementById('r-phone')?.value||'')}</span></div>
-      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Blood Needed</span><span class="fwiz-sum-val" style="color:var(--red);font-size:15px">${esc(v('r-blood'))}</span></div>
-      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Urgency</span><span class="fwiz-sum-val">${urgLbl[v('r-urgency')]||'Normal'}</span></div>
-      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Hospital</span><span class="fwiz-sum-val">${esc(v('r-hospital'))}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Name</span><span class="fwiz-sum-val">${esc(_wizData.name||'')}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">WhatsApp</span><span class="fwiz-sum-val">+91 ${esc(phone)}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Blood Needed</span><span class="fwiz-sum-val" style="color:var(--red);font-size:15px">${esc(_wizData.bloodType||'')}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Urgency</span><span class="fwiz-sum-val">${urgLbl[_wizData.urgency]||'Normal'}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Hospital</span><span class="fwiz-sum-val">${esc(_wizData.hospital||'')}</span></div>
       <div class="fwiz-sum-row"><span class="fwiz-sum-key">Units · Range</span><span class="fwiz-sum-val">${units} unit${units>1?'s':''} · ${radLbl}</span></div>`;
   } else {
     const el=document.getElementById('donSummary'); if(!el) return;
-    const ld=document.getElementById('d-last-donated')?.value;
+    const ld=_wizData.lastDonated||'';
     const ldStr=ld?new Date(ld).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'Not provided';
+    const phone=_wizData.phone||'';
     el.innerHTML=`<div class="fwiz-sum-title">Your Donor Profile</div>
-      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Name</span><span class="fwiz-sum-val">${esc(v('d-name'))}</span></div>
-      <div class="fwiz-sum-row"><span class="fwiz-sum-key">WhatsApp</span><span class="fwiz-sum-val">+91 ${esc(document.getElementById('d-phone')?.value||'')}</span></div>
-      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Blood Type</span><span class="fwiz-sum-val" style="color:var(--navy);font-size:15px">${esc(v('d-blood'))}</span></div>
-      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Area</span><span class="fwiz-sum-val">${esc(v('d-area'))}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Name</span><span class="fwiz-sum-val">${esc(_wizData.name||'')}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">WhatsApp</span><span class="fwiz-sum-val">+91 ${esc(phone)}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Blood Type</span><span class="fwiz-sum-val" style="color:var(--navy);font-size:15px">${esc(_wizData.bloodType||'')}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Area</span><span class="fwiz-sum-val">${esc(_wizData.area||'')}</span></div>
       <div class="fwiz-sum-row"><span class="fwiz-sum-key">Last Donation</span><span class="fwiz-sum-val">${ldStr}</span></div>`;
   }
 }
@@ -3206,6 +3209,37 @@ function _wizShowErr(msg){
   if(!e) return;
   e.textContent=msg; e.style.display='block';
   clearTimeout(e._t); e._t=setTimeout(()=>{e.style.display='none';},7000);
+}
+
+// Persist current step's field values before the panel is replaced
+function _wizSaveStep(){
+  if(_wizType==='request'){
+    if(_wizStep===1){
+      _wizData.name  = v('r-name');
+      _wizData.phone = (document.getElementById('r-phone')?.value||'').replace(/\D/g,'');
+    }
+    if(_wizStep===2){
+      _wizData.bloodType = v('r-blood');
+      _wizData.urgency   = v('r-urgency')||'normal';
+    }
+    if(_wizStep===3){
+      _wizData.hospital = v('r-hospital');
+      _wizData.units    = v('r-units')||'1';
+      _wizData.radiusKm = v('r-radius')||'50';
+    }
+  } else {
+    if(_wizStep===1){
+      _wizData.name  = v('d-name');
+      _wizData.phone = (document.getElementById('d-phone')?.value||'').replace(/\D/g,'');
+    }
+    if(_wizStep===2){
+      _wizData.bloodType = v('d-blood');
+    }
+    if(_wizStep===3){
+      _wizData.area        = v('d-area');
+      _wizData.lastDonated = document.getElementById('d-last-donated')?.value||'';
+    }
+  }
 }
 
 function _wizValidate(){
@@ -3235,14 +3269,25 @@ function _wizValidate(){
 
 async function wizNext(){
   const err=_wizValidate(); if(err){_wizShowErr(err);return;}
-  if(_wizStep<4){_wizStep++;_wizRender();return;}
+  if(_wizStep<4){
+    _wizSaveStep();   // ← capture this step's fields before panel is replaced
+    _wizStep++;_wizRender();return;
+  }
 
-  // Step 4 submit
+  // Step 4 submit — use _wizData (DOM fields from earlier steps are gone)
   const btn=document.getElementById('fwizNext');
   if(btn){btn.textContent='⏳ Processing…';btn.disabled=true;}
 
   if(_wizType==='request'){
-    const b={name:v('r-name'),phone:getPhone('r-phone'),bloodType:v('r-blood'),hospital:v('r-hospital'),units:v('r-units'),urgency:v('r-urgency'),radiusKm:v('r-radius')};
+    const b={
+      name:     _wizData.name||'',
+      phone:    _wizData.phone||'',
+      bloodType:_wizData.bloodType||'',
+      hospital: _wizData.hospital||'',
+      units:    _wizData.units||'1',
+      urgency:  _wizData.urgency||'normal',
+      radiusKm: _wizData.radiusKm||'50'
+    };
     const r=await post('/api/requests',b);
     if(r.ok){
       closeWizard();
@@ -3256,7 +3301,13 @@ async function wizNext(){
       _wizShowErr(r.msg||'Something went wrong. Please try again.');
     }
   } else {
-    const b={name:v('d-name'),phone:getPhone('d-phone'),bloodType:v('d-blood'),area:v('d-area'),lastDonation:(()=>{const d=v('d-last-donated');return d?new Date(d).getTime():null;})()};
+    const b={
+      name:        _wizData.name||'',
+      phone:       _wizData.phone||'',
+      bloodType:   _wizData.bloodType||'',
+      area:        _wizData.area||'',
+      lastDonation:_wizData.lastDonated?new Date(_wizData.lastDonated).getTime():null
+    };
     const r=await post('/api/donors/register',b);
     if(r.ok){
       closeWizard();
