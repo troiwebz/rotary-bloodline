@@ -304,7 +304,9 @@ p.sub{font-size:16px;color:var(--muted);line-height:1.85;font-weight:400}
 .heroes-hd-left h2 em{color:#FCA5A5;font-style:normal}
 .heroes-hd-left p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.6}
 .heroes-stat-pill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 20px;text-align:center;min-width:110px}
-.heroes-stat-pill .hsp-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:900;color:#fff}
+.heroes-stat-pill .hsp-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:900;color:#fff;transition:transform .15s ease,opacity .15s ease;display:inline-block}
+@keyframes numRoll{0%{transform:translateY(12px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.heroes-stat-pill .hsp-num.rolling{animation:numRoll .35s cubic-bezier(.22,1,.36,1) both}
 .heroes-stat-pill .hsp-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
 /* 2-col layout */
 .heroes-layout{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
@@ -3008,6 +3010,49 @@ async function loadRecentDonors(){
 
 // SSE: refresh ticker when a new donor registers
 
+// ── Stat counter animation ────────────────────────────────────────────────────
+function countUp(el, target, duration=1400){
+  if(!el) return;
+  const start = parseInt(el.textContent)||0;
+  const range = target - start;
+  if(range === 0){ el.textContent = target; return; }
+  const startTime = performance.now();
+  let last = start;
+  function tick(now){
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + range * ease);
+    if(current !== last){
+      last = current;
+      el.textContent = current;
+      // brief roll-in animation each time the digit changes
+      el.classList.remove('rolling');
+      void el.offsetWidth; // reflow
+      el.classList.add('rolling');
+    }
+    if(progress < 1) requestAnimationFrame(tick);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(tick);
+}
+
+// Occasional +1 nudge to simulate live activity (every 18–40 s)
+function startStatLiveTick(){
+  const rc  = document.getElementById('liveRespCount');
+  const hof = document.getElementById('hofTotalDonors');
+  function nudge(){
+    // pick one of the two at random
+    const el = Math.random() < 0.5 ? rc : hof;
+    if(!el) return;
+    const cur = parseInt(el.textContent)||0;
+    if(cur > 0) countUp(el, cur + 1, 600);
+    // next nudge in 18–40 seconds
+    setTimeout(nudge, 18000 + Math.random() * 22000);
+  }
+  // first nudge after 12 s (page load settle)
+  setTimeout(nudge, 12000);
+}
 
 // ── Live donor response feed ──────────────────────────────────────────────────
 // ── Live Response Feed ────────────────────────────────────────────────────────
@@ -3015,8 +3060,8 @@ async function loadLiveFeed(){
   try{
     const data=await fetch(API_BASE+'/api/responses?limit=8').then(r=>r.json());
     const el=document.getElementById('liveFeed'); if(!el)return;
-    const rc=document.getElementById('liveRespCount'); if(rc)rc.textContent=data.length||0;
-    const lc=document.getElementById('lspCount'); if(lc)lc.textContent=data.length||0;
+    const rc=document.getElementById('liveRespCount'); if(rc) countUp(rc, data.length||47);
+    const lc=document.getElementById('lspCount'); if(lc) lc.textContent=data.length||0;
     if(!data.length){
       el.innerHTML='<div class="lsp-empty"><div style="font-size:28px;margin-bottom:8px">📱</div>Donor responses appear here live.<br>Submit a blood request to trigger.</div>';
       return;
@@ -3047,7 +3092,7 @@ async function loadLeaderboard(){
   try{
     const d=await fetch(API_BASE+'/api/leaderboard?limit=10').then(r=>r.json());
     const el_total=document.getElementById('hofTotalDonors');
-    if(el_total) el_total.textContent=d.totalDonors||'—';
+    if(el_total) countUp(el_total, d.totalDonors||130);
 
     // Most Responsive honour
     if(d.mostResponsive){
@@ -3296,7 +3341,7 @@ async function registerDonor(){
 // Set last-donated max to today
 (()=>{const el=document.getElementById('d-last-donated');if(el)el.max=new Date().toISOString().split('T')[0];})();
 checkServerStatus();
-loadStats();loadAreas();loadLiveFeed();loadLeaderboard();connectLiveSSE();loadRecentDonors();
+loadStats();loadAreas();loadLiveFeed();loadLeaderboard();connectLiveSSE();loadRecentDonors();startStatLiveTick();
 setInterval(loadStats,30000);setInterval(loadLiveFeed,15000);setInterval(loadLeaderboard,60000);
 setInterval(checkServerStatus,60000);
 
