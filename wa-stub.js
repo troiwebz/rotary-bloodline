@@ -1,12 +1,14 @@
 /**
- * wa-stub.js — No-op WhatsApp stub for Vercel / non-WhatsApp environments
- * All functions are safe no-ops that return success-shaped responses.
+ * wa-stub.js — Complete no-op WhatsApp stub for Vercel serverless.
+ * Matches every method exported by whatsapp.js so server.js never throws.
  */
-
 module.exports = {
-  initWhatsApp:      () => {},
-  getStatus:         () => ({ ready: false, qr: null }),
-  sendBloodAlert:    () => Promise.resolve({ sent: 0, failed: 0 }),
-  sendReminderToDonor: () => Promise.resolve(),
-  sendWelcomeMessage:  () => Promise.resolve(),
+  initWhatsApp:       () => {},
+  isReady:            () => false,
+  getLastQR:          () => null,
+  alertDonors:        () => Promise.resolve(0),
+  sendMessage:        () => Promise.resolve(false),
+  sendWelcome:        () => Promise.resolve(),
+  confirmToRequester: () => Promise.resolve(),
+  sendReminderToDonor:() => Promise.resolve(),
 };
