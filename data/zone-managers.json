@@ -1,0 +1,47 @@
+[
+  {
+    "username": "zone_puducherry",
+    "password": "rbl@pondy2024",
+    "name": "Puducherry Zone Manager",
+    "zoneId": "puducherry",
+    "phone": "7010811203",
+    "active": true,
+    "createdAt": 1780940000000
+  },
+  {
+    "username": "zone_chennai",
+    "password": "rbl@chn2024",
+    "name": "Chennai Zone Manager",
+    "zoneId": "chennai",
+    "phone": null,
+    "active": false,
+    "createdAt": 1780940000000
+  },
+  {
+    "username": "zone_trichy",
+    "password": "rbl@try2024",
+    "name": "Trichy Zone Manager",
+    "zoneId": "trichy",
+    "phone": null,
+    "active": false,
+    "createdAt": 1780940000000
+  },
+  {
+    "username": "zone_coimbatore",
+    "password": "rbl@cbe2024",
+    "name": "Coimbatore Zone Manager",
+    "zoneId": "coimbatore",
+    "phone": null,
+    "active": false,
+    "createdAt": 1780940000000
+  },
+  {
+    "username": "zone_madurai",
+    "password": "rbl@mdu2024",
+    "name": "Madurai Zone Manager",
+    "zoneId": "madurai",
+    "phone": null,
+    "active": false,
+    "createdAt": 1780940000000
+  }
+]

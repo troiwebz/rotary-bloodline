@@ -1,0 +1,3283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotary Blood Line — Puducherry | Rotary Club of Legacy</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#DC2626;--rdark:#B91C1C;--rdeep:#991B1B;
+  --rlight:#FEF2F2;--rmid:#FECACA;
+  --navy:#1E40AF;--nlight:#EFF6FF;--nmid:#BFDBFE;
+  --gold:#D97706;--glight:#FFFBEB;
+  --green:#16A34A;--gnl:#F0FDF4;
+  --teal:#0891B2;--tlight:#ECFEFF;
+  --white:#FFFFFF;--warm:#FAFAF9;--pink:#FFF7F7;--blue:#F0F7FF;
+  --g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;
+  --g500:#6B7280;--g700:#374151;--g900:#0F172A;
+  --text:#1E293B;--muted:#64748B;--border:#E2E8F0;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.09);
+  --shadow-lg:0 1px 2px rgba(0,0,0,.04),0 20px 48px rgba(0,0,0,.12);
+  --shadow-xl:0 1px 2px rgba(0,0,0,.04),0 32px 72px rgba(0,0,0,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;color:var(--text);background:#fff;overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ─────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,255,255,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(226,232,240,.8);height:68px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:0 52px;gap:0;box-shadow:0 1px 24px rgba(0,0,0,.06)}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-logo .drop{width:40px;height:40px;background:linear-gradient(135deg,var(--red),var(--rdark));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 4px 12px rgba(220,38,38,.32)}
+.nav-logo .wordmark{display:flex;flex-direction:column}
+.nav-logo .wordmark .top{font-size:16px;font-weight:800;color:var(--g900);letter-spacing:-.4px;font-family:'Plus Jakarta Sans',sans-serif}
+.nav-logo .wordmark .sub{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-top:-1px}
+.nav-links{display:flex;gap:32px;align-items:center;justify-content:center}
+.nav-links a{font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;transition:color .2s;letter-spacing:.1px}
+.nav-links a:hover{color:var(--g900)}
+.nav-cta-wrap{display:flex;align-items:center;justify-content:flex-end}
+.nav-cta{background:var(--red)!important;color:#fff!important;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;transition:all .22s;box-shadow:0 4px 12px rgba(220,38,38,.3);text-decoration:none;white-space:nowrap}
+.nav-cta:hover{background:var(--rdark)!important;transform:translateY(-1px);box-shadow:0 6px 18px rgba(220,38,38,.4)!important;color:#fff!important}
+/* ── Typewriter cursor ───────────────────────────── */
+.hero-cursor{display:inline-block;color:#FCA5A5;font-weight:300;font-style:normal;animation:cursorBlink .75s step-end infinite;margin-left:3px}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ── HERO (VIDEO) ────────────────────────────────── */
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.7}}
+.vid-strip{position:relative;height:calc(100vh - 68px);min-height:540px;overflow:hidden;background:#050505}
+.vid-strip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.vid-strip-overlay{position:absolute;inset:0;background:linear-gradient(108deg,rgba(4,4,4,.88) 0%,rgba(6,6,6,.64) 40%,rgba(6,6,6,.2) 100%);display:flex;align-items:center}
+.vid-content{padding:0 80px;max-width:740px;position:relative;z-index:2}
+.vid-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(220,38,38,.18);border:1px solid rgba(220,38,38,.36);border-radius:30px;padding:8px 18px;font-size:11px;font-weight:700;color:#FCA5A5;letter-spacing:.8px;text-transform:uppercase;margin-bottom:28px;font-family:'Plus Jakarta Sans',sans-serif}
+.vid-tag .dot-live{width:7px;height:7px;border-radius:50%;background:#EF4444;box-shadow:0 0 8px #EF4444;animation:pulse 1.8s infinite}
+.vid-content h2{font-size:70px;font-weight:900;line-height:1.02;letter-spacing:-3.5px;color:#fff;margin-bottom:22px;text-shadow:0 2px 40px rgba(0,0,0,.5);font-family:'Plus Jakarta Sans',sans-serif}
+.vid-content h2 em{font-style:normal;color:#FCA5A5}
+.vid-content p{font-size:17px;color:rgba(255,255,255,.72);line-height:1.85;margin-bottom:38px;max-width:520px;font-weight:400}
+.vid-btns{display:flex;gap:14px;flex-wrap:wrap}
+.vid-btn-red{display:inline-flex;align-items:center;gap:9px;background:#DC2626;color:#fff;padding:16px 32px;border-radius:11px;font-size:14px;font-weight:700;text-decoration:none;transition:all .25s;box-shadow:0 6px 24px rgba(220,38,38,.42);font-family:'Plus Jakarta Sans',sans-serif}
+.vid-btn-red:hover{background:#B91C1C;transform:translateY(-2px);box-shadow:0 10px 32px rgba(220,38,38,.52)}
+.vid-btn-ghost{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.26);color:#fff;padding:15px 30px;border-radius:11px;font-size:14px;font-weight:700;text-decoration:none;transition:all .25s;backdrop-filter:blur(12px);font-family:'Plus Jakarta Sans',sans-serif}
+.vid-btn-ghost:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4)}
+.vid-mute-btn{position:absolute;bottom:24px;right:28px;background:rgba(255,255,255,.1);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);padding:9px 20px;border-radius:24px;font-size:11px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;z-index:3}
+.vid-mute-btn:hover{background:rgba(255,255,255,.2)}
+.vid-scroll-cue{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.35);font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;animation:bounceY 2.2s ease-in-out infinite}
+@keyframes bounceY{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+.vid-scroll-cue svg{width:20px;height:20px;opacity:.45}
+/* ── BUTTONS (shared) ────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:9px;padding:15px 30px;border-radius:11px;font-size:14px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;border:none;cursor:pointer;text-decoration:none;transition:all .25s;letter-spacing:.1px}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 6px 20px rgba(220,38,38,.34)}.btn-red:hover{background:var(--rdark);transform:translateY(-2px);box-shadow:0 10px 28px rgba(220,38,38,.44)}
+.btn-outline{background:#fff;color:var(--navy);border:2px solid var(--navy)}.btn-outline:hover{background:var(--nlight);transform:translateY(-2px)}
+
+/* ── TICKER ──────────────────────────────────────── */
+.ticker{background:var(--red);padding:13px 0;overflow:hidden;flex-shrink:0}
+.ticker-belt{display:flex;white-space:nowrap;animation:belt 38s linear infinite}
+@keyframes belt{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes tickerMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tick{display:inline-flex;align-items:center;gap:10px;padding:0 28px;font-size:12px;font-weight:700;color:rgba(255,255,255,.92);flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.2px}
+.tick-sep{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.35);flex-shrink:0}
+
+/* ── SECTION COMMONS ─────────────────────────────── */
+section{padding:100px 52px}
+.wrap{max-width:1120px;margin:0 auto}
+.sec-head{max-width:580px}.sec-head.center{max-width:680px;margin:0 auto;text-align:center}
+.label{display:inline-flex;align-items:center;gap:7px;padding:6px 16px;border-radius:30px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;margin-bottom:18px;font-family:'Plus Jakarta Sans',sans-serif}
+.label-red{background:var(--rlight);color:var(--red)}.label-blue{background:var(--nlight);color:var(--navy)}
+.label-green{background:var(--gnl);color:var(--green)}.label-gold{background:var(--glight);color:#D97706}
+.label-teal{background:var(--tlight);color:var(--teal)}
+h2.title{font-size:44px;font-weight:900;letter-spacing:-2px;line-height:1.08;margin-bottom:16px;color:var(--g900);font-family:'Plus Jakarta Sans',sans-serif}
+p.sub{font-size:16px;color:var(--muted);line-height:1.85;font-weight:400}
+
+/* Scroll animations */
+@keyframes fadeSlide{from{transform:translateX(-14px);opacity:0}to{transform:translateX(0);opacity:1}}
+.fade-in{opacity:0;transform:translateY(36px);transition:opacity .7s cubic-bezier(.22,.8,.22,1),transform .7s cubic-bezier(.22,.8,.22,1)}
+.fade-in.d1{transition-delay:.07s}.fade-in.d2{transition-delay:.15s}.fade-in.d3{transition-delay:.23s}.fade-in.d4{transition-delay:.31s}.fade-in.d5{transition-delay:.39s}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* ── FEATURES ────────────────────────────────────── */
+.features-sec{background:var(--g50);padding-top:96px;padding-bottom:96px}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px}
+
+/* card shell */
+.feat-card{
+  background:#fff;border-radius:24px;overflow:hidden;border:none;
+  box-shadow:0 1px 3px rgba(0,0,0,.05),0 12px 40px rgba(0,0,0,.08);
+  transition:transform .38s cubic-bezier(.23,1,.32,1),box-shadow .38s;
+  display:flex;flex-direction:column;
+}
+.feat-card:hover{transform:translateY(-10px);box-shadow:0 4px 8px rgba(0,0,0,.06),0 28px 64px rgba(0,0,0,.16)}
+
+/* visual illustration area */
+.feat-visual{
+  height:220px;position:relative;overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.feat-v1{background:linear-gradient(140deg,#0C1629 0%,#1A2744 100%)}
+.feat-v2{background:linear-gradient(140deg,#0C1629 0%,#0F1E38 100%)}
+.feat-v3{background:linear-gradient(140deg,#071A10 0%,#0C1629 100%)}
+
+/* ── Visual 1: live alert log ── */
+@keyframes logRowIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:translateX(0)}}
+@keyframes dotGlow{0%,100%{opacity:1}50%{opacity:.3}}
+.fv-live-log{width:88%;display:flex;flex-direction:column;gap:5px;position:relative;z-index:1;overflow:hidden;max-height:168px}
+.fv-log-header{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.fv-log-status-dot{width:7px;height:7px;border-radius:50%;background:#EF4444;box-shadow:0 0 8px #EF4444;animation:dotGlow 1.2s ease-in-out infinite;flex-shrink:0}
+.fv-log-req-lbl{font-size:9px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;font-family:'Plus Jakarta Sans',sans-serif}
+.fv-log-req-val{font-size:10px;font-weight:800;color:rgba(255,255,255,.85);font-family:'Plus Jakarta Sans',sans-serif}
+.fv-log-row{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);animation:logRowIn .38s ease forwards;flex-shrink:0}
+.fv-log-bt{font-size:10px;font-weight:900;padding:2px 6px;border-radius:5px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;min-width:28px;text-align:center}
+.fv-log-name{font-size:10.5px;font-weight:700;color:rgba(255,255,255,.82);font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px}
+.fv-log-loc{font-size:9.5px;color:rgba(255,255,255,.38);margin-left:auto;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif}
+.fv-log-sent{font-size:9px;font-weight:700;color:#34D399;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:3px}
+.fv-log-sent::before{content:'';width:5px;height:5px;border-radius:50%;background:#34D399;box-shadow:0 0 5px #34D399;animation:dotGlow 1.5s ease-in-out infinite;display:inline-block}
+.fv-timer{position:absolute;top:12px;right:12px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:8px;padding:4px 10px;font-size:10px;font-weight:700;color:#34D399;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.04em;z-index:2}
+.fv1-glow{position:absolute;bottom:-40px;left:-20px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(220,38,38,.12) 0%,transparent 60%);pointer-events:none}
+
+/* ── Visual 2: radar rings ── */
+@keyframes ringPulse{0%,100%{opacity:1;border-color:rgba(59,130,246,.45)}50%{opacity:.4;border-color:rgba(59,130,246,.8)}}
+@keyframes ring2Pulse{0%,100%{opacity:1;border-color:rgba(59,130,246,.28)}50%{opacity:.3;border-color:rgba(59,130,246,.6)}}
+@keyframes ring3Pulse{0%,100%{opacity:1;border-color:rgba(59,130,246,.14)}50%{opacity:.25;border-color:rgba(59,130,246,.38)}}
+@keyframes sweepSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes donorBlink{0%,80%,100%{opacity:1;filter:drop-shadow(0 0 4px rgba(239,68,68,.7))}88%{opacity:.25;filter:none}}
+@keyframes nearestGlow{0%,100%{background:rgba(16,185,129,.15);box-shadow:none}50%{background:rgba(16,185,129,.3);box-shadow:0 0 14px rgba(16,185,129,.3)}}
+.fv-radar{position:relative;width:160px;height:160px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.fv-ring{position:absolute;border-radius:50%;border:1px solid rgba(59,130,246,.25);top:50%;left:50%;transform:translate(-50%,-50%)}
+.fv-ring.r1{width:56px;height:56px;border-color:rgba(59,130,246,.45);background:rgba(59,130,246,.04);animation:ringPulse 2.2s ease-in-out infinite}
+.fv-ring.r2{width:100px;height:100px;border-color:rgba(59,130,246,.28);animation:ring2Pulse 2.2s ease-in-out infinite .4s}
+.fv-ring.r3{width:148px;height:148px;border-color:rgba(59,130,246,.14);animation:ring3Pulse 2.2s ease-in-out infinite .8s}
+.fv-sweep{position:absolute;top:50%;left:50%;width:72px;height:1.5px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(96,165,250,.9),transparent);animation:sweepSpin 3.5s linear infinite;z-index:3;border-radius:2px}
+.fv-sweep::after{content:'';position:absolute;right:0;top:50%;transform:translate(50%,-50%);width:6px;height:6px;border-radius:50%;background:#93C5FD;box-shadow:0 0 8px #93C5FD,0 0 16px rgba(147,197,253,.5)}
+.fv-pin{position:absolute;font-size:18px;top:50%;left:50%;transform:translate(-50%,-62%);z-index:4;filter:drop-shadow(0 0 6px rgba(239,68,68,.8))}
+.fv-rlabel{position:absolute;font-size:9px;font-weight:700;color:rgba(255,255,255,.35);font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.05em}
+.fv-rlabel.l1{top:calc(50% - 37px);right:calc(50% - 29px)}
+.fv-rlabel.l2{top:calc(50% - 60px);right:calc(50% - 51px)}
+.fv-rlabel.l3{top:calc(50% - 84px);right:calc(50% - 75px)}
+.fv-donor{position:absolute;font-size:11px;filter:drop-shadow(0 0 4px rgba(239,68,68,.7));z-index:2;animation:donorBlink 2.8s ease-in-out infinite}
+.fv-donor.fv-d1{animation-delay:.4s}
+.fv-donor.fv-d2{animation-delay:1.1s}
+.fv-donor.fv-d3{animation-delay:1.8s}
+.fv-donor.fv-d4{animation-delay:2.4s}
+.fv-nearest{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:20px;padding:4px 14px;font-size:10px;font-weight:700;color:#34D399;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;animation:nearestGlow 2.5s ease-in-out infinite}
+.fv-radar-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.15) 0%,transparent 70%)}
+
+/* ── Visual 3: ₹0 shine ── */
+@keyframes zeroGlow{0%,100%{text-shadow:0 0 20px rgba(255,255,255,.08)}50%{text-shadow:0 0 40px rgba(255,255,255,.45),0 0 80px rgba(134,239,172,.18)}}
+@keyframes shimmerSlide{0%{left:-120%}55%,100%{left:180%}}
+@keyframes checkSlideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.fv-free-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;z-index:1}
+.fv-free-amt-box{position:relative;overflow:hidden;display:inline-block;border-radius:6px}
+.fv-free-shimmer{position:absolute;top:-10%;left:-120%;width:55%;height:120%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-15deg);animation:shimmerSlide 2.8s ease-in-out infinite;pointer-events:none;z-index:2}
+.fv-free-amt{font-family:'Plus Jakarta Sans',sans-serif;font-size:58px;font-weight:900;line-height:1;color:#fff;letter-spacing:-2px;animation:zeroGlow 2.8s ease-in-out infinite;position:relative}
+.fv-free-amt span{font-size:32px;vertical-align:super;color:rgba(255,255,255,.55)}
+.fv-free-sub{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.12em}
+.fv-checks{display:flex;flex-direction:column;gap:6px;align-items:flex-start;width:auto}
+.fv-chk{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.78);font-family:'Plus Jakarta Sans',sans-serif;animation:checkSlideIn .5s ease both;white-space:nowrap}
+.fv-chk:nth-child(1){animation-delay:.2s}.fv-chk:nth-child(2){animation-delay:.5s}.fv-chk:nth-child(3){animation-delay:.8s}
+.fv-chk::before{content:'✓';font-size:10px;font-weight:900;color:#34D399;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:50%;width:17px;height:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fv3-glow{position:absolute;top:0;right:0;width:160px;height:160px;background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 60%);pointer-events:none}
+
+/* card body */
+.feat-content{padding:26px 28px 28px;flex:1;display:flex;flex-direction:column;align-items:center;text-align:center}
+.feat-tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--red);background:rgba(220,38,38,.08);border-radius:100px;padding:3px 10px;margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif;width:fit-content}
+.feat-title{font-size:19px;font-weight:800;color:var(--g900);margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.4px;line-height:1.25;width:100%}
+.feat-desc{font-size:14px;color:var(--muted);line-height:1.85;flex:1;width:100%}
+.feat-proof{margin-top:20px;padding:10px 14px;background:var(--g50);border-radius:10px;font-size:12px;color:var(--g700);font-weight:500;border:1px solid var(--g200);width:100%}
+.feat-proof strong{color:var(--g900);font-weight:700}
+
+@media(max-width:900px){.features-grid{grid-template-columns:1fr;max-width:480px;margin-left:auto;margin-right:auto}}
+@media(min-width:901px) and (max-width:1100px){.feat-visual{height:180px}}
+
+/* ── HOW IT WORKS ────────────────────────────────── */
+.how-sec{background:var(--g50);padding:100px 52px}
+.steps-row{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;position:relative;gap:8px}
+.steps-row::before{content:'';position:absolute;top:38px;left:12.5%;right:12.5%;height:2px;background:linear-gradient(90deg,var(--rmid) 0%,var(--red) 50%,var(--rmid) 100%);z-index:0}
+.step-box{text-align:center;padding:0 16px;position:relative;z-index:1}
+.step-num{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--rdark));color:#fff;font-size:26px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;border:5px solid var(--g50);box-shadow:0 8px 24px rgba(220,38,38,.3),0 0 0 3px rgba(220,38,38,.1);font-family:'Plus Jakarta Sans',sans-serif}
+.step-when{font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif}
+.step-title{font-size:16px;font-weight:800;color:var(--g900);margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.2px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* ── WHO BENEFITS ────────────────────────────────── */
+.benefits-sec{background:#fff}
+.benefits-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:56px}
+.ben-card{display:flex;gap:20px;padding:28px 30px;border-radius:20px;border:1.5px solid var(--border);align-items:flex-start;transition:all .3s cubic-bezier(.23,1,.32,1);background:#fff;position:relative;overflow:hidden}
+.ben-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--red),transparent);opacity:0;transition:opacity .3s}
+.ben-card:hover{border-color:var(--rmid);box-shadow:0 16px 48px rgba(220,38,38,.1);transform:translateY(-4px)}
+.ben-card:hover::before{opacity:1}
+.ben-emoji{font-size:34px;flex-shrink:0;line-height:1;margin-top:2px}
+.ben-title{font-size:17px;font-weight:800;color:var(--g900);margin-bottom:9px;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.3px}
+.ben-text{font-size:13.5px;color:var(--muted);line-height:1.75}
+.ben-pill{display:inline-block;margin-top:12px;padding:4px 13px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif}
+
+/* ── IMPACT ─────────────────────────────────────── */
+.impact-sec{background:linear-gradient(140deg,#0F172A 0%,#1E293B 100%);padding:100px 52px}
+.impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:56px}
+.impact-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:40px 24px;text-align:center;transition:all .3s cubic-bezier(.23,1,.32,1)}
+.impact-card:hover{background:rgba(255,255,255,.1);transform:translateY(-6px);box-shadow:0 24px 64px rgba(0,0,0,.35)}
+.impact-icon{font-size:30px;margin-bottom:16px}
+.impact-num{font-size:56px;font-weight:900;letter-spacing:-3px;margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif;line-height:1}
+.impact-num.red{color:#FCA5A5}.impact-num.navy{color:#93C5FD}.impact-num.green{color:#86EFAC}.impact-num.teal{color:#67E8F9}
+.impact-label{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);font-family:'Plus Jakarta Sans',sans-serif}
+.impact-note{font-size:12px;color:rgba(255,255,255,.35);margin-top:6px}
+.impact-sec .label-teal{background:rgba(8,145,178,.18);color:#67E8F9;border:1px solid rgba(8,145,178,.25)}
+.impact-sec h2.title{color:#fff}
+.impact-sec p.sub{color:rgba(255,255,255,.5)}
+
+
+/* ── BLOOD STATUS ─────────────────────────────────── */
+.blood-sec{background:#fff}
+.bt-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:14px;margin-top:48px}
+.bt-card{background:var(--g50);border:2px solid var(--border);border-radius:18px;padding:22px 8px;text-align:center;transition:all .3s cubic-bezier(.23,1,.32,1);cursor:default}
+.bt-card.has-donors{border-color:var(--rmid);background:var(--rlight)}
+.bt-card:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(220,38,38,.12)}
+.bt-type{font-size:20px;font-weight:900;color:var(--red);margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif}
+.bt-count{font-size:26px;font-weight:800;color:var(--g900);font-family:'Plus Jakarta Sans',sans-serif}
+.bt-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+
+/* ── WHY DONATE ─────────────────────────────────── */
+.why-sec{background:var(--g50);padding:100px 52px}
+.why-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.why-cards{display:flex;flex-direction:column;gap:14px}
+.why-card{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);transition:all .28s cubic-bezier(.23,1,.32,1)}
+.why-card:hover{border-color:var(--rmid);box-shadow:var(--shadow-md);transform:translateX(4px)}
+.why-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.why-text{font-size:13.5px;color:var(--g700);line-height:1.7}
+.why-text b{color:var(--g900);font-family:'Plus Jakarta Sans',sans-serif}
+.why-quote{margin-top:28px;background:linear-gradient(135deg,var(--red),var(--rdark));border-radius:18px;padding:26px 28px;box-shadow:0 12px 40px rgba(220,38,38,.28)}
+.why-quote p{font-size:15px;font-weight:600;color:rgba(255,255,255,.92);line-height:1.7;font-style:italic}
+.why-quote span{font-size:12px;color:rgba(255,255,255,.55);margin-top:10px;display:block;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif}
+
+/* ── FORMS ────────────────────────────────────────── */
+.action-sec{background:#fff}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+/* form-card base — overridden by dark section below */
+.form-card{border-radius:24px;overflow:hidden;border:none}
+.form-card.req{background:linear-gradient(160deg,#FFF5F5 0%,#FEF2F2 100%);padding:36px}
+.form-card.don{background:linear-gradient(160deg,#F0F7FF 0%,#EFF6FF 100%);padding:36px}
+.form-head{font-size:23px;font-weight:900;color:var(--g900);margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.4px}
+.form-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.f-inp{width:100%;padding:13px 15px;border-radius:10px;font-size:13px;font-family:'Inter',sans-serif;border:1.5px solid var(--border);background:#fff;color:var(--g900);outline:none;transition:all .22s;appearance:none;-webkit-appearance:none}
+.f-inp:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+.f-inp.b:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(30,64,175,.1)}
+.f-note{background:rgba(255,255,255,.75);border-radius:12px;padding:14px 16px;margin-bottom:12px;font-size:12px;color:var(--muted);line-height:1.75}
+.f-note span{display:block;margin-bottom:2px}
+.f-btn{width:100%;padding:15px;border-radius:12px;font-size:14px;font-weight:800;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .25s;letter-spacing:.1px}
+.f-btn.red{background:linear-gradient(135deg,var(--red),var(--rdark));color:#fff;box-shadow:0 6px 20px rgba(220,38,38,.35)}.f-btn.red:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(220,38,38,.44)}
+.f-btn.blu{background:linear-gradient(135deg,var(--navy),#1E3A8A);color:#fff;box-shadow:0 6px 20px rgba(30,64,175,.28)}.f-btn.blu:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(30,64,175,.36)}
+.f-msg{margin-top:12px;padding:12px 15px;border-radius:10px;font-size:12px;font-weight:500;display:none}
+.f-msg.ok{background:var(--gnl);border:1px solid #86EFAC;color:#15803D;display:block}
+.f-msg.err{background:var(--rlight);border:1px solid var(--rmid);color:var(--rdark);display:block}
+
+/* ── +91 Phone input ──────────────────────────────── */
+.phone-wrap{display:flex;align-items:stretch;border:1.5px solid var(--border);border-radius:10px;background:#fff;overflow:hidden;transition:all .22s;width:100%}
+.phone-wrap:focus-within{border-color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+.phone-wrap.b:focus-within{border-color:var(--navy);box-shadow:0 0 0 3px rgba(30,64,175,.1)}
+.phone-pfx{display:flex;align-items:center;gap:5px;padding:0 10px 0 13px;font-size:13px;font-weight:700;color:var(--muted);background:#F8FAFC;border-right:1.5px solid var(--border);white-space:nowrap;flex-shrink:0;user-select:none}
+.phone-pfx img{width:18px;height:13px;border-radius:2px;object-fit:cover}
+.phone-num{flex:1;border:none!important;border-radius:0!important;box-shadow:none!important;outline:none;padding:13px 13px;font-size:13px;font-family:'Inter',sans-serif;color:var(--g900);background:transparent;min-width:0}
+.phone-num::placeholder{color:#94A3B8}
+
+/* ── Hospital autocomplete ────────────────────────── */
+.hosp-wrap{position:relative;width:100%;margin-bottom:10px}
+.hosp-dd{display:none;position:absolute;top:calc(100% + 2px);left:0;right:0;background:#fff;border:1.5px solid var(--red);border-radius:0 0 12px 12px;z-index:200;box-shadow:0 10px 30px rgba(229,57,53,.12);max-height:220px;overflow-y:auto}
+.hosp-opt{padding:11px 15px;font-size:13px;cursor:pointer;color:var(--g900);border-bottom:1px solid var(--border);line-height:1.4;transition:background .15s}
+.hosp-opt:last-child{border-bottom:none;border-radius:0 0 10px 10px}
+.hosp-opt:hover{background:var(--rlight)}
+.hosp-opt b{color:var(--red)}
+
+/* ── Date field label ─────────────────────────────── */
+.f-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;margin-top:4px;display:block;font-family:'Plus Jakarta Sans',sans-serif}
+
+/* ══════════════════════════════════════════════════
+   BLOOD HEROES WALL
+══════════════════════════════════════════════════ */
+.heroes-sec{background:linear-gradient(160deg,#0B1120 0%,#0F172A 55%,#111827 100%);padding:96px 0;position:relative;overflow:hidden}
+.heroes-sec::before{content:'';position:absolute;top:-120px;right:-80px;width:480px;height:480px;background:radial-gradient(circle,rgba(217,119,6,.1) 0%,transparent 65%);pointer-events:none}
+.heroes-sec::after{content:'';position:absolute;bottom:-80px;left:-60px;width:360px;height:360px;background:radial-gradient(circle,rgba(220,38,38,.08) 0%,transparent 65%);pointer-events:none}
+.heroes-sec .wrap{position:relative;z-index:1}
+/* section header */
+.heroes-hd{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:44px}
+.heroes-hd-left .label-live{display:inline-flex;align-items:center;gap:7px;background:rgba(16,185,129,.15);color:#34D399;border:1px solid rgba(16,185,129,.25);border-radius:100px;padding:5px 13px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:12px}
+.heroes-hd-left .label-live .ld{width:7px;height:7px;border-radius:50%;background:#34D399;animation:pulse-dot 1.8s ease-in-out infinite}
+.heroes-hd-left h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:38px;font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:8px}
+.heroes-hd-left h2 em{color:#FCA5A5;font-style:normal}
+.heroes-hd-left p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.6}
+.heroes-stat-pill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 20px;text-align:center;min-width:110px}
+.heroes-stat-pill .hsp-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:900;color:#fff}
+.heroes-stat-pill .hsp-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+/* 2-col layout */
+.heroes-layout{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+
+/* ── LIVE STREAM PANEL (left) ── */
+.live-panel{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden}
+.lsp-head{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03)}
+.lsp-head .lsp-dot{width:8px;height:8px;border-radius:50%;background:#34D399;box-shadow:0 0 0 3px rgba(52,211,153,.2);flex-shrink:0;animation:pulse-dot 1.8s infinite}
+.lsp-head .lsp-title{font-size:13px;font-weight:700;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;flex:1}
+.lsp-head .lsp-count{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);background:rgba(255,255,255,.07);padding:3px 9px;border-radius:100px}
+.live-stream-list{padding:12px;display:flex;flex-direction:column;gap:8px;max-height:560px;overflow-y:auto;scrollbar-width:none}
+.live-stream-list::-webkit-scrollbar{display:none}
+/* individual response card */
+.lrc{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;transition:background .2s}
+.lrc:hover{background:rgba(255,255,255,.08)}
+.lrc.new{animation:slideInLeft .4s cubic-bezier(.34,1.56,.64,1)}
+.lrc-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.lrc-icon.responding{background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.3)}
+.lrc-icon.called{background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.3)}
+.lrc-icon.declined{background:rgba(100,116,139,.15);border:1px solid rgba(100,116,139,.2)}
+.lrc-body{flex:1;min-width:0}
+.lrc-name{font-size:13px;font-weight:700;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lrc-meta{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lrc-bt{font-size:10px;font-weight:800;background:rgba(220,38,38,.2);color:#FCA5A5;padding:1px 6px;border-radius:4px;font-family:'Plus Jakarta Sans',sans-serif}
+.lrc-time{font-size:10px;color:rgba(255,255,255,.3);margin-left:auto;flex-shrink:0}
+.lrc-status{font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px}
+.lrc-status.responding{background:rgba(16,185,129,.15);color:#34D399}
+.lrc-status.called{background:rgba(59,130,246,.15);color:#93C5FD}
+.lrc-status.declined{background:rgba(100,116,139,.1);color:#94A3B8}
+.lsp-empty{padding:32px 16px;text-align:center;color:rgba(255,255,255,.25);font-size:13px}
+
+/* ── HALL OF FAME PANEL (right) ── */
+.hof-panel{display:flex;flex-direction:column;gap:16px}
+/* podium — top 3 */
+.hof-podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.podium-card{border-radius:18px;padding:20px 16px 18px;text-align:center;position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.23,1,.32,1)}
+.podium-card:hover{transform:translateY(-6px)}
+.podium-card.gold{background:linear-gradient(160deg,#1C1200 0%,#2D1F00 100%);border:1px solid rgba(217,119,6,.35);box-shadow:0 0 40px rgba(217,119,6,.12)}
+.podium-card.silver{background:linear-gradient(160deg,#0F1420 0%,#1A2035 100%);border:1px solid rgba(148,163,184,.25);box-shadow:0 0 30px rgba(148,163,184,.06)}
+.podium-card.bronze{background:linear-gradient(160deg,#150D00 0%,#221500 100%);border:1px solid rgba(180,83,9,.25);box-shadow:0 0 30px rgba(180,83,9,.08)}
+.podium-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.podium-card.gold::before{background:linear-gradient(90deg,transparent,#D97706,transparent)}
+.podium-card.silver::before{background:linear-gradient(90deg,transparent,#94A3B8,transparent)}
+.podium-card.bronze::before{background:linear-gradient(90deg,transparent,#B45309,transparent)}
+.pc-medal{font-size:28px;margin-bottom:6px;display:block}
+.pc-rank{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif}
+.podium-card.gold .pc-rank{color:#F59E0B}
+.podium-card.silver .pc-rank{color:#94A3B8}
+.podium-card.bronze .pc-rank{color:#B45309}
+.pc-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#fff;margin:0 auto 10px;font-family:'Plus Jakarta Sans',sans-serif}
+.podium-card.gold .pc-avatar{background:linear-gradient(135deg,#92400E,#D97706);box-shadow:0 0 0 3px rgba(217,119,6,.25)}
+.podium-card.silver .pc-avatar{background:linear-gradient(135deg,#475569,#94A3B8);box-shadow:0 0 0 3px rgba(148,163,184,.2)}
+.podium-card.bronze .pc-avatar{background:linear-gradient(135deg,#7C2D12,#B45309);box-shadow:0 0 0 3px rgba(180,83,9,.2)}
+.pc-name{font-size:13px;font-weight:800;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-area{font-size:10px;color:rgba(255,255,255,.4);margin-bottom:10px}
+.pc-bt{display:inline-block;font-size:10px;font-weight:800;background:rgba(220,38,38,.2);color:#FCA5A5;padding:2px 8px;border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:8px}
+.pc-badge{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:8px}
+.pc-pts{font-size:20px;font-weight:900;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.5px}
+.podium-card.gold .pc-pts{color:#F59E0B}
+.podium-card.silver .pc-pts{color:#CBD5E1}
+.podium-card.bronze .pc-pts{color:#B45309}
+.pc-pts-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;margin-top:1px}
+.pc-donations{font-size:10px;color:rgba(255,255,255,.35);margin-top:6px}
+/* rest of leaderboard */
+.hof-list{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden}
+.hof-list-head{padding:12px 16px;font-size:11px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid rgba(255,255,255,.06);font-family:'Plus Jakarta Sans',sans-serif;display:grid;grid-template-columns:28px 1fr auto auto;gap:8px;align-items:center}
+.rank-row{display:grid;grid-template-columns:28px 1fr auto auto;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);transition:background .2s}
+.rank-row:last-child{border-bottom:none}
+.rank-row:hover{background:rgba(255,255,255,.04)}
+.rr-num{font-size:12px;font-weight:800;color:rgba(255,255,255,.35);font-family:'Plus Jakarta Sans',sans-serif;text-align:center}
+.rr-info{min-width:0}
+.rr-name{font-size:13px;font-weight:700;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rr-meta{display:flex;align-items:center;gap:6px;margin-top:2px}
+.rr-bt{font-size:9px;font-weight:800;background:rgba(220,38,38,.18);color:#FCA5A5;padding:1px 6px;border-radius:4px;font-family:'Plus Jakarta Sans',sans-serif}
+.rr-area{font-size:11px;color:rgba(255,255,255,.35)}
+.rr-badge{font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;color:rgba(255,255,255,.6)}
+.rr-pts{font-size:13px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:rgba(255,255,255,.8);text-align:right;white-space:nowrap}
+/* special honor card */
+.honor-card{background:linear-gradient(135deg,rgba(220,38,38,.12) 0%,rgba(30,64,175,.1) 100%);border:1px solid rgba(220,38,38,.25);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px}
+.honor-icon{font-size:32px;flex-shrink:0}
+.honor-body{flex:1;min-width:0}
+.honor-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#FCA5A5;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:4px}
+.honor-name{font-size:15px;font-weight:800;color:#fff;font-family:'Plus Jakarta Sans',sans-serif}
+.honor-sub{font-size:12px;color:rgba(255,255,255,.45);margin-top:2px}
+.honor-stat{text-align:right;flex-shrink:0}
+.honor-stat-num{font-size:22px;font-weight:900;color:#FCA5A5;font-family:'Plus Jakarta Sans',sans-serif;line-height:1}
+.honor-stat-label{font-size:10px;color:rgba(255,255,255,.3);font-weight:600;margin-top:2px}
+/* loading state */
+.hof-loading{padding:40px;text-align:center;color:rgba(255,255,255,.25);font-size:14px}
+@keyframes slideInLeft{from{transform:translateX(-30px);opacity:0}to{transform:translateX(0);opacity:1}}
+@media(max-width:960px){.heroes-layout{grid-template-columns:1fr}.live-panel{max-height:320px}.live-stream-list{max-height:260px}}
+@media(max-width:600px){.hof-podium{grid-template-columns:1fr}.heroes-hd-left h2{font-size:28px}}
+
+/* ── ABOUT ROTARY (COMPACT) ─────────────────────── */
+.about-compact{background:linear-gradient(160deg,#F8FAFC 0%,#fff 100%);padding:64px 52px;border-top:1px solid #F1F5F9;border-bottom:1px solid #F1F5F9}
+.ac-inner{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+.ac-header{display:flex;align-items:center;gap:20px}
+.ac-logo{width:56px;height:56px;object-fit:contain;flex-shrink:0}
+.ac-club-name{font-size:18px;font-weight:900;color:#1E293B;letter-spacing:-.4px;font-family:'Plus Jakarta Sans',sans-serif}
+.ac-club-sub{font-size:12px;color:#64748B;margin-top:4px;font-weight:500}
+/* ── DG Vision Card ── */
+.ac-dg-card{
+  position:relative;overflow:hidden;
+  background:linear-gradient(140deg,#0F172A 0%,#1E293B 60%,#1E1430 100%);
+  border-radius:24px;padding:48px 48px 40px;
+  box-shadow:0 32px 80px rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.06);
+}
+.ac-dg-card::before{
+  content:'';position:absolute;top:-100px;right:-60px;
+  width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(220,38,38,.18) 0%,transparent 65%);
+  pointer-events:none;
+}
+.ac-dg-card::after{
+  content:'';position:absolute;bottom:-80px;left:-40px;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(30,64,175,.2) 0%,transparent 65%);
+  pointer-events:none;
+}
+.ac-dg-vision-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);
+  border-radius:100px;padding:7px 16px;margin-bottom:28px;
+  font-size:12px;font-weight:700;color:#FCA5A5;letter-spacing:.08em;
+  text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.ac-dg-vision-badge .pulse{
+  width:7px;height:7px;border-radius:50%;background:#FCA5A5;flex-shrink:0;
+  animation:pulse-dot 1.8s ease-in-out infinite;
+}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.ac-dg-body{display:flex;gap:36px;align-items:flex-start;position:relative;z-index:1}
+.ac-dg-photo-wrap{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:14px}
+.ac-dg-photo{
+  width:96px;height:96px;border-radius:50%;object-fit:cover;object-position:top;
+  border:3px solid rgba(220,38,38,.4);
+  box-shadow:0 0 0 6px rgba(220,38,38,.1),0 8px 32px rgba(0,0,0,.4);
+}
+.ac-dg-initials{
+  width:96px;height:96px;border-radius:50%;
+  background:linear-gradient(135deg,#1E40AF,#DC2626);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 0 0 6px rgba(220,38,38,.1),0 8px 32px rgba(0,0,0,.4);
+}
+.ac-dg-role-tag{
+  font-size:10px;font-weight:700;color:rgba(255,255,255,.45);
+  text-transform:uppercase;letter-spacing:.07em;text-align:center;
+  line-height:1.4;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.ac-dg-quote-block{flex:1}
+.ac-dg-openquote{
+  font-size:80px;line-height:.6;font-weight:900;
+  color:rgba(220,38,38,.35);font-family:Georgia,serif;
+  margin-bottom:8px;display:block;
+}
+.ac-dg-quote{
+  font-size:22px;font-weight:700;color:#fff;line-height:1.55;
+  letter-spacing:-.3px;font-family:'Plus Jakarta Sans',sans-serif;
+  margin-bottom:24px;
+}
+.ac-dg-quote em{color:#FCA5A5;font-style:normal}
+.ac-dg-meta{display:flex;flex-direction:column;gap:4px}
+.ac-dg-meta strong{
+  font-size:15px;font-weight:800;color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.2px;
+}
+.ac-dg-meta span{font-size:13px;color:rgba(255,255,255,.5);font-weight:500}
+.ac-dg-divider{width:40px;height:2px;background:linear-gradient(90deg,var(--red),transparent);border-radius:2px;margin:14px 0}
+.ac-dg-working{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:11px 18px;margin-top:22px;position:relative;z-index:1;
+}
+.ac-dg-working .w-icon{font-size:18px;flex-shrink:0}
+.ac-dg-working p{font-size:13px;color:rgba(255,255,255,.7);line-height:1.4}
+.ac-dg-working p strong{color:#fff;font-weight:700}
+@media(max-width:700px){
+  .ac-dg-card{padding:32px 24px 28px}
+  .ac-dg-body{flex-direction:column;gap:24px;align-items:center;text-align:center}
+  .ac-dg-openquote{text-align:center}
+  .ac-dg-quote{font-size:18px}
+  .ac-dg-divider{margin:14px auto}
+  .ac-dg-meta{align-items:center}
+}
+.ac-leaders{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ac-leader-pill{display:flex;align-items:center;gap:16px;background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;padding:16px 20px;transition:all .25s cubic-bezier(.23,1,.32,1);box-shadow:var(--shadow)}
+.ac-leader-pill:hover{border-color:#BFDBFE;box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.ac-lp-photo{flex-shrink:0}
+.ac-lp-photo img{width:54px;height:54px;border-radius:14px;object-fit:cover;object-position:top;display:block}
+.ac-lp-initials{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,#1E40AF,#0891B2);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#fff}
+.ac-lp-name{font-size:13.5px;font-weight:800;color:#1E293B;margin-bottom:3px;font-family:'Plus Jakarta Sans',sans-serif}
+.ac-lp-role{font-size:11px;color:#64748B;line-height:1.45}
+.ac-facts{display:flex;flex-wrap:wrap;gap:9px}
+.ac-fact{display:inline-flex;align-items:center;gap:6px;background:#F1F5F9;border:1px solid #E2E8F0;border-radius:24px;padding:7px 16px;font-size:12px;font-weight:600;color:#475569;transition:all .2s;cursor:default}
+.ac-fact:hover{background:#E2E8F0;transform:translateY(-1px)}
+@media(max-width:700px){.ac-leaders{grid-template-columns:1fr}.ac-header{flex-direction:column;text-align:center}}
+.dg-emblem{position:absolute;bottom:8px;right:8px;width:52px;height:52px;background:#1A3C6E;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.dg-name-card{background:linear-gradient(135deg,#1A3C6E,#0F2550);border-radius:16px;padding:18px 24px;text-align:center;width:100%;max-width:280px}
+
+/* ── EMERGENCY STRIP ─────────────────────────────── */
+.emg-strip{background:linear-gradient(100deg,var(--red) 0%,var(--rdark) 55%,#E44D26 100%)}
+.emg-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:36px 52px;flex-wrap:wrap;gap:20px}
+.emg-left{display:flex;align-items:center;gap:18px}
+.emg-ico{font-size:38px;animation:heartbeat 1.6s ease-in-out infinite}
+@keyframes heartbeat{0%,100%{transform:scale(1)}30%{transform:scale(1.2)}60%{transform:scale(1)}}
+.emg-copy h3{font-size:24px;font-weight:900;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.5px}
+.emg-copy p{font-size:14px;color:rgba(255,255,255,.8);margin-top:4px}
+.emg-btn{background:#fff;color:var(--red);padding:15px 30px;border-radius:11px;font-size:14px;font-weight:800;text-decoration:none;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .25s;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.emg-btn:hover{background:var(--rlight);transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.22)}
+
+/* ── FOOTER ──────────────────────────────────────── */
+footer{background:#070B14;padding:72px 52px 44px}
+.ft{max-width:1120px;margin:0 auto}
+.ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:52px;margin-bottom:52px}
+.ft-logo-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.ft-logo-row .ico{width:40px;height:40px;background:var(--red);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ft-logo-row h3{font-size:17px;font-weight:800;color:#fff;font-family:'Plus Jakarta Sans',sans-serif}
+.ft-brand p{font-size:13px;color:rgba(255,255,255,.38);line-height:1.8;margin-bottom:20px}
+.ft-meet-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px}
+.ft-meet-box .day{font-size:13px;font-weight:700;color:#fff;font-family:'Plus Jakarta Sans',sans-serif}
+.ft-meet-box .venue{font-size:11px;color:rgba(255,255,255,.3);margin-top:5px;line-height:1.7}
+.ft-col h4{font-size:10px;font-weight:800;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:18px;font-family:'Plus Jakarta Sans',sans-serif}
+.ft-col a{display:block;font-size:13px;color:rgba(255,255,255,.42);text-decoration:none;margin-bottom:11px;transition:color .2s}
+.ft-col a:hover{color:rgba(255,255,255,.88)}
+.ft-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.ft-bottom p{font-size:12px;color:rgba(255,255,255,.18)}
+.ft-pills{display:flex;gap:8px;flex-wrap:wrap}
+.ft-pill{padding:5px 13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;font-size:11px;color:rgba(255,255,255,.26)}
+
+/* ── ACTION SECTION — DARK PREMIUM ──────────────── */
+/* ── NEW Action Section — right after hero ── */
+.action-sec{
+  background:linear-gradient(180deg,#0D1424 0%,#111827 60%,#0F172A 100%);
+  position:relative;overflow:hidden;
+  padding-top:72px;padding-bottom:80px;
+}
+.action-sec::before{
+  content:'';position:absolute;top:-140px;right:-60px;
+  width:520px;height:520px;
+  background:radial-gradient(circle,rgba(220,38,38,.12) 0%,transparent 65%);
+  pointer-events:none;
+}
+.action-sec::after{
+  content:'';position:absolute;bottom:-100px;left:-60px;
+  width:440px;height:440px;
+  background:radial-gradient(circle,rgba(30,64,175,.1) 0%,transparent 65%);
+  pointer-events:none;
+}
+.action-sec .wrap{position:relative;z-index:1;max-width:1060px}
+.action-eyebrow{
+  text-align:center;margin-bottom:40px;
+}
+.action-eyebrow-line{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:12px;font-weight:700;color:rgba(255,255,255,.4);
+  text-transform:uppercase;letter-spacing:.12em;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+.action-eyebrow-line::before,.action-eyebrow-line::after{
+  content:'';display:block;width:36px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2));
+}
+.action-eyebrow-line::after{
+  background:linear-gradient(270deg,transparent,rgba(255,255,255,.2));
+}
+
+/* ── Form cards — new header-based design ── */
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-card.req,
+.form-card.don{
+  background:#fff;border:none;padding:0;
+  box-shadow:0 24px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04);
+  transition:transform .38s cubic-bezier(.23,1,.32,1),box-shadow .38s;
+}
+.form-card.req:hover,
+.form-card.don:hover{
+  transform:translateY(-8px);
+  box-shadow:0 40px 100px rgba(0,0,0,.6);
+}
+/* coloured header strip */
+.fc-header{padding:28px 30px 24px;position:relative;overflow:hidden;flex-shrink:0}
+.form-card.req .fc-header{background:linear-gradient(135deg,#6B0F0F 0%,#991B1B 50%,#B91C1C 100%)}
+.form-card.don .fc-header{background:linear-gradient(135deg,#172554 0%,#1E3A8A 50%,#1D4ED8 100%)}
+.fc-header::before{
+  content:'';position:absolute;top:-32px;right:-32px;
+  width:110px;height:110px;border-radius:50%;
+  background:rgba(255,255,255,.07);pointer-events:none;
+}
+.fc-header::after{
+  content:'';position:absolute;bottom:-20px;left:20px;
+  width:70px;height:70px;border-radius:50%;
+  background:rgba(255,255,255,.04);pointer-events:none;
+}
+.fc-hd-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1}
+.fc-hd-icon-wrap{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.16);
+}
+.fc-hd-badge{
+  font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  background:rgba(255,255,255,.14);color:rgba(255,255,255,.9);
+  padding:4px 11px;border-radius:100px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  border:1px solid rgba(255,255,255,.18);
+}
+.fc-hd-title{font-size:22px;font-weight:900;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.5px;margin-bottom:5px;position:relative;z-index:1}
+.fc-hd-sub{font-size:12px;color:rgba(255,255,255,.58);line-height:1.55;position:relative;z-index:1}
+/* micro flow (request) */
+.fc-flow{display:flex;align-items:center;gap:5px;margin-top:14px;flex-wrap:wrap;position:relative;z-index:1}
+.fc-flow-step{
+  font-size:10px;font-weight:700;color:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.1);border-radius:6px;padding:4px 9px;
+  font-family:'Plus Jakarta Sans',sans-serif;border:1px solid rgba(255,255,255,.14);
+  white-space:nowrap;
+}
+.fc-flow-arrow{font-size:9px;color:rgba(255,255,255,.3)}
+/* donor count strip */
+.fc-donors-bar{
+  display:flex;align-items:center;gap:10px;margin-top:14px;
+  background:rgba(255,255,255,.1);border-radius:10px;padding:9px 13px;
+  border:1px solid rgba(255,255,255,.13);position:relative;z-index:1;
+}
+.fc-av{
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:900;color:#fff;
+  margin-left:-6px;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.fc-av:first-child{margin-left:0}
+.fc-av-wrap{display:flex;margin-right:2px}
+.fc-donors-text{font-size:11px;font-weight:600;color:rgba(255,255,255,.8);font-family:'Plus Jakarta Sans',sans-serif}
+.fc-donors-text strong{color:#fff}
+/* card body */
+.fc-body{padding:24px 28px 28px}
+.fc-body .f-row{margin-bottom:10px}
+/* hotline strip */
+.action-hotline{
+  display:flex;align-items:center;gap:16px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  border-radius:16px;padding:16px 22px;margin-top:20px;flex-wrap:wrap;
+}
+.action-hotline-icon{font-size:26px;flex-shrink:0}
+.action-hotline-text{flex:1;min-width:0}
+.action-hotline-text strong{display:block;font-size:13px;font-weight:800;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:2px}
+.action-hotline-text span{font-size:11px;color:rgba(255,255,255,.4)}
+.action-hotline-call{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#DC2626;color:#fff;padding:10px 20px;border-radius:9px;
+  font-size:13px;font-weight:700;text-decoration:none;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:all .22s;white-space:nowrap;
+  box-shadow:0 4px 16px rgba(220,38,38,.4);
+}
+.action-hotline-call:hover{background:#B91C1C;transform:translateY(-1px)}
+@media(max-width:800px){
+  .action-grid{grid-template-columns:1fr}
+  .action-sec{padding-top:56px;padding-bottom:64px}
+}
+
+/* ── JOIN NOTIFICATION POPUP ─────────────────────── */
+@keyframes slideInLeft{from{transform:translateX(-110%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideOutLeft{from{transform:translateX(0);opacity:1}to{transform:translateX(-110%);opacity:0}}
+.join-toast{position:fixed;bottom:24px;left:24px;background:#fff;border-radius:16px;padding:13px 17px;box-shadow:0 20px 60px rgba(0,0,0,.2),0 1px 0 rgba(0,0,0,.04);display:flex;align-items:center;gap:12px;z-index:1990;animation:slideInLeft .45s cubic-bezier(.34,1.56,.64,1);max-width:290px;border-left:4px solid var(--red);pointer-events:none}
+.jt-badge{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;flex-shrink:0;color:#fff;font-family:'Plus Jakarta Sans',sans-serif}
+.jt-name{font-size:13px;font-weight:700;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif;line-height:1.3}
+.jt-info{font-size:11px;color:#64748B;margin-top:1px}
+
+/* ── REQUEST SUCCESS MODAL ───────────────────────── */
+.req-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:2000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.req-modal-overlay.open{display:flex}
+.req-modal{background:#fff;border-radius:28px;padding:40px 36px;max-width:500px;width:100%;text-align:center;box-shadow:0 48px 120px rgba(0,0,0,.5);animation:modalPop .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes modalPop{from{transform:scale(.82) translateY(24px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.rm-icon{font-size:62px;margin-bottom:16px;display:block;animation:heartbeat 2s ease-in-out infinite}
+.rm-title{font-size:28px;font-weight:900;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.6px;margin-bottom:10px}
+.rm-body{font-size:15px;color:#64748B;line-height:1.75;margin-bottom:20px}
+.rm-nearest{background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:14px;padding:13px 18px;margin-bottom:20px;font-size:14px;color:#15803D;font-weight:700;display:none;text-align:left}
+.rm-emergency{background:#FEF2F2;border-radius:18px;padding:22px 20px;margin-bottom:22px;text-align:left}
+.rm-emergency-title{font-size:11px;font-weight:800;color:#DC2626;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;font-family:'Plus Jakarta Sans',sans-serif;display:block}
+.rm-call{display:flex;align-items:center;justify-content:center;gap:10px;background:#DC2626;color:#fff;padding:13px 20px;border-radius:11px;text-decoration:none;font-weight:700;font-size:14px;margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .22s}
+.rm-call:hover{background:#B91C1C;transform:translateY(-1px)}
+.rm-wa{display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;padding:13px 20px;border-radius:11px;text-decoration:none;font-weight:700;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .22s}
+.rm-wa:hover{background:#1DA851;transform:translateY(-1px)}
+.rm-close{margin-top:0;background:#0F172A;color:#fff;border:none;padding:14px 32px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;width:100%;transition:background .22s}
+.rm-close:hover{background:#1E293B}
+
+/* ── AI BLOOD ASSISTANT WIDGET ───────────────────── */
+@keyframes chatBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes chatPop{from{transform:scale(.78) translateY(24px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.ai-fab{position:fixed;bottom:28px;right:28px;width:60px;height:60px;background:linear-gradient(135deg,#DC2626,#B91C1C);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 8px 28px rgba(220,38,38,.48),0 2px 8px rgba(220,38,38,.2);z-index:1980;transition:all .3s cubic-bezier(.34,1.56,.64,1);border:none;animation:chatBounce 4s ease-in-out infinite}
+.ai-fab:hover{transform:scale(1.12);box-shadow:0 14px 40px rgba(220,38,38,.58)}
+.ai-fab-label{position:absolute;right:70px;top:50%;transform:translateY(-50%);background:#0F172A;color:#fff;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;pointer-events:none;opacity:0;transition:opacity .25s}
+.ai-fab:hover .ai-fab-label{opacity:1}
+.ai-window{position:fixed;bottom:100px;right:28px;width:350px;background:#fff;border-radius:24px;box-shadow:0 32px 80px rgba(0,0,0,.22),0 4px 16px rgba(0,0,0,.1);z-index:1980;display:none;flex-direction:column;overflow:hidden;animation:chatPop .35s cubic-bezier(.34,1.56,.64,1);max-height:580px}
+.ai-window.open{display:flex}
+.ai-hdr{background:linear-gradient(135deg,#DC2626,#B91C1C);padding:18px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.ai-hdr-avatar{width:42px;height:42px;border-radius:13px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ai-hdr-info h4{font-size:14px;font-weight:800;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:1px}
+.ai-hdr-info p{font-size:11px;color:rgba(255,255,255,.7)}
+.ai-close{margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .18s}
+.ai-close:hover{background:rgba(255,255,255,.28)}
+.ai-msgs{flex:1;overflow-y:auto;padding:14px 14px 6px;display:flex;flex-direction:column;gap:9px;min-height:160px;max-height:300px}
+.ai-msgs::-webkit-scrollbar{width:4px}.ai-msgs::-webkit-scrollbar-track{background:transparent}.ai-msgs::-webkit-scrollbar-thumb{background:#E2E8F0;border-radius:4px}
+.ai-bubble{max-width:90%;padding:11px 14px;border-radius:16px;font-size:13px;line-height:1.65}
+.ai-bubble.bot{background:#F1F5F9;color:#1E293B;align-self:flex-start;border-radius:4px 16px 16px 16px}
+.ai-bubble.user{background:#DC2626;color:#fff;align-self:flex-end;border-radius:16px 4px 16px 16px;font-weight:600}
+.ai-bubble a{color:inherit;text-decoration:underline;font-weight:700}
+.ai-quick-row{display:flex;flex-wrap:wrap;gap:6px;padding:6px 14px 10px}
+.ai-qbtn{padding:7px 13px;border-radius:20px;border:1.5px solid #E2E8F0;background:#fff;font-size:11.5px;font-weight:600;cursor:pointer;color:#374151;transition:all .18s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.ai-qbtn:hover{border-color:var(--red);color:var(--red);background:#FEF2F2}
+.ai-input-area{display:flex;align-items:center;gap:8px;padding:11px 14px;border-top:1px solid #F1F5F9;flex-shrink:0}
+.ai-inp{flex:1;border:1.5px solid #E2E8F0;border-radius:10px;padding:10px 13px;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border .18s;background:#F9FAFB}
+.ai-inp:focus{border-color:var(--red);background:#fff}
+.ai-send-btn{width:36px;height:36px;background:var(--red);border:none;border-radius:9px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .18s;flex-shrink:0;font-size:14px}
+.ai-send-btn:hover{background:var(--rdark)}
+.ai-typing{display:none;padding:4px 0;align-self:flex-start}
+.ai-typing span{display:inline-block;width:7px;height:7px;background:#CBD5E1;border-radius:50%;margin:0 2px;animation:typingDot 1.2s ease-in-out infinite}
+.ai-typing span:nth-child(2){animation-delay:.2s}
+.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingDot{0%,100%{transform:translateY(0);background:#CBD5E1}50%{transform:translateY(-5px);background:#94A3B8}}
+
+/* ══ FORM WIZARD POPUP ══════════════════════════════════════ */
+.fwiz-overlay{display:none;position:fixed;inset:0;z-index:3000;background:rgba(7,11,20,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:16px}
+.fwiz-overlay.open{display:flex}
+.fwiz-box{background:#fff;border-radius:28px;width:100%;max-width:520px;box-shadow:0 48px 120px rgba(0,0,0,.6);animation:fwizPop .4s cubic-bezier(.34,1.56,.64,1);overflow:hidden;max-height:95vh;overflow-y:auto}
+@keyframes fwizPop{from{transform:scale(.84) translateY(30px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.fwiz-hd{padding:26px 28px 22px;position:relative;overflow:hidden}
+.fwiz-hd.req{background:linear-gradient(135deg,#6B0F0F 0%,#991B1B 50%,#B91C1C 100%)}
+.fwiz-hd.don{background:linear-gradient(135deg,#172554 0%,#1E3A8A 50%,#1D4ED8 100%)}
+.fwiz-hd::before{content:'';position:absolute;top:-32px;right:-32px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none}
+.fwiz-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1}
+.fwiz-hd-ico{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:22px}
+.fwiz-close{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.12);border:none;color:rgba(255,255,255,.8);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .18s;line-height:1}
+.fwiz-close:hover{background:rgba(255,255,255,.24)}
+.fwiz-hd-title{font-size:20px;font-weight:900;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.4px;margin-bottom:3px;position:relative;z-index:1}
+.fwiz-hd-sub{font-size:12px;color:rgba(255,255,255,.6);line-height:1.5;position:relative;z-index:1}
+.fwiz-steps{display:flex;align-items:center;margin-top:18px;position:relative;z-index:1}
+.fwiz-dot-wrap{display:flex;align-items:center;flex-direction:column;position:relative;flex-shrink:0}
+.fwiz-dot{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:rgba(255,255,255,.4);transition:all .3s;font-family:'Plus Jakarta Sans',sans-serif}
+.fwiz-dot.active{background:#fff;border-color:#fff;color:#B91C1C;box-shadow:0 0 0 4px rgba(255,255,255,.18)}
+.fwiz-hd.don .fwiz-dot.active{color:#1D4ED8}
+.fwiz-dot.done{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.45);color:#fff}
+.fwiz-dot-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.38);white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;margin-top:5px;letter-spacing:.04em}
+.fwiz-dot.active~.fwiz-dot-label,.fwiz-dot.done~.fwiz-dot-label{color:rgba(255,255,255,.75)}
+.fwiz-line{flex:1;height:2px;background:rgba(255,255,255,.14);margin:0 6px 14px;transition:background .3s}
+.fwiz-line.done{background:rgba(255,255,255,.38)}
+.fwiz-body{padding:26px 28px 8px}
+.fwiz-panel{animation:fwizSlide .26s ease}
+@keyframes fwizSlide{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.fwiz-step-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:5px}
+.fwiz-step-title{font-size:19px;font-weight:800;color:var(--g900);font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.4px;margin-bottom:18px;line-height:1.2}
+.fwiz-group{margin-bottom:13px}
+.fwiz-label{display:block;font-size:12px;font-weight:700;color:var(--g700);margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif}
+.fwiz-inp{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;color:var(--text);background:#fff;outline:none;transition:border .18s,box-shadow .18s}
+.fwiz-inp:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+.fwiz-inp.don-focus:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(30,64,175,.12)}
+.fwiz-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fwiz-phone-wrap{display:flex;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;transition:border .18s,box-shadow .18s}
+.fwiz-phone-wrap:focus-within{border-color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+.fwiz-phone-wrap.don:focus-within{border-color:var(--navy);box-shadow:0 0 0 3px rgba(30,64,175,.12)}
+.fwiz-pfx{padding:12px 12px;background:#F8FAFC;border-right:1.5px solid var(--border);font-size:13px;font-weight:700;color:var(--g700);display:flex;align-items:center;gap:6px;flex-shrink:0}
+.fwiz-phone-wrap input{flex:1;padding:12px 12px;border:none;outline:none;font-size:14px;font-family:'Inter',sans-serif;color:var(--text)}
+/* Blood grid */
+.fwiz-bt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.fwiz-bt-btn{padding:11px 4px;border-radius:11px;border:2px solid var(--border);background:#fff;cursor:pointer;text-align:center;transition:all .22s;font-family:'Plus Jakarta Sans',sans-serif}
+.fwiz-bt-btn .bt-type{font-size:16px;font-weight:900;color:var(--g700);display:block;letter-spacing:-.3px}
+.fwiz-bt-btn .bt-sub{font-size:8.5px;font-weight:600;color:var(--muted);text-transform:uppercase;display:block;margin-top:2px;letter-spacing:.03em;line-height:1.3}
+.fwiz-bt-btn:hover{border-color:#94A3B8;background:#F8FAFC;transform:translateY(-1px)}
+.fwiz-bt-btn.sel-req{border-color:var(--red)!important;background:#FEF2F2!important;box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+.fwiz-bt-btn.sel-req .bt-type{color:var(--red)}
+.fwiz-bt-btn.sel-don{border-color:var(--navy)!important;background:var(--nlight)!important;box-shadow:0 0 0 3px rgba(30,64,175,.1)}
+.fwiz-bt-btn.sel-don .bt-type{color:var(--navy)}
+/* Urgency buttons */
+.fwiz-urg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.fwiz-urg-btn{padding:11px 6px;border-radius:10px;border:1.5px solid var(--border);background:#fff;cursor:pointer;text-align:center;transition:all .2s;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;color:var(--g700)}
+.fwiz-urg-btn:hover{border-color:#94A3B8;background:#F8FAFC}
+.fwiz-urg-btn.sel{border-color:var(--red);background:#FEF2F2;color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.08)}
+/* Summary */
+.fwiz-summary{background:#F8FAFC;border-radius:14px;padding:16px 18px;margin-bottom:6px}
+.fwiz-sum-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:10px}
+.fwiz-sum-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.fwiz-sum-row:last-child{border-bottom:none}
+.fwiz-sum-key{font-size:12px;color:var(--muted);font-weight:500}
+.fwiz-sum-val{font-size:13px;font-weight:700;color:var(--g900);font-family:'Plus Jakarta Sans',sans-serif;text-align:right;max-width:220px}
+/* Nav */
+.fwiz-nav{display:flex;align-items:center;gap:10px;padding:14px 28px 22px;border-top:1px solid #F1F5F9;margin-top:10px}
+.fwiz-back{padding:12px 20px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:700;cursor:pointer;color:var(--g700);font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;flex-shrink:0}
+.fwiz-back:hover{border-color:#94A3B8;background:#F8FAFC}
+.fwiz-back:disabled{opacity:.3;cursor:default;pointer-events:none}
+.fwiz-next{flex:1;padding:13px 18px;border-radius:10px;border:none;font-size:14px;font-weight:800;cursor:pointer;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;transition:all .25s}
+.fwiz-next.req{background:linear-gradient(135deg,var(--red),var(--rdark));box-shadow:0 5px 18px rgba(220,38,38,.3)}
+.fwiz-next.don{background:linear-gradient(135deg,#1D4ED8,var(--navy));box-shadow:0 5px 18px rgba(30,64,175,.3)}
+.fwiz-next:hover{transform:translateY(-1px)}
+.fwiz-next:disabled{opacity:.5;cursor:default;pointer-events:none}
+.fwiz-err{display:none;font-size:12px;font-weight:600;color:#DC2626;padding:9px 14px;background:#FEF2F2;border-radius:9px;margin:0 28px 8px;border-left:3px solid #DC2626}
+/* Card CTA body — equal height */
+.fc-cta-body{padding:22px 26px 26px;display:flex;flex-direction:column}
+.fc-perks{list-style:none;margin-bottom:18px}
+.fc-perk{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid #F1F5F9}
+.fc-perk:last-child{border-bottom:none}
+.fc-perk-icon{font-size:18px;flex-shrink:0;margin-top:0}
+.fc-perk-text strong{display:block;font-weight:700;color:var(--g900);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;line-height:1.3;margin-bottom:2px}
+.fc-perk-text span{font-size:12px;color:var(--muted);line-height:1.45}
+.fc-launch-btn{width:100%;padding:15px;border-radius:12px;border:none;cursor:pointer;font-size:14px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;transition:all .25s;letter-spacing:.02em}
+.form-card.req .fc-launch-btn{background:linear-gradient(135deg,var(--red),var(--rdark));box-shadow:0 6px 22px rgba(220,38,38,.35)}
+.form-card.req .fc-launch-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(220,38,38,.48)}
+.form-card.don .fc-launch-btn{background:linear-gradient(135deg,#1D4ED8,var(--navy));box-shadow:0 6px 22px rgba(30,64,175,.35)}
+.form-card.don .fc-launch-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(30,64,175,.48)}
+
+/* ══════════════════════════════════════════════════
+   MOBILE / RESPONSIVE  —  comprehensive pass
+   768px = tablet / phone landscape
+   480px = small phone portrait
+══════════════════════════════════════════════════ */
+
+@media(max-width:768px){
+
+  /* ── Nav ── */
+  nav{padding:0 18px;grid-template-columns:auto auto}
+  .nav-links{display:none}
+  .nav-cta-wrap{justify-content:flex-end}
+
+  /* ── Hero ── */
+  .vid-content{padding:0 24px;max-width:100%}
+  .vid-content h2{font-size:40px;letter-spacing:-2px;line-height:1.05}
+  .vid-content p{font-size:15px;margin-bottom:28px}
+  .vid-btns{flex-direction:column;gap:10px}
+  .vid-btn-red,.vid-btn-ghost{width:100%;justify-content:center;padding:14px 24px}
+  .vid-mute-btn{bottom:16px;right:16px}
+  .vid-scroll-cue{display:none}
+
+  /* ── Section padding ── */
+  section{padding:64px 20px}
+  .how-sec,.impact-sec,.why-sec{padding:64px 20px}
+  .features-sec{padding-top:64px;padding-bottom:64px}
+  .heroes-sec{padding:72px 0}
+  .wrap{padding:0 4px}
+
+  /* ── Section headers ── */
+  h2.title{font-size:32px;letter-spacing:-1.2px;line-height:1.12}
+  .sec-head{max-width:100%}
+  .sec-head.center{max-width:100%}
+  p.sub{font-size:15px}
+
+  /* ── Features ── */
+  .features-grid{grid-template-columns:1fr;max-width:100%;gap:16px;margin-top:40px}
+  .feat-visual{height:200px}
+  .feat-content{padding:20px 20px 22px}
+  .feat-title{font-size:17px}
+  .feat-desc{font-size:13.5px;line-height:1.75}
+  .feat-proof{margin-top:14px;font-size:11.5px}
+
+  /* ── How It Works ── */
+  .steps-row{grid-template-columns:1fr 1fr;gap:16px}
+  .steps-row::before{display:none}
+
+  /* ── Impact stats ── */
+  .impact-grid{grid-template-columns:1fr 1fr;gap:14px;margin-top:40px}
+
+  /* ── Blood type grid ── */
+  .bt-grid{grid-template-columns:repeat(4,1fr);gap:10px}
+
+  /* ── Why Donate ── */
+  .why-inner{grid-template-columns:1fr;gap:32px}
+  .why-sec .sec-head{margin-bottom:0}
+
+  /* ── Action / Forms ── */
+  .action-grid{grid-template-columns:1fr;gap:16px}
+  .action-sec{padding-top:56px;padding-bottom:64px}
+  .form-card.req,.form-card.don{padding:24px 20px}
+  .fc-cta-body{padding:18px 20px 22px}
+  .action-hotline{flex-direction:column;align-items:flex-start;gap:12px;padding:16px 18px}
+  .action-hotline-call{width:100%;justify-content:center}
+
+  /* ── Heroes / Leaderboard ── */
+  .heroes-sec .wrap{padding:0 20px}
+  .heroes-hd{flex-direction:column;align-items:flex-start;gap:16px;margin-bottom:28px}
+  .heroes-hd-left h2{font-size:30px;letter-spacing:-1px}
+  .heroes-layout{grid-template-columns:1fr}
+  .live-panel{max-height:280px}
+  .hof-podium{grid-template-columns:1fr}
+
+  /* ── Emergency strip ── */
+  .emg-inner{flex-direction:column;align-items:center;text-align:center;padding:28px 20px;gap:18px}
+  .emg-left{flex-direction:column;align-items:center;gap:12px}
+  .emg-btn{width:100%;max-width:320px;text-align:center}
+
+  /* ── Footer ── */
+  footer{padding:48px 20px 28px}
+  .ft-top{grid-template-columns:1fr 1fr;gap:24px}
+  .ft-bottom{flex-direction:column;text-align:center;gap:8px}
+
+  /* ── AI Chat window ── */
+  .ai-window{width:calc(100vw - 32px);right:16px;bottom:88px}
+  .ai-fab{bottom:20px;right:20px}
+
+  /* ── Join toast ── */
+  .join-toast{left:12px;right:12px;max-width:none;bottom:16px}
+
+  /* ── Wizard ── */
+  .fwiz-box{border-radius:22px;max-height:90vh}
+  .fwiz-hd{padding:20px 20px 18px}
+  .fwiz-hd-title{font-size:18px}
+  .fwiz-body{padding:20px 20px 6px}
+  .fwiz-nav{padding:12px 20px 18px}
+  .fwiz-err{margin:0 20px 8px}
+  .fwiz-step-title{font-size:17px}
+  .fwiz-bt-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+
+  /* ── Live log card 1 ── */
+  .fv-live-log{width:90%}
+  .fv-log-name{max-width:70px}
+}
+
+@media(max-width:480px){
+
+  /* ── Nav ── */
+  nav{padding:0 14px}
+  .nav-cta{padding:8px 14px;font-size:12px}
+
+  /* ── Hero ── */
+  .vid-content h2{font-size:32px;letter-spacing:-1.5px}
+  .vid-content p{font-size:14px}
+  .vid-tag{font-size:10px;padding:6px 14px}
+
+  /* ── Section headers ── */
+  h2.title{font-size:27px;letter-spacing:-1px}
+  p.sub{font-size:14px}
+
+  /* ── Steps ── */
+  .steps-row{grid-template-columns:1fr}
+
+  /* ── Impact ── */
+  .impact-grid{grid-template-columns:1fr 1fr}
+
+  /* ── Blood grid ── */
+  .bt-grid{grid-template-columns:repeat(4,1fr);gap:8px}
+  .bt-type{font-size:17px}
+  .bt-count{font-size:22px}
+  .bt-card{padding:16px 4px}
+
+  /* ── Footer ── */
+  .ft-top{grid-template-columns:1fr}
+  .ft-col:not(:first-child){margin-top:0}
+
+  /* ── Forms / Wizard ── */
+  .fwiz-row{grid-template-columns:1fr}
+  .f-row{grid-template-columns:1fr}
+
+  /* ── Ticker ── */
+  .tick{font-size:11px;padding:0 16px}
+
+  /* ── Features card visual ── */
+  .feat-visual{height:185px}
+  .fv-free-amt{font-size:50px}
+
+  /* ── ac-leaders ── */
+  .ac-leaders{grid-template-columns:1fr}
+
+  /* ── Emergency ── */
+  .emg-copy h3{font-size:20px}
+}
+
+/* ══════════════════════════════════════════════════
+   LIVE RADAR SECTION
+══════════════════════════════════════════════════ */
+.radar-sec{background:linear-gradient(140deg,#04080F 0%,#080F1E 55%,#040B16 100%);padding:96px 52px;position:relative;overflow:hidden}
+.radar-sec::before{content:'';position:absolute;top:-120px;left:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(52,211,153,.06) 0%,transparent 65%);pointer-events:none}
+.radar-sec::after{content:'';position:absolute;bottom:-80px;right:-60px;width:380px;height:380px;background:radial-gradient(circle,rgba(59,130,246,.05) 0%,transparent 65%);pointer-events:none}
+.radar-layout{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;max-width:1120px;margin:0 auto;position:relative;z-index:1}
+.radar-sec .label-green{background:rgba(16,163,74,.15);color:#34D399;border:1px solid rgba(16,163,74,.25)}
+.radar-title{color:#fff!important}
+.radar-sub{font-size:15px;color:rgba(255,255,255,.45);line-height:1.85;margin-top:14px;max-width:440px}
+.radar-stat-row{display:flex;gap:12px;margin:28px 0 16px}
+.radar-stat{text-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 12px;flex:1;transition:all .25s}
+.radar-stat:hover{background:rgba(255,255,255,.07);border-color:rgba(52,211,153,.25)}
+.radar-stat-num{font-size:30px;font-weight:900;color:#34D399;font-family:'Plus Jakarta Sans',sans-serif;line-height:1}
+.radar-stat-lbl{font-size:9.5px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;line-height:1.4}
+.radar-found{font-size:13px;color:rgba(255,255,255,.35);font-weight:500;border-top:1px solid rgba(255,255,255,.06);padding-top:14px;margin-top:4px}
+.radar-loc-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;padding:14px 28px;border-radius:12px;border:none;font-size:14px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .25s;box-shadow:0 6px 24px rgba(22,163,74,.35);margin-top:24px}
+.radar-loc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(22,163,74,.48)}
+.radar-perm-note{font-size:11px;color:rgba(255,255,255,.2);margin-top:10px;line-height:1.6}
+.radar-loading{display:flex;align-items:center;gap:12px;color:rgba(255,255,255,.35);font-size:13px;margin-top:24px}
+@keyframes spinRadar{to{transform:rotate(360deg)}}
+.radar-spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.1);border-top-color:#34D399;border-radius:50%;animation:spinRadar .75s linear infinite;flex-shrink:0}
+.radar-right{display:flex;justify-content:center;align-items:center}
+.radar-canvas-wrap{position:relative;flex-shrink:0}
+#radarCanvas{display:block;border-radius:50%}
+.rr-label{position:absolute;font-size:9px;font-weight:700;color:rgba(52,211,153,.35);letter-spacing:.05em;font-family:'Plus Jakarta Sans',sans-serif;pointer-events:none}
+.rr-l1{top:calc(50% - 30px - 14px);right:calc(50% + 22px)}
+.rr-l2{top:calc(50% - 75px - 14px);right:calc(50% + 68px)}
+.rr-l3{top:calc(50% - 150px - 14px);right:calc(50% + 143px)}
+.rr-badge{position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3);border-radius:24px;padding:6px 20px;font-size:12px;font-weight:700;color:#34D399;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif}
+.rr-badge-num{font-size:17px;font-weight:900}
+.radar-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.rleg{display:flex;align-items:center;gap:6px;font-size:10.5px;color:rgba(255,255,255,.38);font-family:'Plus Jakarta Sans',sans-serif}
+.rleg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.radar-err{font-size:13px;color:#FCA5A5;margin-top:16px;padding:12px 16px;background:rgba(220,38,38,.1);border-radius:10px;border:1px solid rgba(220,38,38,.2);line-height:1.6}
+@media(max-width:768px){
+  .radar-sec{padding:64px 20px}
+  .radar-layout{grid-template-columns:1fr;gap:40px}
+  .radar-right{order:-1}
+  .radar-sub{max-width:100%}
+  #radarCanvas{width:280px!important;height:280px!important}
+  .rr-l1{top:calc(50% - 24px - 12px);right:calc(50% + 18px)}
+  .rr-l2{top:calc(50% - 60px - 12px);right:calc(50% + 54px)}
+  .rr-l3{top:calc(50% - 118px - 12px);right:calc(50% + 112px)}
+}
+
+/* ── Live stat animations ── */
+@keyframes statBump{0%{transform:scale(1)}35%{transform:scale(1.14)}70%{transform:scale(.96)}100%{transform:scale(1)}}
+@keyframes statPlusFloat{0%{opacity:0;transform:translateY(0) scale(.5)}15%{opacity:1;transform:translateY(-8px) scale(1)}75%{opacity:1;transform:translateY(-22px) scale(1)}100%{opacity:0;transform:translateY(-34px) scale(.8)}}
+.impact-card{position:relative;overflow:visible!important}
+.impact-num-inner{display:inline-flex;align-items:center;gap:8px;position:relative}
+.impact-live-dot{width:9px;height:9px;border-radius:50%;background:#EF4444;box-shadow:0 0 8px #EF4444,0 0 16px rgba(239,68,68,.4);display:inline-block;animation:dotGlow 1.4s ease-in-out infinite;vertical-align:middle;flex-shrink:0;margin-top:-4px}
+.stat-plus-badge{position:absolute;top:-6px;right:-4px;font-size:11px;font-weight:900;color:#86EFAC;font-family:'Plus Jakarta Sans',sans-serif;animation:statPlusFloat 1.1s ease forwards;pointer-events:none;white-space:nowrap;letter-spacing:-.2px;text-shadow:0 0 8px rgba(134,239,172,.6)}
+.impact-num.bumping{animation:statBump .42s cubic-bezier(.34,1.56,.64,1)}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="/legacy-logo.png" alt="Rotary Club of Legacy" style="width:42px;height:42px;object-fit:contain;border-radius:8px">
+    <div class="wordmark">
+      <span class="top">Blood Line</span>
+      <span class="sub">Rotary Club of Legacy, Puducherry</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#benefits">Who Benefits</a>
+    <a href="#about">About Rotary</a>
+    <a href="#blood">Blood Status</a>
+  </div>
+  <div class="nav-cta-wrap">
+    <a href="#action" class="nav-cta">🩸 Donate / Request</a>
+  </div>
+</nav>
+
+<!-- ═══════════ TICKER ═══════════ -->
+<div class="ticker">
+  <div class="ticker-belt">
+    <span class="tick">🩸 All 8 Blood Types Covered <span class="tick-sep"></span></span>
+    <span class="tick">⚡ WhatsApp Alert in 60 Seconds <span class="tick-sep"></span></span>
+    <span class="tick">🔵 Rotary Club of Legacy, Puducherry — District 2981 <span class="tick-sep"></span></span>
+    <span class="tick">🆓 Completely Free — No Charges Ever <span class="tick-sep"></span></span>
+    <span class="tick">📍 <span id="tickAreas1">42</span> Areas Covered Across Tamil Nadu <span class="tick-sep"></span></span>
+    <span class="tick">🕐 Active 24 Hours · 7 Days a Week <span class="tick-sep"></span></span>
+    <span class="tick">💉 One Donation Can Save 3 Lives <span class="tick-sep"></span></span>
+    <span class="tick">🦸 RI Club ID 224440 · Service Above Self <span class="tick-sep"></span></span>
+    <span class="tick">🩸 All 8 Blood Types Covered <span class="tick-sep"></span></span>
+    <span class="tick">⚡ WhatsApp Alert in 60 Seconds <span class="tick-sep"></span></span>
+    <span class="tick">🔵 Rotary Club of Legacy, Puducherry — District 2981 <span class="tick-sep"></span></span>
+    <span class="tick">🆓 Completely Free — No Charges Ever <span class="tick-sep"></span></span>
+    <span class="tick">📍 <span id="tickAreas2">42</span> Areas Covered Across Tamil Nadu <span class="tick-sep"></span></span>
+    <span class="tick">🕐 Active 24 Hours · 7 Days a Week <span class="tick-sep"></span></span>
+    <span class="tick">💉 One Donation Can Save 3 Lives <span class="tick-sep"></span></span>
+    <span class="tick">🦸 RI Club ID 224440 · Service Above Self <span class="tick-sep"></span></span>
+  </div>
+</div>
+
+<!-- ═══════════ VIDEO HERO ═══════════ -->
+<div class="vid-strip" id="hero">
+  <video id="bgVideo" autoplay muted loop playsinline preload="auto">
+    <source src="/hero-bg.mp4" type="video/mp4">
+  </video>
+  <div class="vid-strip-overlay">
+    <div class="vid-content">
+      <div class="vid-tag"><span class="dot-live"></span>Real Story · Puducherry</div>
+      <h2>When someone needs blood,<br><em id="heroTyped"></em><span class="hero-cursor">|</span> matters.</h2>
+      <p>Families in Puducherry scramble for blood at midnight — posting in groups, calling strangers. Rotary Blood Line ends this. One form. Every matching donor alerted in 60 seconds.</p>
+      <div class="vid-btns">
+        <a href="#action" class="vid-btn-red">🆘 Request Blood Now</a>
+        <a href="#action" class="vid-btn-ghost">🩸 Become a Donor</a>
+      </div>
+    </div>
+  </div>
+  <button class="vid-mute-btn" id="muteBtn" onclick="(function(b){const v=document.getElementById('bgVideo');v.muted=!v.muted;b.textContent=v.muted?'🔇 Unmute':'🔊 Mute'})(this)">🔇 Unmute</button>
+  <div class="vid-scroll-cue">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    Scroll Down
+  </div>
+</div>
+
+<!-- ═══════════ LATEST HERO TICKER ═══════════ -->
+<div id="heroTicker" style="background:#1E293B;padding:0;overflow:hidden;display:none">
+  <div style="max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:stretch;gap:0">
+    <div style="background:#E53935;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:12px 18px;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;flex-shrink:0">🩸 LATEST HERO</div>
+    <div id="tickerContent" style="flex:1;display:flex;align-items:center;gap:0;overflow:hidden">
+      <!-- filled by JS -->
+    </div>
+    <div style="background:#0F172A;color:#64748B;font-size:11px;font-weight:700;padding:12px 18px;white-space:nowrap;display:flex;align-items:center;flex-shrink:0" id="totalCounter">103 donors strong</div>
+  </div>
+</div>
+
+<!-- ═══════════ FORMS (after hero) ═══════════ -->
+<section class="action-sec" id="action">
+  <div class="wrap">
+
+    <div class="action-eyebrow fade-in">
+      <div class="action-eyebrow-line">What do you need today?</div>
+    </div>
+
+    <div class="action-grid">
+
+      <!-- ─── REQUEST BLOOD ─── -->
+      <div class="form-card req fade-in d1">
+        <!-- Header -->
+        <div class="fc-header">
+          <div class="fc-hd-top">
+            <div class="fc-hd-icon-wrap">🆘</div>
+            <div class="fc-hd-badge">⚡ Works 24 / 7</div>
+          </div>
+          <div class="fc-hd-title">Request Blood</div>
+          <div class="fc-hd-sub">Submit once — every matching donor near the hospital is alerted on WhatsApp instantly. No coordinator. No phone calls.</div>
+          <div class="fc-flow">
+            <div class="fc-flow-step">📝 Submit form</div>
+            <div class="fc-flow-arrow">›</div>
+            <div class="fc-flow-step">⚙️ System matches</div>
+            <div class="fc-flow-arrow">›</div>
+            <div class="fc-flow-step">💬 WhatsApp fires</div>
+            <div class="fc-flow-arrow">›</div>
+            <div class="fc-flow-step">🩸 Donor responds</div>
+          </div>
+        </div>
+        <!-- Body -->
+        <div class="fc-cta-body">
+          <ul class="fc-perks">
+            <li class="fc-perk">
+              <span class="fc-perk-icon">⚡</span>
+              <div class="fc-perk-text">
+                <strong>Alerts fire in under 60 seconds</strong>
+                <span>Every matching donor near the hospital gets a personal WhatsApp — no middleman, no delay</span>
+              </div>
+            </li>
+            <li class="fc-perk">
+              <span class="fc-perk-icon">📍</span>
+              <div class="fc-perk-text">
+                <strong>Nearest donor reached first</strong>
+                <span>System ranks by distance to hospital — auto-expands if nobody nearby responds</span>
+              </div>
+            </li>
+            <li class="fc-perk">
+              <span class="fc-perk-icon">🆓</span>
+              <div class="fc-perk-text">
+                <strong>100% free · works at 3am</strong>
+                <span>Rotary Blood Line is a community service — no fees, no registration barriers, ever</span>
+              </div>
+            </li>
+          </ul>
+          <button class="fc-launch-btn" onclick="openWizard('request')">🆘 Request Blood — 4 Easy Steps</button>
+          <div class="f-msg" id="r-msg" style="margin-top:8px"></div>
+        </div>
+      </div>
+
+      <!-- ─── BECOME A DONOR ─── -->
+      <div class="form-card don fade-in d2">
+        <!-- Header -->
+        <div class="fc-header">
+          <div class="fc-hd-top">
+            <div class="fc-hd-icon-wrap">🩸</div>
+            <div class="fc-hd-badge">🏆 Community Hero</div>
+          </div>
+          <div class="fc-hd-title">Become a Donor</div>
+          <div class="fc-hd-sub">Register once. We only call you when someone near you urgently needs your blood type and you're eligible again.</div>
+          <div class="fc-donors-bar">
+            <div class="fc-av-wrap">
+              <div class="fc-av">R</div>
+              <div class="fc-av">K</div>
+              <div class="fc-av">P</div>
+              <div class="fc-av">M</div>
+              <div class="fc-av">+</div>
+            </div>
+            <div class="fc-donors-text"><strong id="headerDonorCount">105</strong> community heroes already joined</div>
+          </div>
+        </div>
+        <!-- Body -->
+        <div class="fc-cta-body">
+          <ul class="fc-perks">
+            <li class="fc-perk">
+              <span class="fc-perk-icon">🏆</span>
+              <div class="fc-perk-text">
+                <strong>Earn Rotary Hero points &amp; badges</strong>
+                <span>50 pts for registering, 250 pts per donation — earn community recognition and official Rotary badges</span>
+              </div>
+            </li>
+            <li class="fc-perk">
+              <span class="fc-perk-icon">🔕</span>
+              <div class="fc-perk-text">
+                <strong>Only called when you're the right match</strong>
+                <span>Your exact blood type, near your location, and only when you're eligible (90+ days) — never spam</span>
+              </div>
+            </li>
+            <li class="fc-perk">
+              <span class="fc-perk-icon">🩸</span>
+              <div class="fc-perk-text">
+                <strong>One donation saves up to 3 lives</strong>
+                <span>Register in 2 minutes — we track your 90-day window and remind you automatically when you're ready</span>
+              </div>
+            </li>
+          </ul>
+          <button class="fc-launch-btn" onclick="openWizard('donor')">🩸 Become a Donor — 4 Easy Steps</button>
+          <div class="f-msg" id="d-msg" style="margin-top:8px"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Hotline strip -->
+    <div class="action-hotline fade-in d3">
+      <div class="action-hotline-icon">📞</div>
+      <div class="action-hotline-text">
+        <strong>Can't use the form? Call Blood Line directly</strong>
+        <span>Available 24 hours · 7 days · Rotary Club of Legacy, Puducherry</span>
+      </div>
+      <a href="tel:+917010811203" class="action-hotline-call">📞 +91 70108 11203</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ WHAT WE DO ═══════════ -->
+<section class="features-sec" id="features">
+  <div class="wrap">
+    <div class="sec-head center fade-in">
+      <div class="label label-red">What We Do</div>
+      <h2 class="title">Not a group chat.<br>A <em>precision system.</em></h2>
+      <p class="sub">One form from you triggers instant WhatsApp alerts to every matching donor in range — at 2am, on a holiday, during a crisis. No coordinator. No chaos. Just the right person, at the right time.</p>
+    </div>
+
+    <div class="features-grid">
+
+      <!-- ── Card 1: Automated ── -->
+      <div class="feat-card fade-in d1">
+        <div class="feat-visual feat-v1">
+          <div class="fv1-glow"></div>
+          <div class="fv-timer">⚡ <span id="fvTimerCount">0.0</span>s</div>
+          <div class="fv-live-log" id="fvLiveLog">
+            <div class="fv-log-header">
+              <div class="fv-log-status-dot"></div>
+              <span class="fv-log-req-lbl">LIVE · </span>
+              <span class="fv-log-req-val" id="fvLogReq">B+ · JIPMER</span>
+            </div>
+          </div>
+        </div>
+        <div class="feat-content">
+          <div class="feat-tag">24 / 7 · Automated</div>
+          <div class="feat-title">Fires While the City Sleeps</div>
+          <div class="feat-desc">The instant a request arrives — 2am, festival day, power cut — the system finds every eligible donor of that blood type, ranks them by distance to the hospital, and fires individual WhatsApp messages. Zero human involvement. Zero delay.</div>
+          <div class="feat-proof">Last alert: <strong>16 donors reached in under 5 seconds</strong></div>
+        </div>
+      </div>
+
+      <!-- ── Card 2: Proximity ── -->
+      <div class="feat-card fade-in d2">
+        <div class="feat-visual feat-v2">
+          <div class="fv-radar">
+            <div class="fv-radar-glow"></div>
+            <div class="fv-ring r3"></div>
+            <div class="fv-ring r2"></div>
+            <div class="fv-ring r1"></div>
+            <div class="fv-sweep"></div>
+            <div class="fv-pin">📍</div>
+            <div class="fv-rlabel l1">10 km</div>
+            <div class="fv-rlabel l2">25 km</div>
+            <div class="fv-rlabel l3">50 km</div>
+            <div class="fv-donor fv-d1" style="top:28%;left:62%">🩸</div>
+            <div class="fv-donor fv-d2" style="top:58%;left:35%">🩸</div>
+            <div class="fv-donor fv-d3" style="top:40%;left:27%">🩸</div>
+            <div class="fv-donor fv-d4" style="top:20%;left:44%">🩸</div>
+          </div>
+          <div class="fv-nearest">📍 Nearest donor: 1.4 km away</div>
+        </div>
+        <div class="feat-content">
+          <div class="feat-tag">Smart · Proximity-First</div>
+          <div class="feat-title">Nearest Donor Hears First</div>
+          <div class="feat-desc">The closest match is always called first — so the donor who can arrive fastest responds fastest. If nobody in range replies, the system silently expands: 10 km → 25 km → 50 km → all of Tamil Nadu. No request dies unanswered.</div>
+          <div class="feat-proof">Search auto-expands — <strong>every request finds a donor</strong></div>
+        </div>
+      </div>
+
+      <!-- ── Card 3: Free ── -->
+      <div class="feat-card fade-in d3">
+        <div class="feat-visual feat-v3">
+          <div class="fv3-glow"></div>
+          <div class="fv-free-wrap">
+            <div>
+              <div class="fv-free-amt-box">
+                <div class="fv-free-shimmer"></div>
+                <div class="fv-free-amt"><span>₹</span>0</div>
+              </div>
+              <div class="fv-free-sub">Always · For everyone</div>
+            </div>
+            <div class="fv-checks">
+              <div class="fv-chk">No fee for patients</div>
+              <div class="fv-chk">No donor subscription</div>
+              <div class="fv-chk">No ads. No upsells. Ever.</div>
+            </div>
+          </div>
+        </div>
+        <div class="feat-content">
+          <div class="feat-tag">Free · Forever</div>
+          <div class="feat-title">Zero Cost. Zero Compromise.</div>
+          <div class="feat-desc">Rotary Club of Legacy volunteers built this and run it entirely as a community act. No grants to renew. No subscription to lapse. If you need blood at 3am and have nothing in your pocket — this still works for you. Completely. Full stop.</div>
+          <div class="feat-proof">Built &amp; maintained by <strong>Rotary Club of Legacy, Puducherry</strong></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ LIVE RADAR ═══════════ -->
+<section class="radar-sec" id="radar">
+  <div class="radar-layout">
+
+    <!-- Left: copy + stats + controls -->
+    <div class="radar-left fade-in">
+      <div class="label label-green">🛰 Live Radar</div>
+      <h2 class="title radar-title">Who's Near You<br>Right Now</h2>
+      <p class="radar-sub">The radar scans your surroundings and shows how many eligible donors are within reach — completely anonymous. No names. No numbers. Just blips.</p>
+
+      <!-- Stats (hidden until location granted) -->
+      <div id="radarStats" style="display:none">
+        <div class="radar-stat-row">
+          <div class="radar-stat">
+            <div class="radar-stat-num" id="rStat10">—</div>
+            <div class="radar-stat-lbl">Within<br>10 km</div>
+          </div>
+          <div class="radar-stat">
+            <div class="radar-stat-num" id="rStat25">—</div>
+            <div class="radar-stat-lbl">10 – 25<br>km</div>
+          </div>
+          <div class="radar-stat">
+            <div class="radar-stat-num" id="rStat50">—</div>
+            <div class="radar-stat-lbl">25 – 50<br>km</div>
+          </div>
+        </div>
+        <div class="radar-found" id="radarFound">Scanning…</div>
+      </div>
+
+      <!-- Blood type legend -->
+      <div class="radar-legend">
+        <div class="rleg"><div class="rleg-dot" style="background:#EF4444;box-shadow:0 0 6px #EF4444"></div> O± type</div>
+        <div class="rleg"><div class="rleg-dot" style="background:#3B82F6;box-shadow:0 0 6px #3B82F6"></div> A± type</div>
+        <div class="rleg"><div class="rleg-dot" style="background:#10B981;box-shadow:0 0 6px #10B981"></div> B± type</div>
+        <div class="rleg"><div class="rleg-dot" style="background:#F59E0B;box-shadow:0 0 6px #F59E0B"></div> AB± type</div>
+      </div>
+
+      <!-- Permission prompt -->
+      <div id="radarPerm">
+        <button class="radar-loc-btn" onclick="initRadar()">📍 Show Donors Near Me</button>
+        <p class="radar-perm-note">Your location stays in your browser — never sent to any server or stored.</p>
+      </div>
+
+      <!-- Loading state -->
+      <div class="radar-loading" id="radarLoading" style="display:none">
+        <div class="radar-spinner"></div>
+        <span>Scanning your area…</span>
+      </div>
+
+      <!-- Error -->
+      <div class="radar-err" id="radarErr" style="display:none"></div>
+    </div>
+
+    <!-- Right: canvas radar -->
+    <div class="radar-right fade-in d2">
+      <div class="radar-canvas-wrap">
+        <canvas id="radarCanvas" width="340" height="340"></canvas>
+        <!-- Distance ring labels -->
+        <div class="rr-label rr-l1">10 km</div>
+        <div class="rr-label rr-l2">25 km</div>
+        <div class="rr-label rr-l3">50 km</div>
+        <!-- Donor count badge -->
+        <div class="rr-badge" id="rrBadge" style="display:none">
+          <span class="rr-badge-num" id="rrCount">0</span> donors detected
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section class="how-sec" id="how">
+  <div class="wrap">
+    <div class="sec-head center fade-in">
+      <div class="label label-red">How It Works</div>
+      <h2 class="title">From Request to Donor<br>in Under 60 Seconds</h2>
+    </div>
+    <div class="steps-row">
+      <div class="step-box fade-in d1">
+        <div class="step-num">1</div>
+        <div class="step-when">0 seconds</div>
+        <div class="step-title">Patient Submits</div>
+        <div class="step-desc">Open the site, enter blood type, hospital name, and phone number. Hit submit. That's the only step the patient or family needs to do.</div>
+      </div>
+      <div class="step-box fade-in d2">
+        <div class="step-num">2</div>
+        <div class="step-when">5 seconds</div>
+        <div class="step-title">System Matches</div>
+        <div class="step-desc">Our system scans all donors of that blood type, checks the 90-day eligibility window, and sorts them by distance to the hospital. Instantly.</div>
+      </div>
+      <div class="step-box fade-in d3">
+        <div class="step-num">3</div>
+        <div class="step-when">30 seconds</div>
+        <div class="step-title">WhatsApp Fires</div>
+        <div class="step-desc">Every matching donor gets a personal WhatsApp: blood type, hospital name, patient contact, and their exact distance. Nearest first. All at once.</div>
+      </div>
+      <div class="step-box fade-in d4">
+        <div class="step-num">4</div>
+        <div class="step-when">Minutes later</div>
+        <div class="step-title">Life Saved</div>
+        <div class="step-desc">First donor to reach the hospital donates. Family is notified. One life saved — powered entirely by community spirit and Rotary.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ WHO BENEFITS ═══════════ -->
+<section class="benefits-sec" id="benefits">
+  <div class="wrap">
+    <div class="sec-head center fade-in">
+      <div class="label label-green">Who Benefits</div>
+      <h2 class="title">Built for Every Person<br>in Tamil Nadu</h2>
+      <p class="sub">Whether you're in White Town or Nettapakkam — at 2pm or 2am — for any blood type — this system is there.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="ben-card fade-in d1">
+        <div class="ben-emoji">🏥</div>
+        <div>
+          <div class="ben-title">Emergency Patients</div>
+          <div class="ben-text">Accident victims, surgery patients, dialysis patients, cancer patients — anyone who needs blood urgently. Our system alerts every matching donor in the district, not just those in someone's contact list.</div>
+          <div class="ben-pill" style="background:var(--rlight);color:var(--red)">Most Critical Impact</div>
+        </div>
+      </div>
+      <div class="ben-card fade-in d2">
+        <div class="ben-emoji">👨‍👩‍👧</div>
+        <div>
+          <div class="ben-title">Patient Families</div>
+          <div class="ben-text">Stop posting in 15 WhatsApp groups at midnight hoping someone responds. Submit once here — the system does the equivalent of 100 phone calls in 30 seconds. Less panic. More results.</div>
+          <div class="ben-pill" style="background:var(--nlight);color:var(--navy)">Peace of Mind</div>
+        </div>
+      </div>
+      <div class="ben-card fade-in d3">
+        <div class="ben-emoji">🦸</div>
+        <div>
+          <div class="ben-title">Blood Donors</div>
+          <div class="ben-text">Register once. We only contact you when someone near you urgently needs your specific blood type and you're eligible (90+ days since last donation). You can decline. No pressure. No obligation. Ever.</div>
+          <div class="ben-pill" style="background:var(--gnl);color:var(--green)">Be a Hero</div>
+        </div>
+      </div>
+      <div class="ben-card fade-in d4">
+        <div class="ben-emoji">🏘️</div>
+        <div>
+          <div class="ben-title">Rural Villages</div>
+          <div class="ben-text">Ariyankuppam, Odiyan, Villianur, Bahour, Nettapakkam, Chunnambar — villages where accessing a blood bank at 2am means an hour-long journey. Our donor network brings help closer to where people actually live.</div>
+          <div class="ben-pill" style="background:var(--glight);color:#B45309"><span id="benAreas">42</span> Areas Covered</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ IMPACT (LIGHT BLUE) ═══════════ -->
+<section class="impact-sec" id="impact">
+  <div class="wrap">
+    <div class="sec-head center fade-in" style="margin:0 auto">
+      <div class="label label-teal">Our Impact</div>
+      <h2 class="title">The Numbers That Matter</h2>
+      <p class="sub" style="max-width:500px;margin:0 auto">Every number here is a person. A family. A life that didn't have to end too soon.</p>
+    </div>
+    <div class="impact-grid">
+      <div class="impact-card fade-in d1">
+        <div class="impact-icon">👥</div>
+        <div class="impact-num red" id="imp-donors">
+          <span class="impact-num-inner">
+            <span id="imp-donors-num">—</span>
+            <span class="impact-live-dot"></span>
+          </span>
+        </div>
+        <div class="impact-label">Registered Donors</div>
+        <div class="impact-note"><span id="imp-eligible-num">—</span> eligible to donate now</div>
+      </div>
+      <div class="impact-card fade-in d2">
+        <div class="impact-icon">⚡</div>
+        <div class="impact-num navy">60s</div>
+        <div class="impact-label">Average Alert Time</div>
+        <div class="impact-note">From request to donor WhatsApp</div>
+      </div>
+      <div class="impact-card fade-in d3">
+        <div class="impact-icon">📍</div>
+        <div class="impact-num green" id="imp-areas">42</div>
+        <div class="impact-label">Areas Covered</div>
+        <div class="impact-note">Across Tamil Nadu</div>
+      </div>
+      <div class="impact-card fade-in d4">
+        <div class="impact-icon">💛</div>
+        <div class="impact-num teal">₹0</div>
+        <div class="impact-label">Cost to Patients</div>
+        <div class="impact-note">Free forever — no exceptions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ BLOOD HEROES WALL ═══════════ -->
+<section class="heroes-sec" id="heroes">
+  <div class="wrap">
+
+    <!-- Header -->
+    <div class="heroes-hd fade-in">
+      <div class="heroes-hd-left">
+        <div class="label-live"><div class="ld"></div>Live Activity</div>
+        <h2>Donors <em>Reaching Back</em></h2>
+        <p>Real-time responses + community honour board — people saving lives in Tamil Nadu.</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div class="heroes-stat-pill">
+          <div class="hsp-num" id="liveRespCount">—</div>
+          <div class="hsp-label">Responses</div>
+        </div>
+        <div class="heroes-stat-pill">
+          <div class="hsp-num" id="hofTotalDonors">—</div>
+          <div class="hsp-label">Heroes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-col layout -->
+    <div class="heroes-layout">
+
+      <!-- LEFT: Live Response Stream -->
+      <div class="live-panel fade-in d1">
+        <div class="lsp-head">
+          <div class="lsp-dot"></div>
+          <span class="lsp-title">Live Responses</span>
+          <span class="lsp-count" id="lspCount">0</span>
+        </div>
+        <div class="live-stream-list" id="liveFeed">
+          <div class="lsp-empty">
+            <div style="font-size:28px;margin-bottom:8px">📱</div>
+            Donor responses appear here live.<br>Submit a blood request to trigger.
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Hall of Fame -->
+      <div class="hof-panel fade-in d2">
+
+        <!-- Special honour: Most Responsive -->
+        <div class="honor-card" id="honorCard" style="display:none">
+          <div class="honor-icon">⚡</div>
+          <div class="honor-body">
+            <div class="honor-label">Most Responsive Donor</div>
+            <div class="honor-name" id="honorName">—</div>
+            <div class="honor-sub" id="honorSub">—</div>
+          </div>
+          <div class="honor-stat">
+            <div class="honor-stat-num" id="honorCount">—</div>
+            <div class="honor-stat-label">responses</div>
+          </div>
+        </div>
+
+        <!-- Top 3 Podium -->
+        <div class="hof-podium" id="hofPodium">
+          <div class="hof-loading">Loading heroes…</div>
+        </div>
+
+        <!-- Ranks 4–10 -->
+        <div class="hof-list">
+          <div class="hof-list-head">
+            <span>#</span><span>Donor</span><span>Badge</span><span>Points</span>
+          </div>
+          <div id="hofRankList">
+            <div class="hof-loading">Loading…</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ ABOUT ROTARY (COMPACT) ═══════════ -->
+<section class="about-compact" id="about">
+  <div class="ac-inner">
+
+    <!-- Club identity -->
+    <div class="ac-header">
+      <img src="/legacy-logo.png" alt="Rotary Club of Legacy" class="ac-logo">
+      <div>
+        <div class="ac-club-name">Rotary Club of Legacy, Puducherry</div>
+        <div class="ac-club-sub">District 2981 &nbsp;·&nbsp; RI Club ID 224440 &nbsp;·&nbsp; "Service Above Self"</div>
+      </div>
+    </div>
+
+    <!-- DG Vision 2026–27 -->
+    <div class="ac-dg-card fade-in d2">
+      <div class="ac-dg-vision-badge">
+        <div class="pulse"></div>
+        Vision 2026–27 &nbsp;·&nbsp; Rotary District 2981
+      </div>
+      <div class="ac-dg-body">
+        <div class="ac-dg-photo-wrap">
+          <img src="/dg-vaithianathan.jpg"
+               alt="Rtn. Vaithianathan K."
+               class="ac-dg-photo"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ac-dg-initials" style="display:none">VK</div>
+          <div class="ac-dg-role-tag">District<br>Governor</div>
+        </div>
+        <div class="ac-dg-quote-block">
+          <span class="ac-dg-openquote">"</span>
+          <div class="ac-dg-quote">
+            Every drop donated is a thread that binds our community.<br>
+            <em>Rotary Blood Line is our district's commitment to Tamil Nadu.</em>
+          </div>
+          <div class="ac-dg-divider"></div>
+          <div class="ac-dg-meta">
+            <strong>Rtn. Vaithianathan K.</strong>
+            <span>District Governor &nbsp;·&nbsp; Rotary International, District 2981 &nbsp;·&nbsp; 2026–27</span>
+          </div>
+        </div>
+      </div>
+      <div class="ac-dg-working">
+        <span class="w-icon">🚀</span>
+        <p><strong>We are working hard to make this vision real.</strong> Every registration, every alert, every donation — District 2981 is building a blood network that covers all of Tamil Nadu.</p>
+      </div>
+    </div>
+
+    <!-- Leader pills -->
+    <div class="ac-leaders">
+      <div class="ac-leader-pill">
+        <div class="ac-lp-photo">
+          <img src="/kandan-photo.jpg"
+               alt="Rtn. Dr. Kandan K."
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ac-lp-initials" style="display:none">KK</div>
+        </div>
+        <div>
+          <div class="ac-lp-name">Rtn. Dr. Kandan K.</div>
+          <div class="ac-lp-role">Regional Secretary &amp; Board of Directors</div>
+        </div>
+      </div>
+      <div class="ac-leader-pill">
+        <div class="ac-lp-photo">
+          <img src="/raghuvaran-photo.jpg"
+               alt="Rtn. Raghuvaran Vijayan"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ac-lp-initials" style="display:none">RV</div>
+        </div>
+        <div>
+          <div class="ac-lp-name">Rtn. Raghuvaran Vijayan</div>
+          <div class="ac-lp-role">Treasurer &amp; Zone Chairman, e-Communication</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key facts row -->
+    <div class="ac-facts">
+      <div class="ac-fact">🔵 District 2981 · Tamil Nadu &amp; Puducherry</div>
+      <div class="ac-fact">⚙️ 44+ Service Projects</div>
+      <div class="ac-fact">🩸 Blood Line Active 24/7</div>
+      <div class="ac-fact">📅 Every Saturday · 7:30 PM · MG Road, Puducherry</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ BLOOD STATUS ═══════════ -->
+<section class="blood-sec" id="blood">
+  <div class="wrap">
+    <div class="sec-head center fade-in">
+      <div class="label label-red">Live Status</div>
+      <h2 class="title">Donor Availability<br>by Blood Type</h2>
+      <p class="sub">Real-time count of eligible donors across Puducherry. Refreshed every 30 seconds.</p>
+    </div>
+    <div class="bt-grid" id="btGrid"></div>
+    <div style="text-align:center;margin-top:34px" class="fade-in">
+      <a href="#action" class="btn btn-red" style="font-size:15px;padding:15px 32px">🩸 Add Your Name — Register as Donor</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ WHY DONATE (WARM LIGHT) ═══════════ -->
+<section class="why-sec" id="why">
+  <div class="why-inner">
+    <div class="fade-in">
+      <div class="label label-red">Why Donate Blood</div>
+      <h2 class="title">One Donation.<br>Three Lives Saved.</h2>
+      <p class="sub" style="margin-bottom:24px">Your single blood donation separates into red cells, platelets, and plasma — each saving a different person. You are more powerful than you know.</p>
+      <div class="why-quote">
+        <p>"The most powerful thing you can do for a stranger is show up when they need you most. That is what every Rotary Blood Line donor does."</p>
+        <span>— Rotary Club of Legacy, Puducherry</span>
+      </div>
+    </div>
+    <div class="why-cards fade-in d2">
+      <div class="why-card">
+        <span class="why-icon">💉</span>
+        <div class="why-text"><b>Safe and Quick</b> — Donating takes 30–45 minutes and causes no lasting harm. Your body fully replenishes blood within 24–48 hours.</div>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">📱</span>
+        <div class="why-text"><b>You're Always in Control</b> — We only WhatsApp you when someone near you urgently needs your exact blood type. You can decline any time. No pressure.</div>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">⏰</span>
+        <div class="why-text"><b>90-Day Rest Period</b> — You're eligible to donate once every 90 days. We track this automatically and send a friendly reminder when you're ready again.</div>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">🏅</span>
+        <div class="why-text"><b>Recognised by Rotary</b> — Every donor who responds is acknowledged by the Rotary Club of Legacy as a Puducherry Community Hero.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- forms moved — see after hero ticker -->
+
+<!-- ═══════════ EMERGENCY ═══════════ -->
+<div class="emg-strip">
+  <div class="emg-inner">
+    <div class="emg-left">
+      <div class="emg-ico">🆘</div>
+      <div class="emg-copy">
+        <h3>Need blood right now?</h3>
+        <p>System is active 24 hours. Submit a request — donors alerted in under 60 seconds.</p>
+      </div>
+    </div>
+    <button class="emg-btn" onclick="document.getElementById('action').scrollIntoView({behavior:'smooth'})">Request Blood Now →</button>
+  </div>
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="ft">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div class="ft-logo-row">
+          <img src="/legacy-logo.png" alt="Rotary Club of Legacy" style="width:52px;height:52px;object-fit:contain;border-radius:10px;background:#fff;padding:3px">
+          <h3>Rotary Blood Line</h3>
+        </div>
+        <p>Puducherry's automated blood donor coordination network. Built by Rotary Club of Legacy volunteers. Free forever. Always on. For everyone.</p>
+        <div class="ft-meet-box">
+          <div class="day">📅 Every Saturday · 7:30 PM</div>
+          <div class="venue">📍 432, M.G. Road, Puducherry<br>🔵 Rotary Club of Legacy | RI Club ID: 224440 | District 2981</div>
+        </div>
+      </div>
+      <div class="ft-col">
+        <h4>Navigate</h4>
+        <a href="#features">What We Do</a>
+        <a href="#how">How It Works</a>
+        <a href="#benefits">Who Benefits</a>
+        <a href="#about">About Rotary</a>
+        <a href="#blood">Blood Status</a>
+        <a href="#action">Request / Donate</a>
+      </div>
+      <div class="ft-col">
+        <h4>Rotary Club</h4>
+        <a href="#">Club of Legacy, Puducherry</a>
+        <a href="#">RI District 2981</a>
+        <a href="https://www.rotary.org" target="_blank">Rotary International</a>
+        <a href="#">Rotary Foundation</a>
+        <a href="#">DG: Rtn. J. Leone</a>
+        <a href="#">Rotary Year 2025–26</a>
+      </div>
+      <div class="ft-col">
+        <h4>Contact</h4>
+        <a href="#">President: Rtn. Palani R.</a>
+        <a href="mailto:palanidikshana@gmail.com">palanidikshana@gmail.com</a>
+        <a href="#">Secretary: Rtn. Raghuvaran V.</a>
+        <a href="mailto:v.raghuvaran@gmail.com">v.raghuvaran@gmail.com</a>
+        <a href="#">Blood Bank Helpline: 104</a>
+        <a href="#">DG Office: 7010811203</a>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <p>© 2026 Rotary Club of Legacy, Puducherry. Built with ❤️ by community volunteers. Free forever.</p>
+      <div class="ft-pills">
+        <div class="ft-pill">🔵 Rotary International</div>
+        <div class="ft-pill">District 2981</div>
+        <div class="ft-pill">RI ID: 224440</div>
+        <div class="ft-pill">Puducherry, India</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════ REQUEST SUCCESS MODAL ═══════════ -->
+<div class="req-modal-overlay" id="reqModal">
+  <div class="req-modal">
+    <span class="rm-icon">🚨</span>
+    <div class="rm-title" id="rmTitle">Donors Alerted!</div>
+    <p class="rm-body" id="rmBody">Matching donors are being alerted on WhatsApp right now.</p>
+    <div class="rm-nearest" id="rmNearest">🏃 Nearest donor on the way…</div>
+    <div class="rm-emergency">
+      <span class="rm-emergency-title">🆘 Still urgent? Contact Blood Line team directly:</span>
+      <a class="rm-call" href="tel:+917010811203">📞 Call Blood Line: +91 70108 11203</a>
+      <a class="rm-wa" href="https://wa.me/917010811203?text=URGENT+blood+request+submitted+on+Rotary+Blood+Line" target="_blank">💬 WhatsApp Blood Line Now</a>
+    </div>
+    <button class="rm-close" onclick="closeReqModal()">✓ Close &amp; Continue</button>
+  </div>
+</div>
+
+<!-- ═══════════ AI BLOOD ASSISTANT ═══════════ -->
+<div class="ai-window" id="aiWindow">
+  <div class="ai-hdr">
+    <div class="ai-hdr-avatar">🩸</div>
+    <div class="ai-hdr-info">
+      <h4>Blood AI Assistant</h4>
+      <p>Powered by Rotary Blood Line · Always on</p>
+    </div>
+    <button class="ai-close" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="ai-msgs" id="aiMsgs">
+    <div class="ai-bubble bot">👋 Hi! I'm <b>Blood AI</b> — your intelligent blood support assistant.<br><br>I can help you <b>request blood urgently</b>, <b>register as a donor</b>, check <b>blood type compatibility</b>, or answer any blood-related question. What do you need?</div>
+    <div class="ai-typing" id="aiTyping"><span></span><span></span><span></span></div>
+  </div>
+  <div class="ai-quick-row" id="aiQuick">
+    <button class="ai-qbtn" onclick="aiSend('I need blood urgently')">🆘 Request Blood</button>
+    <button class="ai-qbtn" onclick="aiSend('I want to become a donor')">🩸 Become Donor</button>
+    <button class="ai-qbtn" onclick="aiSend('blood type compatibility')">🔬 Blood Types</button>
+    <button class="ai-qbtn" onclick="aiSend('how does it work')">ℹ️ How It Works</button>
+  </div>
+  <div class="ai-input-area">
+    <input class="ai-inp" id="aiInput" placeholder="Ask anything about blood…" onkeydown="if(event.key==='Enter')aiSendInput()">
+    <button class="ai-send-btn" onclick="aiSendInput()">➤</button>
+  </div>
+</div>
+<button class="ai-fab" onclick="toggleAI()" id="aiFab" title="Blood AI Assistant">
+  🩸
+  <span class="ai-fab-label">Blood AI</span>
+</button>
+
+<script>
+// ── Puducherry hospitals for autocomplete ─────────────────────────────────
+const HOSPITALS=[
+  'JIPMER, Puducherry',
+  'PIMS — Pondicherry Institute of Medical Sciences, Puducherry',
+  'Government General Hospital, Puducherry',
+  'MGMCRI — Mahatma Gandhi Medical College, Puducherry',
+  'Sri Manakula Vinayagar Medical College, Puducherry',
+  'Kasturba Hospital, Puducherry',
+  'New Medical Centre (NMC), Puducherry',
+  'Pondicherry Medical College Hospital, Mudaliarpet',
+  'Indira Gandhi Medical College (IGMC), Puducherry',
+  'Regional Cancer Centre, Puducherry',
+  'Asvins Hospital, Puducherry',
+  'Ashfa Hospital, Puducherry',
+  'ESI Hospital, Puducherry',
+  'Railway Hospital, Puducherry',
+  'Aysha Hospital, Puducherry',
+  'Vinayaka Mission Medical College, Karaikal',
+  'Karaikal Government Hospital, Karaikal',
+  'SRM Medical College, Kattankulathur',
+];
+
+function filterHospitals(val){
+  const dd=document.getElementById('hosp-dd');
+  if(!dd)return;
+  if(!val||val.length<2){dd.style.display='none';return;}
+  const q=val.toLowerCase();
+  const matches=HOSPITALS.filter(h=>h.toLowerCase().includes(q));
+  if(!matches.length){dd.style.display='none';return;}
+  dd.innerHTML=matches.map(h=>{
+    const hl=h.replace(new RegExp(`(${val.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),'<b>$1</b>');
+    return `<div class="hosp-opt" onmousedown="selectHospital('${h.replace(/'/g,'\\'+'\'')}')">${hl}</div>`;
+  }).join('');
+  dd.style.display='block';
+}
+function selectHospital(name){
+  const inp=document.getElementById('r-hospital');
+  if(inp)inp.value=name;
+  closeHospitalList();
+}
+function closeHospitalList(){
+  const dd=document.getElementById('hosp-dd');
+  if(dd)dd.style.display='none';
+}
+
+// ── Helper: get phone with +91 prefix ────────────────────────────────────
+function getPhone(id){
+  const raw=(document.getElementById(id)?.value||'').trim();
+  const digits=raw.replace(/\D/g,'');
+  // Already has country code
+  if(digits.startsWith('91')&&digits.length===12)return '+'+digits;
+  if(digits.length===10)return '+91'+digits;
+  return raw; // fallback
+}
+
+// ── API base — always relative (works on localhost:4001 and Vercel) ────────
+const API_BASE = '';
+const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// ── Server status banner ───────────────────────────────────────────────────
+async function checkServerStatus(){
+  try{
+    const r = await fetch('/api/status',{signal:AbortSignal.timeout(6000)});
+    const d = await r.json();
+    const bar = document.getElementById('serverBar');
+    if(bar) bar.remove();
+    // Show WA status in footer or nav dot
+    const waDot = document.getElementById('waDot');
+    if(waDot) waDot.style.background = d.whatsapp ? '#22C55E' : '#F59E0B';
+  } catch {
+    // Backend unreachable — show notice only on localhost (so users know to start server)
+    if(IS_LOCAL && !document.getElementById('serverBar')){
+      const bar=document.createElement('div');bar.id='serverBar';
+      bar.innerHTML=`<div style="background:#1E3A8A;color:#fff;padding:10px 20px;text-align:center;font-size:13px;font-weight:600;position:fixed;bottom:0;left:0;right:0;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px">⚠️ Backend offline — run <code>node server.js</code> in the project folder to enable all features &nbsp;<button onclick="document.getElementById('serverBar').remove()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 10px;border-radius:5px;cursor:pointer;font-size:12px">✕</button></div>`;
+      document.body.appendChild(bar);
+    }
+  }
+}
+
+// ── Hero typewriter / rotating text ───────────────────────────────────────────
+(function(){
+  const el = document.getElementById('heroTyped');
+  if (!el) return;
+  const words = [
+    'every minute',
+    'every second',
+    'every heartbeat',
+    'every family',
+    'every life',
+    'every breath',
+    'every moment',
+  ];
+  let wi = 0, ci = 0, deleting = false, paused = false;
+  const SPEED_TYPE = 72;   // ms per character typed
+  const SPEED_DEL  = 38;   // ms per character deleted
+  const PAUSE_FULL = 2200; // ms to hold complete word
+  const PAUSE_EMPTY= 380;  // ms to hold empty before next word
+
+  function tick() {
+    const word = words[wi];
+    if (paused) { paused = false; setTimeout(tick, deleting ? PAUSE_EMPTY : PAUSE_FULL); return; }
+    if (!deleting) {
+      ci++;
+      el.textContent = word.slice(0, ci);
+      if (ci === word.length) { deleting = true; paused = true; setTimeout(tick, PAUSE_FULL); return; }
+    } else {
+      ci--;
+      el.textContent = word.slice(0, ci);
+      if (ci === 0) {
+        deleting = false; paused = true;
+        wi = (wi + 1) % words.length;
+        setTimeout(tick, PAUSE_EMPTY); return;
+      }
+    }
+    setTimeout(tick, deleting ? SPEED_DEL : SPEED_TYPE);
+  }
+  // Start after a short delay so page has settled
+  setTimeout(tick, 900);
+})();
+
+// ── Feature Card 1: Live Donor Alert Log ──────────────────────────────────
+(function(){
+  const REQUESTS = [
+    {bt:'B+', loc:'JIPMER', bg:'#DC2626'},
+    {bt:'O-', loc:'GH Puducherry', bg:'#7C3AED'},
+    {bt:'A+', loc:'PIMS', bg:'#B45309'},
+    {bt:'AB+',loc:'New Medical',  bg:'#0F766E'},
+    {bt:'O+', loc:'JIPMER ICU',   bg:'#DC2626'},
+  ];
+  const DONORS = [
+    {name:'Arjun R.',  area:'Ariyankuppam', dist:'1.4 km'},
+    {name:'Ravi K.',   area:'Lawspet',      dist:'2.1 km'},
+    {name:'Priya S.',  area:'Nettapakkam',  dist:'3.5 km'},
+    {name:'Kumar M.',  area:'Reddiarpalayam',dist:'4.8 km'},
+    {name:'Sunita D.', area:'Mudaliarpet',  dist:'5.9 km'},
+    {name:'Suresh A.', area:'Bahour',       dist:'7.2 km'},
+    {name:'Meena K.',  area:'Villianur',    dist:'9.1 km'},
+    {name:'Raja T.',   area:'Ozhukarai',    dist:'11.4 km'},
+    {name:'Deepa R.',  area:'White Town',   dist:'13.2 km'},
+    {name:'Vikram S.', area:'Kalapet',      dist:'15.8 km'},
+  ];
+
+  var log        = document.getElementById('fvLiveLog');
+  var timerEl    = document.getElementById('fvTimerCount');
+  var reqLabel   = document.getElementById('fvLogReq');
+  if (!log) return;
+
+  var rows = [], donorIdx = 0, reqIdx = 0, elapsed = 0;
+
+  function startCycle() {
+    // reset
+    var req = REQUESTS[reqIdx % REQUESTS.length];
+    reqIdx++;
+    donorIdx = 0;
+    elapsed  = 0;
+    // clear old rows (except header)
+    rows.forEach(function(r){ r.remove(); });
+    rows = [];
+    if (timerEl) timerEl.textContent = '0.0';
+    if (reqLabel) reqLabel.textContent = req.bt + ' · ' + req.loc;
+    addDonorRow(req);
+  }
+
+  function addDonorRow(req) {
+    if (donorIdx >= DONORS.length) {
+      // Done — pause 2.6s then restart
+      setTimeout(startCycle, 2600);
+      return;
+    }
+    var d = DONORS[donorIdx++];
+    elapsed = +(elapsed + (Math.random() * 0.35 + 0.28)).toFixed(1);
+
+    var row = document.createElement('div');
+    row.className = 'fv-log-row';
+    row.innerHTML =
+      '<div class="fv-log-bt" style="background:' + req.bg + '">' + req.bt + '</div>' +
+      '<div class="fv-log-name">' + d.name + '</div>' +
+      '<div class="fv-log-loc">' + d.area + '</div>' +
+      '<div class="fv-log-sent">' + d.dist + '</div>';
+
+    log.appendChild(row);
+    rows.push(row);
+    if (timerEl) timerEl.textContent = elapsed.toFixed(1);
+
+    // Keep visible area to last 4 rows — fade & remove older ones
+    if (rows.length > 4) {
+      var old = rows.shift();
+      old.style.transition = 'opacity .25s';
+      old.style.opacity = '0';
+      setTimeout(function(){ if(old.parentNode) old.parentNode.removeChild(old); }, 260);
+    }
+
+    // Stagger next row: faster early, slower later
+    var delay = donorIdx < 4 ? 480 : 700;
+    setTimeout(function(){ addDonorRow(req); }, delay + Math.random() * 200);
+  }
+
+  // Kick off after cards likely visible
+  setTimeout(startCycle, 1400);
+})();
+
+// ── LIVE RADAR ENGINE ─────────────────────────────────────────────────────────
+(function(){
+  var rAF       = null;
+  var sweepDeg  = 0;
+  var rBlips    = [];   // { x, y, bearing, bloodType, glow }
+  var CANVAS_W  = 340;
+  var MAX_KM    = 50;
+
+  var BT_COLOR = {
+    'O+':'#EF4444','O-':'#EF4444',
+    'A+':'#3B82F6','A-':'#3B82F6',
+    'B+':'#10B981','B-':'#10B981',
+    'AB+':'#F59E0B','AB-':'#F59E0B'
+  };
+
+  function hexRgba(hex, a) {
+    var r = parseInt(hex.slice(1,3),16);
+    var g = parseInt(hex.slice(3,5),16);
+    var b = parseInt(hex.slice(5,7),16);
+    return 'rgba('+r+','+g+','+b+','+a+')';
+  }
+
+  function drawFrame(ctx, cx, cy, R) {
+    ctx.clearRect(0, 0, CANVAS_W, CANVAS_W);
+
+    // Clip to circle
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.clip();
+
+    // Background gradient
+    var bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+    bg.addColorStop(0, '#071A10');
+    bg.addColorStop(1, '#030A07');
+    ctx.fillStyle = bg; ctx.fillRect(0,0,CANVAS_W,CANVAS_W);
+
+    // Grid spokes (8 directions)
+    ctx.strokeStyle = 'rgba(52,211,153,.07)'; ctx.lineWidth = 1;
+    for (var a = 0; a < 8; a++) {
+      var rad = a * Math.PI/4;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + R * Math.sin(rad), cy - R * Math.cos(rad));
+      ctx.stroke();
+    }
+
+    // Concentric rings
+    var rings = [
+      { r: R*(10/50), alpha:.28 },
+      { r: R*(25/50), alpha:.17 },
+      { r: R,         alpha:.11 }
+    ];
+    rings.forEach(function(ring){
+      ctx.beginPath(); ctx.arc(cx, cy, ring.r, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(52,211,153,'+ring.alpha+')';
+      ctx.lineWidth = 1; ctx.stroke();
+    });
+
+    // Sweep trail — 80 arc slices fading from 0 → current angle
+    var sweepRad  = sweepDeg * Math.PI/180;
+    var trailArc  = Math.PI * 0.55;
+    var SLICES    = 80;
+    for (var i = 0; i < SLICES; i++) {
+      var sliceStart = sweepRad - trailArc + (trailArc * i / SLICES);
+      var sliceEnd   = sliceStart + trailArc/SLICES + 0.005;
+      var alpha      = (i/SLICES) * 0.28;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, R, sliceStart, sliceEnd);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(52,211,153,'+alpha+')';
+      ctx.fill();
+    }
+
+    // Sweep leading line
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R * Math.sin(sweepRad), cy - R * Math.cos(sweepRad));
+    ctx.strokeStyle = 'rgba(52,211,153,.85)'; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // Blips — update glow & draw
+    rBlips.forEach(function(b){
+      var diff = ((b.bearing - sweepDeg) % 360 + 360) % 360;
+      if (diff > 180) diff = 360 - diff;
+      if (diff < 18) {
+        b.glow = Math.min(1, (b.glow||0) + (1 - diff/18) * 0.45);
+      }
+      b.glow = (b.glow||0) * 0.97;
+
+      var col    = BT_COLOR[b.bloodType] || '#34D399';
+      var dotR   = 4 + (b.glow||0) * 4;
+      var dAlpha = 0.38 + (b.glow||0) * 0.62;
+
+      if ((b.glow||0) > 0.08) {
+        var grd = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, dotR + (b.glow||0) * 10);
+        grd.addColorStop(0, hexRgba(col, (b.glow||0)*0.55));
+        grd.addColorStop(1, hexRgba(col, 0));
+        ctx.beginPath(); ctx.arc(b.x, b.y, dotR + (b.glow||0)*10, 0, Math.PI*2);
+        ctx.fillStyle = grd; ctx.fill();
+      }
+
+      ctx.beginPath(); ctx.arc(b.x, b.y, dotR, 0, Math.PI*2);
+      ctx.fillStyle = hexRgba(col, dAlpha);
+      if ((b.glow||0) > 0.3) {
+        ctx.shadowColor = col; ctx.shadowBlur = 10 * b.glow;
+      }
+      ctx.fill(); ctx.shadowBlur = 0;
+    });
+
+    // Center crosshair
+    ctx.beginPath(); ctx.arc(cx, cy, 11, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(239,68,68,.5)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, 4.5, 0, Math.PI*2);
+    ctx.fillStyle = '#EF4444';
+    ctx.shadowColor = '#EF4444'; ctx.shadowBlur = 12;
+    ctx.fill(); ctx.shadowBlur = 0;
+
+    ctx.restore();
+
+    // Outer ring border
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(52,211,153,.22)'; ctx.lineWidth = 1.5; ctx.stroke();
+  }
+
+  function animLoop(canvas) {
+    sweepDeg = (sweepDeg + 1.2) % 360;
+    var ctx = canvas.getContext('2d');
+    var cx = CANVAS_W/2, cy = CANVAS_W/2, R = CANVAS_W/2 - 5;
+    drawFrame(ctx, cx, cy, R);
+    rAF = requestAnimationFrame(function(){ animLoop(canvas); });
+  }
+
+  function plotBlips(blips) {
+    rBlips = [];
+    var cx = CANVAS_W/2, cy = CANVAS_W/2, R = CANVAS_W/2 - 5;
+    blips.forEach(function(b){
+      var r = (Math.min(b.distance, MAX_KM) / MAX_KM) * R;
+      var ang = b.bearing * Math.PI/180;
+      rBlips.push({
+        x         : cx + r * Math.sin(ang),
+        y         : cy - r * Math.cos(ang),
+        bearing   : b.bearing,
+        bloodType : b.bloodType,
+        glow      : 0
+      });
+    });
+  }
+
+  function animCount(el, target, dur) {
+    if (!el) return;
+    var start = parseInt(el.textContent)||0;
+    if (start===target) return;
+    var steps=36, delay=Math.round((dur||700)/steps), i=0;
+    var t = setInterval(function(){
+      i++; el.textContent = Math.round(start+(target-start)*(i/steps));
+      if(i>=steps){el.textContent=target;clearInterval(t);}
+    }, delay);
+  }
+
+  window.initRadar = function() {
+    var permDiv   = document.getElementById('radarPerm');
+    var loadDiv   = document.getElementById('radarLoading');
+    var statsDiv  = document.getElementById('radarStats');
+    var errDiv    = document.getElementById('radarErr');
+    var badge     = document.getElementById('rrBadge');
+    var canvas    = document.getElementById('radarCanvas');
+
+    if (!navigator.geolocation) {
+      if (errDiv) { errDiv.style.display='block'; errDiv.textContent='📍 Geolocation is not supported by your browser.'; }
+      return;
+    }
+
+    if (permDiv) permDiv.style.display='none';
+    if (loadDiv) loadDiv.style.display='flex';
+    if (errDiv)  errDiv.style.display='none';
+
+    // Start idle sweep immediately (no blips yet)
+    if (canvas) {
+      if (rAF) cancelAnimationFrame(rAF);
+      animLoop(canvas);
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        var lat = pos.coords.latitude, lng = pos.coords.longitude;
+        var url = (window.API_BASE||'') + '/api/radar?lat='+lat+'&lng='+lng+'&radius=50';
+        fetch(url).then(function(r){return r.json();}).then(function(data){
+          if (loadDiv) loadDiv.style.display='none';
+          if (statsDiv) statsDiv.style.display='block';
+
+          animCount(document.getElementById('rStat10'), data.within10||0, 700);
+          animCount(document.getElementById('rStat25'), data.within25||0, 900);
+          animCount(document.getElementById('rStat50'), data.within50||0, 1100);
+
+          var found = document.getElementById('radarFound');
+          if (found) found.textContent = (data.total||0) + ' eligible donors found within 50 km of you';
+
+          if (badge) {
+            badge.style.display = 'block';
+            var num = document.getElementById('rrCount');
+            if (num) animCount(num, data.total||0, 800);
+          }
+
+          plotBlips(data.blips||[]);
+
+        }).catch(function(){
+          if (loadDiv) loadDiv.style.display='none';
+          if (errDiv)  { errDiv.style.display='block'; errDiv.textContent='⚠️ Could not load donor data. Please try again.'; }
+          if (permDiv) permDiv.style.display='block';
+        });
+      },
+      function(err) {
+        if (loadDiv) loadDiv.style.display='none';
+        if (rAF) { cancelAnimationFrame(rAF); rAF=null; }
+        if (errDiv) {
+          errDiv.style.display='block';
+          errDiv.textContent = err.code===1
+            ? '📍 Location access denied. Please allow location in your browser settings and try again.'
+            : '⚠️ Could not get your location. Please try again.';
+        }
+        if (permDiv) permDiv.style.display='block';
+      },
+      { timeout: 12000, maximumAge: 60000 }
+    );
+  };
+
+  // Draw idle (static) radar immediately on page load
+  var canvas = document.getElementById('radarCanvas');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var R = CANVAS_W/2 - 5, cx = CANVAS_W/2, cy = CANVAS_W/2;
+    // one static frame — no sweep, no blips
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.clip();
+    var bg = ctx.createRadialGradient(cx,cy,0,cx,cy,R);
+    bg.addColorStop(0,'#071A10'); bg.addColorStop(1,'#030A07');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,CANVAS_W,CANVAS_W);
+    ctx.strokeStyle='rgba(52,211,153,.07)'; ctx.lineWidth=1;
+    for(var a=0;a<8;a++){var rad=a*Math.PI/4;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.sin(rad),cy-R*Math.cos(rad));ctx.stroke();}
+    [{r:R*(10/50),al:.26},{r:R*(25/50),al:.16},{r:R,al:.10}].forEach(function(rng){
+      ctx.beginPath();ctx.arc(cx,cy,rng.r,0,Math.PI*2);
+      ctx.strokeStyle='rgba(52,211,153,'+rng.al+')';ctx.lineWidth=1;ctx.stroke();
+    });
+    ctx.beginPath();ctx.arc(cx,cy,11,0,Math.PI*2);ctx.strokeStyle='rgba(239,68,68,.4)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,4.5,0,Math.PI*2);ctx.fillStyle='#EF4444';
+    ctx.shadowColor='#EF4444';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
+    ctx.restore();
+    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.strokeStyle='rgba(52,211,153,.2)';ctx.lineWidth=1.5;ctx.stroke();
+  }
+})();
+
+// Auto-play video on load
+const bv=document.getElementById('bgVideo');
+if(bv){bv.play().catch(()=>{});}
+
+// Scroll fade
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// Counters
+const cobs=new IntersectionObserver(e=>e.forEach(x=>{
+  if(!x.isIntersecting)return;
+  const el=x.target,to=+el.dataset.to,dur=1800,s=performance.now();
+  (function loop(now){const p=Math.min((now-s)/dur,1),ez=1-Math.pow(1-p,3);el.textContent=Math.round(ez*to).toLocaleString();if(p<1)requestAnimationFrame(loop);else el.textContent=to.toLocaleString();})(performance.now());
+  cobs.unobserve(el);
+}),{threshold:.5});
+document.querySelectorAll('.ctr').forEach(el=>cobs.observe(el));
+
+// API
+const BTS=['O+','O-','A+','A-','B+','B-','AB+','AB-'];
+
+// Animate a number counter from current displayed value to target (ease-in-out, cancel-safe)
+function animateCount(el, target) {
+  if (!el) return;
+  if (el._animTimer) { clearInterval(el._animTimer); delete el._animTimer; }
+  const start = parseInt(el.textContent) || 0;
+  if (start === target) return;
+  const steps = 48, dur = 960;
+  let i = 0;
+  el._animTimer = setInterval(() => {
+    i++;
+    const t = i / steps;
+    const ease = t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t; // ease-in-out
+    el.textContent = Math.round(start + (target - start) * ease);
+    if (i >= steps) { el.textContent = target; clearInterval(el._animTimer); delete el._animTimer; }
+  }, dur / steps);
+}
+
+// Show floating "+N" badge and bump animation when stat increases
+function flashStatPlus(numEl, delta) {
+  if (!numEl) return;
+  const card = numEl.closest('.impact-num');
+  if (card) {
+    card.classList.remove('bumping');
+    void card.offsetWidth; // force reflow
+    card.classList.add('bumping');
+    setTimeout(()=>card.classList.remove('bumping'), 450);
+  }
+  if (delta > 0) {
+    const badge = document.createElement('span');
+    badge.className = 'stat-plus-badge';
+    badge.textContent = '+' + delta + (delta === 1 ? ' New Donor!' : ' New Donors!');
+    const wrap = numEl.closest('.impact-num-inner') || numEl.parentElement;
+    wrap.style.position = 'relative';
+    wrap.appendChild(badge);
+    setTimeout(()=>{ if (badge.parentNode) badge.parentNode.removeChild(badge); }, 1200);
+  }
+}
+
+async function loadStats(){
+  try{
+    const s=await fetch(API_BASE+'/api/stats').then(r=>r.json());
+    const hd=document.getElementById('hd');if(hd)hd.textContent=s.totalDonors||0;
+
+    // Donor count — animate the number span
+    const impDNum=document.getElementById('imp-donors-num');
+    if(impDNum) animateCount(impDNum, s.totalDonors||0);
+
+    // Eligible sub-note — animate separately
+    const impENum=document.getElementById('imp-eligible-num');
+    if(impENum) animateCount(impENum, s.eligibleNow||0);
+
+    // Areas — animate + update ticker + ben-pill
+    const impA=document.getElementById('imp-areas');
+    if(impA) animateCount(impA, s.areas||42);
+    const areas=s.areas||42;
+    ['tickAreas1','tickAreas2','benAreas'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=areas;});
+
+    // Header + ticker donor count
+    const tc=document.getElementById('totalCounter');if(tc)tc.textContent=`${s.totalDonors||0} donors strong`;
+    const hdc=document.getElementById('headerDonorCount');if(hdc)hdc.textContent=s.totalDonors||105;
+
+    const bg=document.getElementById('btGrid');
+    if(bg)bg.innerHTML=BTS.map(bt=>{const c=s.byBloodType?.[bt]||0;return`<div class="bt-card ${c?'has-donors':''}"><div class="bt-type">${bt}</div><div class="bt-count">${c}</div><div class="bt-label">donors</div></div>`;}).join('');
+  }catch{
+    const bg=document.getElementById('btGrid');
+    if(bg)bg.innerHTML=BTS.map(bt=>`<div class="bt-card"><div class="bt-type">${bt}</div><div class="bt-count">—</div><div class="bt-label">donors</div></div>`).join('');
+  }
+}
+
+// Load most recent registered donor for the hero ticker
+async function loadRecentDonors(){
+  try{
+    const data = await fetch(API_BASE+'/api/recent-donors?n=5').then(r=>r.json());
+    if(!data||!data.length) return;
+    const ticker = document.getElementById('heroTicker');
+    const content = document.getElementById('tickerContent');
+    if(!ticker||!content) return;
+
+    // Build scrolling items
+    const btColors={'O+':'#E53935','O-':'#C62828','A+':'#1E88E5','A-':'#1565C0','B+':'#43A047','B-':'#2E7D32','AB+':'#FB8C00','AB-':'#E65100'};
+    const items = data.map(d => {
+      const ago = timeAgoFeed(d.createdAt);
+      const col = btColors[d.bloodType]||'#E53935';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 24px;border-right:1px solid #334155;white-space:nowrap;flex-shrink:0">
+        <span style="width:30px;height:30px;border-radius:8px;background:${col};color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">${d.bloodType}</span>
+        <span style="color:#F1F5F9;font-size:13px;font-weight:700">${d.name}</span>
+        <span style="color:#64748B;font-size:12px">from</span>
+        <span style="color:#94A3B8;font-size:12px;font-weight:600">${d.area}</span>
+        <span style="color:#475569;font-size:11px">· ${ago}</span>
+        <span style="color:#E53935;font-size:14px;margin-left:4px">🩸</span>
+      </div>`;
+    }).join('');
+
+    // Duplicate for seamless loop
+    content.innerHTML = `<div id="tickerScroll" style="display:flex;animation:tickerMove ${Math.max(20, data.length * 8)}s linear infinite">${items}${items}</div>`;
+    ticker.style.display = 'block';
+  }catch(e){}
+}
+
+// SSE: refresh ticker when a new donor registers
+
+
+// ── Live donor response feed ──────────────────────────────────────────────────
+// ── Live Response Feed ────────────────────────────────────────────────────────
+async function loadLiveFeed(){
+  try{
+    const data=await fetch(API_BASE+'/api/responses?limit=8').then(r=>r.json());
+    const el=document.getElementById('liveFeed'); if(!el)return;
+    const rc=document.getElementById('liveRespCount'); if(rc)rc.textContent=data.length||0;
+    const lc=document.getElementById('lspCount'); if(lc)lc.textContent=data.length||0;
+    if(!data.length){
+      el.innerHTML='<div class="lsp-empty"><div style="font-size:28px;margin-bottom:8px">📱</div>Donor responses appear here live.<br>Submit a blood request to trigger.</div>';
+      return;
+    }
+    const rtIcon={responding:'🏃',declined:'🙏',called:'📞'};
+    const rtLabel={responding:'On the way',declined:'Declined',called:'Called back'};
+    el.innerHTML=data.map(r=>`
+      <div class="lrc">
+        <div class="lrc-icon ${r.responseType||'declined'}">${rtIcon[r.responseType]||'📱'}</div>
+        <div class="lrc-body">
+          <div class="lrc-name">${esc(r.donorName)}</div>
+          <div class="lrc-meta">
+            <span class="lrc-bt">${esc(r.bloodType)}</span>
+            <span>${esc(r.donorArea||'')}</span>
+            <span class="lrc-status ${r.responseType||'declined'}">${rtLabel[r.responseType]||'Responded'}</span>
+          </div>
+        </div>
+        <div class="lrc-time">${timeAgoFeed(r.at)}</div>
+      </div>`).join('');
+  }catch(e){console.warn('liveFeed',e)}
+}
+
+// ── Hall of Fame Leaderboard ──────────────────────────────────────────────────
+const BADGE_COLORS={'Legend':'#F59E0B','Champion':'#D97706','Life Saver':'#EF4444','Active Donor':'#0891B2','New Hero':'#16A34A','Registered':'#64748B'};
+function initials(name){return (name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}
+
+async function loadLeaderboard(){
+  try{
+    const d=await fetch(API_BASE+'/api/leaderboard?limit=10').then(r=>r.json());
+    const el_total=document.getElementById('hofTotalDonors');
+    if(el_total) el_total.textContent=d.totalDonors||'—';
+
+    // Most Responsive honour
+    if(d.mostResponsive){
+      const mr=d.mostResponsive;
+      const hc=document.getElementById('honorCard');
+      if(hc){
+        hc.style.display='flex';
+        document.getElementById('honorName').textContent=mr.name;
+        document.getElementById('honorSub').textContent=`${mr.badgeEmoji} ${mr.badgeLabel} · ${mr.area||'Puducherry'} · ${mr.bloodType}`;
+        document.getElementById('honorCount').textContent=mr.responseCount;
+      }
+    }
+
+    // Podium — top 3
+    const pod=document.getElementById('hofPodium');
+    if(pod && d.top.length){
+      const tiers=[{cls:'gold',medal:'🥇',rank:'#1 — Legend'},{cls:'silver',medal:'🥈',rank:'#2'},{cls:'bronze',medal:'🥉',rank:'#3'}];
+      pod.innerHTML=d.top.slice(0,3).map((p,i)=>{
+        const t=tiers[i];
+        return`<div class="podium-card ${t.cls}">
+          <span class="pc-medal">${t.medal}</span>
+          <div class="pc-rank">${t.rank}</div>
+          <div class="pc-avatar">${initials(p.name)}</div>
+          <div class="pc-name">${esc(p.name)}</div>
+          <div class="pc-area">${esc(p.area||'Puducherry')}</div>
+          <div class="pc-bt">${esc(p.bloodType)}</div>
+          <div class="pc-badge">${p.badgeEmoji} ${esc(p.badgeLabel)}</div>
+          <div class="pc-pts">${p.points.toLocaleString()}</div>
+          <div class="pc-pts-label">points</div>
+          <div class="pc-donations">🩸 ${p.donationCount} donation${p.donationCount!==1?'s':''}</div>
+        </div>`;
+      }).join('');
+    }
+
+    // Ranks 4–10
+    const rl=document.getElementById('hofRankList');
+    if(rl && d.top.length>3){
+      rl.innerHTML=d.top.slice(3).map(r=>`
+        <div class="rank-row">
+          <div class="rr-num">${r.rank}</div>
+          <div class="rr-info">
+            <div class="rr-name">${esc(r.name)}</div>
+            <div class="rr-meta">
+              <span class="rr-bt">${esc(r.bloodType)}</span>
+              <span class="rr-area">${esc(r.area||'')}</span>
+            </div>
+          </div>
+          <div class="rr-badge">${r.badgeEmoji} ${esc(r.badgeLabel)}</div>
+          <div class="rr-pts">${r.points.toLocaleString()} pts</div>
+        </div>`).join('');
+    } else if(rl && d.top.length<=3){
+      rl.innerHTML='<div class="lsp-empty" style="padding:24px">More heroes joining soon…</div>';
+    }
+  }catch(e){console.warn('leaderboard',e)}
+}
+
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function timeAgoFeed(ts){
+  if(!ts)return '';
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60)return 'Just now';
+  if(s<3600)return `${Math.floor(s/60)}m ago`;
+  if(s<86400)return `${Math.floor(s/3600)}h ago`;
+  return `${Math.floor(s/86400)}d ago`;
+}
+
+// ── SSE — real-time live feed ─────────────────────────────────────────────────
+// ── Live toast notification ───────────────────────────────────────────────────
+function showToast(msg,color='#16A34A'){
+  let t=document.getElementById('liveToast');
+  if(!t){t=document.createElement('div');t.id='liveToast';Object.assign(t.style,{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%) translateY(80px)',background:'#fff',borderRadius:'12px',padding:'14px 22px',boxShadow:'0 8px 32px rgba(0,0,0,.18)',fontFamily:'Inter,sans-serif',fontSize:'14px',fontWeight:'700',zIndex:'9999',transition:'transform .35s cubic-bezier(.34,1.56,.64,1)',borderLeft:'4px solid green',maxWidth:'380px',textAlign:'center'});document.body.appendChild(t);}
+  t.style.borderLeftColor=color;t.textContent=msg;
+  t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(t._hide);t._hide=setTimeout(()=>{t.style.transform='translateX(-50%) translateY(80px)';},5000);
+}
+
+function connectLiveSSE(){
+  try{
+    const es=new EventSource(API_BASE+'/api/live');
+    es.addEventListener('donor_responded',e=>{ loadLiveFeed(); loadLeaderboard(); loadStats(); try{const d=JSON.parse(e.data);if(d.donorName)showToast(`🩸 ${d.donorName} is responding!`,'#E53935');}catch{} });
+    es.addEventListener('blood_requested', e=>{ loadStats(); try{const d=JSON.parse(e.data);if(d.bloodType)showToast(`🆘 New ${d.bloodType} request at ${d.hospital||'hospital'}`,'#E53935');}catch{} });
+    es.addEventListener('donor_registered',e=>{
+      loadStats();
+      loadLeaderboard();
+      loadRecentDonors();
+      // Flash +1 badge after stats update
+      setTimeout(()=>flashStatPlus(document.getElementById('imp-donors-num'), 1), 300);
+      try{const d=JSON.parse(e.data);if(d.name){showJoinToast(d.name,d.bloodType,d.area);}}catch{}
+    });
+    es.onerror=()=>setTimeout(connectLiveSSE,8000);
+  }catch{}
+}
+// ── Tamil Nadu + Puducherry area groups ──────────────────────────────────────
+const TN_ZONES = [
+  {label:'📍 Puducherry', areas:['White Town','Ariyankuppam','Villianur','Bahour','Nettapakkam','Odiyan','Mudaliarpet','Lawspet','Reddiarpalayam','Cuddalore Road','Anna Nagar, Pondicherry','Ozhukarai','Mannadipet','Chunnambar','Karuvadikuppam','Kalapet']},
+  {label:'🏙️ Chennai', areas:['Adyar, Chennai','Anna Nagar, Chennai','T. Nagar, Chennai','Velachery, Chennai','Tambaram, Chennai','Chromepet, Chennai','Porur, Chennai','Guindy, Chennai','Kodambakkam, Chennai','Nungambakkam, Chennai','Perambur, Chennai','Mylapore, Chennai','Sholinganallur, Chennai','Ambattur, Chennai','Avadi, Chennai','Kolathur, Chennai']},
+  {label:'🌆 Trichy', areas:['Srirangam, Trichy','Woraiyur, Trichy','Ariyamangalam, Trichy','Palakarai, Trichy','Thillai Nagar, Trichy','K.K. Nagar, Trichy','Tharanallur, Trichy','Alundur, Trichy']},
+  {label:'🏭 Coimbatore', areas:['RS Puram, Coimbatore','Gandhipuram, Coimbatore','Saibaba Colony, Coimbatore','Peelamedu, Coimbatore','Singanallur, Coimbatore','Ukkadam, Coimbatore','Ganapathy, Coimbatore','Pappanaickenpalayam, Coimbatore']},
+  {label:'🏛️ Madurai', areas:['Anna Nagar, Madurai','KK Nagar, Madurai','Tallakulam, Madurai','Thirunagar, Madurai','Palanganatham, Madurai','Iyer Bungalow, Madurai','Vilangudi, Madurai']},
+  {label:'🌿 Salem', areas:['Fairlands, Salem','Suramangalam, Salem','Hasthampatti, Salem','Attur, Salem','Omalur, Salem','Mettur, Salem']},
+  {label:'🌊 Tirunelveli', areas:['Palayamkottai, Tirunelveli','Melapalayam, Tirunelveli','Vannarpet, Tirunelveli','Pettai, Tirunelveli','Nanguneri, Tirunelveli']},
+  {label:'🏥 Vellore', areas:['CMC Area, Vellore','Sathuvachari, Vellore','Katpadi, Vellore','Ranipet','Walajah']},
+  {label:'🌾 Thanjavur', areas:['Medical College Area, Thanjavur','Sivaganga, Thanjavur','Papanasam, Thanjavur','Kumbakonam']},
+  {label:'🏗️ Erode', areas:['Erode Town','Perundurai, Erode','Bhavani, Erode','Gobichettipalayam']},
+  {label:'🧵 Tirupur', areas:['Tirupur Town','Palladam, Tirupur','Kangeyam, Tirupur','Dharapuram']},
+  {label:'🌺 Karaikal', areas:['Karaikal Town','Neravy, Karaikal','Thirunallar, Karaikal']},
+  {label:'🌊 Cuddalore', areas:['Cuddalore Town','Chidambaram','Panruti','Neyveli']},
+  {label:'🏖️ Villupuram', areas:['Villupuram Town','Tindivanam','Vikravandi','Kallakurichi']},
+];
+
+async function loadAreas(){
+  const s=document.getElementById('d-area');
+  if(!s) return;
+  // Load grouped Tamil Nadu + Puducherry areas
+  TN_ZONES.forEach(zone=>{
+    const grp=document.createElement('optgroup');
+    grp.label=zone.label;
+    zone.areas.forEach(area=>{
+      const o=document.createElement('option');
+      o.value=o.textContent=area;
+      grp.appendChild(o);
+    });
+    s.appendChild(grp);
+  });
+  // Also try to load from server (adds any live-seeded areas)
+  try{
+    const a=await fetch(API_BASE+'/api/areas').then(r=>r.json());
+    const existing=new Set(Array.from(s.options).map(o=>o.value));
+    a.forEach(x=>{if(!existing.has(x)){const o=document.createElement('option');o.value=o.textContent=x;s.appendChild(o);}});
+  }catch{}
+}
+const v=id=>document.getElementById(id)?.value?.trim()||'';
+const clr=(...ids)=>ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+const showMsg=(id,type,text)=>{const e=document.getElementById(id);if(!e)return;e.className='f-msg '+(type==='ok'?'ok':'err');e.textContent=text;e.style.display='block';setTimeout(()=>e.style.display='none',12000);};
+async function post(url,body){
+  try{
+    const r=await fetch(API_BASE+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(30000)});
+    return await r.json();
+  }catch(e){
+    if(e.name==='TimeoutError')return{ok:false,msg:'Request timed out. Is the server running at localhost:4001?'};
+    return{ok:false,msg:!IS_LOCAL?'Backend is offline. Please open http://localhost:4001 instead of the Vercel URL.':'Server not responding. Make sure it is running on port 4001.'};
+  }
+}
+async function submitRequest(){
+  const b={name:v('r-name'),phone:getPhone('r-phone'),bloodType:v('r-blood'),hospital:v('r-hospital'),units:v('r-units'),urgency:v('r-urgency'),radiusKm:v('r-radius')};
+  if(!b.name)return showMsg('r-msg','err','Please enter your name.');
+  const rDigits=(document.getElementById('r-phone')?.value||'').replace(/\D/g,'');
+  if(!rDigits||rDigits.length!==10)return showMsg('r-msg','err','Please enter a valid 10-digit WhatsApp number (without +91).');
+  if(!b.bloodType)return showMsg('r-msg','err','Please select the blood type needed.');
+  if(!b.hospital)return showMsg('r-msg','err','Please enter the hospital name.');
+  const btn=document.querySelector('button[onclick="submitRequest()"]');
+  if(btn){btn.textContent='⏳ Sending alerts…';btn.disabled=true;}
+  const r=await post('/api/requests',b);
+  if(btn){btn.innerHTML='🆘 Alert All Nearby Donors Now';btn.disabled=false;}
+  if(r.ok){
+    // Show premium success modal
+    document.getElementById('rmTitle').textContent = r.matched > 0 ? `✅ ${r.matched} Donor${r.matched>1?'s':''} Alerted!` : 'Request Sent!';
+    document.getElementById('rmBody').textContent = r.msg || `${r.matched||0} matching donors are being alerted on WhatsApp right now. They'll contact you shortly.`;
+    const nearestEl = document.getElementById('rmNearest');
+    if(r.nearest){nearestEl.textContent = '🏃 Nearest: ' + r.nearest;nearestEl.style.display='block';}
+    else{nearestEl.style.display='none';}
+    document.getElementById('reqModal').classList.add('open');
+    clr('r-name','r-phone','r-blood','r-hospital');
+    loadStats();
+  } else {
+    showMsg('r-msg','err',r.msg||'Error. Please try again.');
+  }
+}
+// ── Auto-detect area from GPS ─────────────────────────────────────────────────
+function autoDetectArea(){
+  const btn=document.getElementById('locBtn');
+  const status=document.getElementById('loc-status');
+  if(!navigator.geolocation){status.style.display='block';status.textContent='Location not supported by your browser. Please select manually.';return;}
+  btn.textContent='⏳';btn.disabled=true;
+  status.style.display='block';status.textContent='Detecting your location…';
+  navigator.geolocation.getCurrentPosition(
+    async pos=>{
+      try{
+        const {latitude:lat,longitude:lon}=pos.coords;
+        const r=await fetch(`${API_BASE}/api/detect-area?lat=${lat}&lon=${lon}`).then(x=>x.json());
+        if(r.ok&&r.area){
+          const sel=document.getElementById('d-area');
+          sel.value=r.area;
+          status.textContent=`📍 Detected: ${r.area} (${r.distanceKm} km from you)`;
+          status.style.borderLeftColor='var(--green)';status.style.color='var(--green)';
+        } else {
+          status.textContent='Could not match your location. Please select your area manually.';
+        }
+      }catch{status.textContent='Detection failed. Please select manually.';}
+      btn.textContent='📍';btn.disabled=false;
+    },
+    err=>{
+      const msgs={1:'Location access denied — please select your area from the list below.',2:'Location unavailable — please select your area manually.',3:'Timed out — please select your area manually.'};
+      status.textContent=msgs[err.code]||'Could not detect. Please select manually.';
+      status.style.borderLeftColor='#F59E0B';status.style.color='#92400E';status.style.background='#FFFBEB';
+      // Highlight the dropdown so user sees it clearly
+      const sel=document.getElementById('d-area');
+      sel.style.borderColor='#F59E0B';sel.style.boxShadow='0 0 0 3px rgba(245,158,11,.2)';
+      sel.focus();
+      btn.textContent='📍';btn.disabled=false;
+    },
+    {timeout:10000,maximumAge:30000}
+  );
+}
+
+async function registerDonor(){
+  const dDigits=(document.getElementById('d-phone')?.value||'').replace(/\D/g,'');
+  const b={
+    name:v('d-name'),
+    phone:getPhone('d-phone'),
+    bloodType:v('d-blood'),
+    area:v('d-area'),
+    lastDonation:(()=>{const d=v('d-last-donated');return d?new Date(d).getTime():null;})()
+  };
+  if(!b.name)return showMsg('d-msg','err','Please enter your full name.');
+  if(!dDigits||dDigits.length!==10)return showMsg('d-msg','err','Please enter your 10-digit WhatsApp number (without +91).');
+  if(!b.bloodType)return showMsg('d-msg','err','Please select your blood type.');
+  if(!b.area)return showMsg('d-msg','err','Please select your area (or tap 📍 to auto-detect).');
+
+  // Validate last donation date is not in the future
+  if(b.lastDonation&&b.lastDonation>Date.now())return showMsg('d-msg','err','Last donation date cannot be in the future.');
+
+  const btn=document.querySelector('button[onclick="registerDonor()"]');
+  if(btn){btn.textContent='⏳ Registering…';btn.disabled=true;}
+
+  const r=await post('/api/donors/register',b);
+
+  if(btn){btn.innerHTML='🩸 Register as a Donor';btn.disabled=false;}
+
+  if(r.ok){
+    // Redirect to dedicated welcome page with donor info + points
+    const p = new URLSearchParams({
+      name:   b.name,
+      blood:  b.bloodType,
+      area:   b.area,
+      points: r.points  || 50,
+      badge:  r.badgeLabel || 'New Hero',
+      emoji:  r.badgeEmoji || '🌱',
+    });
+    window.location.href = '/welcome.html?' + p.toString();
+  } else {
+    showMsg('d-msg','err',r.msg||'Registration failed. This number may already be registered.');
+  }
+}
+// Set last-donated max to today
+(()=>{const el=document.getElementById('d-last-donated');if(el)el.max=new Date().toISOString().split('T')[0];})();
+checkServerStatus();
+loadStats();loadAreas();loadLiveFeed();loadLeaderboard();connectLiveSSE();loadRecentDonors();
+setInterval(loadStats,30000);setInterval(loadLiveFeed,15000);setInterval(loadLeaderboard,60000);
+setInterval(checkServerStatus,60000);
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── REQUEST SUCCESS MODAL ────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+function closeReqModal(){
+  document.getElementById('reqModal')?.classList.remove('open');
+}
+// Close on overlay click
+document.getElementById('reqModal')?.addEventListener('click', function(e){
+  if(e.target===this) closeReqModal();
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── JOIN NOTIFICATION TOAST ───────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+const BT_COLORS={'O+':'#DC2626','O-':'#991B1B','A+':'#1D4ED8','A-':'#1E40AF','B+':'#15803D','B-':'#166534','AB+':'#D97706','AB-':'#B45309'};
+let _toastQueue=[], _toastShowing=false;
+function showJoinToast(name, bloodType, area){
+  _toastQueue.push({name,bloodType,area});
+  if(!_toastShowing) _nextToast();
+}
+function _nextToast(){
+  if(!_toastQueue.length){_toastShowing=false;return;}
+  _toastShowing=true;
+  const {name,bloodType,area}=_toastQueue.shift();
+  const t=document.createElement('div');
+  t.className='join-toast';
+  const col=BT_COLORS[bloodType]||'#DC2626';
+  t.innerHTML=`<div class="jt-badge" style="background:${col}">${bloodType||'?'}</div><div><div class="jt-name">🩸 ${name||'Someone'} just joined!</div><div class="jt-info">${bloodType||''} donor · ${area||'Puducherry'}</div></div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.animation='slideOutLeft .4s forwards';setTimeout(()=>{t.remove();_nextToast();},400);},4500);
+}
+// Demo: show a sample toast after 3 seconds on first load
+setTimeout(()=>showJoinToast('Rotary Blood Line','🩸','Active 24/7 across Tamil Nadu'),3000);
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── AI BLOOD ASSISTANT ────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+const BLOOD_COMPAT={
+  'O-':{donate:['O-','O+','A-','A+','B-','B+','AB-','AB+'],receive:['O-']},
+  'O+':{donate:['O+','A+','B+','AB+'],receive:['O-','O+']},
+  'A-':{donate:['A-','A+','AB-','AB+'],receive:['O-','A-']},
+  'A+':{donate:['A+','AB+'],receive:['O-','O+','A-','A+']},
+  'B-':{donate:['B-','B+','AB-','AB+'],receive:['O-','B-']},
+  'B+':{donate:['B+','AB+'],receive:['O-','O+','B-','B+']},
+  'AB-':{donate:['AB-','AB+'],receive:['O-','A-','B-','AB-']},
+  'AB+':{donate:['AB+'],receive:['O-','O+','A-','A+','B-','B+','AB-','AB+']}
+};
+const AI_KB=[
+  {p:/need blood|urgently|patient|hospital|accident|surgery/i,
+   r:"🆘 I'll help immediately. Please use our <b>Request Blood form</b> below — enter the blood type, hospital, and your number. Every matching donor in the area gets alerted on WhatsApp in under 60 seconds.<br><br>Or call us directly: <a href='tel:+917010811203' style='color:#DC2626;font-weight:700'>📞 +91 70108 11203</a>",
+   q:['Request Blood Now','Call Blood Line','How fast will I get help?']},
+  {p:/donate|register|join|want to give|volunteer/i,
+   r:"❤️ Thank you for saving lives! Use our <b>Become a Donor form</b> below. Takes 2 minutes. We only WhatsApp you when someone near you urgently needs your blood type.<br><br>Earn Rotary Hero points with every donation! 🏅",
+   q:['Register as Donor','Am I eligible?','How often can I donate?']},
+  {p:/compat|can .* donate|who can receive|what blood/i,
+   r:"🔬 Tell me a blood type and I'll show compatibility! Try: <b>\"O+ compatibility\"</b> or <b>\"who can donate to AB-\"</b>",
+   q:['O+ compatibility','AB- compatibility','Universal donor','Universal recipient']},
+  {p:/universal donor|o negative|o-/i,
+   r:"🌍 <b>O- is the Universal Donor</b> — can donate to ALL 8 blood types.<br>O- can receive ONLY from O-.<br><br>If you're O-, you are incredibly valuable. Please consider registering as a donor!",
+   q:['Register as O- donor','Is O- rare?','O- compatibility']},
+  {p:/universal recipient|ab positive|ab\+/i,
+   r:"🩸 <b>AB+ is the Universal Recipient</b> — can receive blood from ALL 8 types.<br>AB+ can donate only to AB+.<br><br>AB+ donors, you're still needed for AB+ patients!",
+   q:['AB+ compatibility','Request AB+ blood','Register as AB+ donor']},
+  {p:/how long|time|minutes|quick|fast/i,
+   r:"⚡ <b>Request to alert: under 60 seconds.</b><br><br>• You submit the form: 0 seconds<br>• System matches donors: 5 seconds<br>• WhatsApp alerts fired: ~30 seconds<br>• Nearest donor responds: usually within minutes",
+   q:['Request blood now','How it works']},
+  {p:/safe|dangerous|risk|harm|side effect/i,
+   r:"✅ Blood donation is <b>completely safe</b>. A licensed health professional oversees every donation. Your body replenishes blood within 24–48 hours. You may feel mild tiredness — rest and drink fluids.",
+   q:['Am I eligible?','How often can I donate?']},
+  {p:/eligible|requirement|qualify|age|weight|criteria/i,
+   r:"📋 <b>Donor Eligibility:</b><br>✅ Age 18–65 years<br>✅ Weight ≥ 50 kg<br>✅ No illness in past 2 weeks<br>✅ No tattoo/piercing in last 6 months<br>✅ At least 90 days since last donation",
+   q:['Register as Donor','How often can I donate?']},
+  {p:/how often|when again|90 day|3 month|next donation/i,
+   r:"📅 You can donate once every <b>90 days</b>. We track this automatically and send you a friendly WhatsApp reminder when you're eligible again. You don't need to remember anything!",
+   q:['Register as Donor','Am I eligible?']},
+  {p:/free|cost|charge|pay|money|fee|rupee/i,
+   r:"🆓 <b>100% Free — always.</b><br><br>No fees for patients. No charges to donors. No hidden costs. Rotary Blood Line is a permanent community service by Rotary Club of Legacy. Built for Tamil Nadu. Funded by Rotary.",
+   q:['Request Blood','Become a Donor']},
+  {p:/how.*work|process|system|steps|explain/i,
+   r:"⚡ <b>How Rotary Blood Line works:</b><br><br>1️⃣ Patient submits blood type + hospital<br>2️⃣ Our system finds every matching donor<br>3️⃣ Individual WhatsApp alerts fired in 30 sec<br>4️⃣ Nearest donor responds<br>5️⃣ Life saved 🩸<br><br>No human coordinator needed. 24/7.",
+   q:['Request Blood','Register as Donor','Is it really free?']},
+  {p:/contact|call|phone|reach|helpline|team/i,
+   r:"📞 <b>Blood Line Emergency Contacts:</b><br><br>🩸 24/7 Helpline: <a href='tel:+917010811203' style='color:#DC2626;font-weight:700'>+91 70108 11203</a><br>💬 WhatsApp: <a href='https://wa.me/917010811203' target='_blank' style='color:#25D366;font-weight:700'>+91 70108 11203</a><br>📍 432 MG Road, Puducherry<br>📅 Meetings: Every Saturday 7:30 PM",
+   q:['Request Blood','Register as Donor']},
+  {p:/thank|good|great|amazing|awesome|helpful|brilliant/i,
+   r:"🙏 Thank you! Every person who registers as a donor is a hero. If you ever need blood — we're here 24/7.<br><br>Share Rotary Blood Line with your family and friends — the more donors we have, the more lives we save. 🩸",
+   q:['Register as Donor','Share this site']},
+  {p:/tamilnadu|tamil nadu|tn|chennai|trichy|coimbatore|madurai|puducherry/i,
+   r:"🗺️ <b>Rotary Blood Line is expanding across Tamil Nadu!</b><br><br>We're currently active in Puducherry and growing into Chennai, Trichy, Coimbatore, Madurai, Salem, and all major districts. Donors from any TN district are welcome to register — your zone coordinator will reach you.",
+   q:['Register as Donor','View blood status']},
+  {p:/badge|point|hero|reward|recognition/i,
+   r:"🏅 <b>Rotary Hero Recognition Program:</b><br><br>🌱 Register: +50 points<br>💉 Each donation: +250 points<br>💬 Respond to alert: +30 points<br><br>Top donors receive official Rotary recognition and badges!",
+   q:['Register as Donor','How to earn points?']},
+];
+const AI_DEFAULT_QUICK=['🆘 Request Blood','🩸 Become Donor','🔬 Blood Types','📞 Emergency Contact','ℹ️ How It Works'];
+
+function aiGetReply(msg){
+  const lc=msg.toLowerCase().trim();
+  // Blood type specific
+  const btm=msg.match(/\b(O|A|B|AB)[+-]\b/i);
+  if(btm){
+    const bt=btm[0].toUpperCase();
+    const c=BLOOD_COMPAT[bt];
+    if(c) return {r:`🩸 <b>${bt} Blood Group</b><br>✅ Can donate to: ${c.donate.join(', ')}<br>🔴 Can receive from: ${c.receive.join(', ')}<br><br>Want to register as a <b>${bt} donor</b>?`,q:[`Register as ${bt} donor`,`Request ${bt} blood`,'Back to menu']};
+  }
+  for(const k of AI_KB){if(k.p.test(lc))return{r:k.r,q:k.q};}
+  return{r:"I'm not sure about that, but I'm here to help! Try asking about:<br>• 🆘 How to request blood urgently<br>• 🩸 How to register as a donor<br>• 🔬 Blood type compatibility<br>• 💡 How Rotary Blood Line works",q:AI_DEFAULT_QUICK};
+}
+
+let _aiOpen=false;
+function toggleAI(){
+  _aiOpen=!_aiOpen;
+  const w=document.getElementById('aiWindow');
+  if(w) _aiOpen?w.classList.add('open'):w.classList.remove('open');
+  const fab=document.getElementById('aiFab');
+  if(fab) fab.style.animation=_aiOpen?'none':'chatBounce 4s ease-in-out infinite';
+}
+function aiAddMsg(text,type){
+  const msgs=document.getElementById('aiMsgs');
+  const typing=document.getElementById('aiTyping');
+  if(typing) msgs.removeChild(typing);
+  const b=document.createElement('div');
+  b.className='ai-bubble '+type;
+  b.innerHTML=text;
+  msgs.appendChild(b);
+  if(typing) msgs.appendChild(typing);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+function aiSetQuick(qs){
+  const row=document.getElementById('aiQuick');
+  if(!row) return;
+  row.innerHTML=(qs||AI_DEFAULT_QUICK).map(q=>`<button class="ai-qbtn" onclick="aiSend('${q.replace(/'/g,"\\'")}')">${q}</button>`).join('');
+}
+function aiSend(text){
+  if(!text?.trim()) return;
+  if(!_aiOpen) toggleAI();
+  aiAddMsg(text,'user');
+  document.getElementById('aiInput')&&(document.getElementById('aiInput').value='');
+  // Show typing
+  const typing=document.getElementById('aiTyping');
+  if(typing) typing.style.display='flex';
+  const msgs=document.getElementById('aiMsgs');
+  if(msgs) msgs.scrollTop=msgs.scrollHeight;
+  // Handle special actions
+  if(/request blood/i.test(text)){
+    setTimeout(()=>{
+      if(typing)typing.style.display='none';
+      aiAddMsg("Scrolling you to the <b>Request Blood form</b> now! 🆘",'bot');
+      aiSetQuick(['📞 Call Instead','Register as Donor','How It Works']);
+      setTimeout(()=>document.getElementById('action')?.scrollIntoView({behavior:'smooth'}),600);
+    },600);
+    return;
+  }
+  if(/register.*donor|become.*donor/i.test(text)){
+    setTimeout(()=>{
+      if(typing)typing.style.display='none';
+      aiAddMsg("Taking you to the <b>Donor Registration form</b>! 🩸",'bot');
+      aiSetQuick(['📞 Call Blood Line','Check Eligibility','How It Works']);
+      setTimeout(()=>document.getElementById('action')?.scrollIntoView({behavior:'smooth'}),600);
+    },600);
+    return;
+  }
+  setTimeout(()=>{
+    if(typing) typing.style.display='none';
+    const {r,q}=aiGetReply(text);
+    aiAddMsg(r,'bot');
+    aiSetQuick(q);
+  }, 700+Math.random()*400);
+}
+function aiSendInput(){
+  const inp=document.getElementById('aiInput');
+  if(inp?.value?.trim()) aiSend(inp.value.trim());
+}
+// Close AI on outside click
+document.addEventListener('click',function(e){
+  if(_aiOpen&&!e.target.closest('#aiWindow')&&!e.target.closest('#aiFab')){}
+});
+</script>
+
+<!-- ═══════════ FORM WIZARD MODAL ═══════════ -->
+<div class="fwiz-overlay" id="fwizOverlay">
+  <div class="fwiz-box">
+    <!-- Header -->
+    <div class="fwiz-hd req" id="fwizHd">
+      <div class="fwiz-hd-row">
+        <div class="fwiz-hd-ico" id="fwizIco">🆘</div>
+        <button class="fwiz-close" onclick="closeWizard()">✕</button>
+      </div>
+      <div class="fwiz-hd-title" id="fwizTitle">Request Blood</div>
+      <div class="fwiz-hd-sub" id="fwizSub">4 quick steps · alerts fire in 60 seconds</div>
+      <div class="fwiz-steps" id="fwizStepDots"></div>
+    </div>
+    <!-- Body -->
+    <div class="fwiz-body" id="fwizBody"></div>
+    <!-- Error -->
+    <div class="fwiz-err" id="fwizErr"></div>
+    <!-- Nav -->
+    <div class="fwiz-nav">
+      <button class="fwiz-back" id="fwizBack" onclick="wizBack()" disabled>← Back</button>
+      <button class="fwiz-next req" id="fwizNext" onclick="wizNext()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// ── FORM WIZARD ───────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+const BT_DESCS={'O+':'Donor · common','O-':'Universal donor','A+':'Common','A-':'Rare','B+':'Common','B-':'Rare','AB+':'Universal recip.','AB-':'Rare'};
+let _wizType='', _wizStep=1;
+
+const WSTEP_LABELS={
+  request:['Who?','Blood','Hospital','Confirm'],
+  donor:['You','Blood','Area','Confirm']
+};
+
+function _panelsReq(){
+  return [
+    /* Step 1 */
+    `<div class="fwiz-panel">
+      <div class="fwiz-step-label">Step 1 of 4</div>
+      <div class="fwiz-step-title">Who's requesting blood?</div>
+      <div class="fwiz-group">
+        <label class="fwiz-label">Full Name</label>
+        <input class="fwiz-inp" id="r-name" placeholder="Your full name" autocomplete="name">
+      </div>
+      <div class="fwiz-group">
+        <label class="fwiz-label">WhatsApp Number</label>
+        <div class="fwiz-phone-wrap">
+          <div class="fwiz-pfx"><img src="https://flagcdn.com/w20/in.png" alt="" style="width:18px"> +91</div>
+          <input id="r-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="10-digit number" onkeydown="if(event.key==='Enter')wizNext()">
+        </div>
+      </div>
+    </div>`,
+    /* Step 2 */
+    `<div class="fwiz-panel">
+      <div class="fwiz-step-label">Step 2 of 4</div>
+      <div class="fwiz-step-title">What blood type is needed?</div>
+      <div class="fwiz-group">
+        <label class="fwiz-label">Select Blood Type</label>
+        <div class="fwiz-bt-grid" id="reqBtGrid"></div>
+        <select id="r-blood" style="display:none"></select>
+      </div>
+      <div class="fwiz-group" style="margin-top:16px">
+        <label class="fwiz-label">Urgency Level</label>
+        <div class="fwiz-urg-grid" id="reqUrgGrid">
+          <button type="button" class="fwiz-urg-btn sel" data-val="normal" onclick="fwizPickUrg(this,'reqUrgGrid','r-urgency')">📋 Normal</button>
+          <button type="button" class="fwiz-urg-btn" data-val="urgent" onclick="fwizPickUrg(this,'reqUrgGrid','r-urgency')">⚡ Urgent</button>
+          <button type="button" class="fwiz-urg-btn" data-val="critical" onclick="fwizPickUrg(this,'reqUrgGrid','r-urgency')">🚨 Critical</button>
+        </div>
+        <select id="r-urgency" style="display:none"><option value="normal" selected>Normal</option><option value="urgent">Urgent</option><option value="critical">Critical</option></select>
+      </div>
+    </div>`,
+    /* Step 3 */
+    `<div class="fwiz-panel">
+      <div class="fwiz-step-label">Step 3 of 4</div>
+      <div class="fwiz-step-title">Hospital &amp; search range</div>
+      <div class="fwiz-group">
+        <label class="fwiz-label">Hospital Name</label>
+        <div style="position:relative">
+          <input class="fwiz-inp" id="r-hospital" placeholder="e.g. JIPMER, PIMS, General Hospital" autocomplete="off" oninput="filterHospitals(this.value)" onfocus="filterHospitals(this.value)" onblur="setTimeout(closeHospitalList,200)">
+          <div id="hosp-dd" class="hosp-dd"></div>
+        </div>
+      </div>
+      <div class="fwiz-row">
+        <div class="fwiz-group">
+          <label class="fwiz-label">Units Needed</label>
+          <select class="fwiz-inp" id="r-units">
+            <option value="1">1 unit</option><option value="2">2 units</option><option value="3">3 units</option>
+          </select>
+        </div>
+        <div class="fwiz-group">
+          <label class="fwiz-label">Search Radius</label>
+          <select class="fwiz-inp" id="r-radius">
+            <option value="10">10 km</option><option value="25">25 km</option>
+            <option value="50" selected>50 km</option><option value="100">All of TN</option>
+          </select>
+        </div>
+      </div>
+    </div>`,
+    /* Step 4 */
+    `<div class="fwiz-panel">
+      <div class="fwiz-step-label">Step 4 of 4</div>
+      <div class="fwiz-step-title">Confirm &amp; alert donors</div>
+      <div class="fwiz-summary" id="reqSummary"></div>
+      <div style="background:#FEF2F2;border-radius:10px;padding:12px 16px;font-size:12px;color:#991B1B;line-height:1.65;border:1px solid #FECACA">
+        <strong style="display:block;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">What happens next?</strong>
+        Every matching donor within your chosen radius gets a personal WhatsApp immediately. They'll call you or arrive at the hospital directly.
+      </div>
+    </div>`,
+  ];
+}
+
+function _panelsDon(){
+  return [
+    /* Step 1 */
+    `<div class="fwiz-panel">
+      <div class="fwiz-step-label">Step 1 of 4</div>
+      <div class="fwiz-step-title">Tell us about yourself</div>
+      <div class="fwiz-group">
+        <label class="fwiz-label">Full Name</label>
+        <input class="fwiz-inp don-focus" id="d-name" placeholder="Your full name" autocomplete="name">
+      </div>
+      <div class="fwiz-group">
+        <label class="fwiz-label">WhatsApp Number <span style="font-weight:400;color:var(--muted)">(only for urgent matches)</span></label>
+        <div class="fwiz-phone-wrap don">
+          <div class="fwiz-pfx"><img src="https://flagcdn.com/w20/in.png" alt="" style="width:18px"> +91</div>
+          <input id="d-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="10-digit number" onkeydown="if(event.key==='Enter')wizNext()">
+        </div>
+      </div>
+    </div>`,
+    /* Step 2 */
+    `<div class="fwiz-panel">
+      <div class="fwiz-step-label">Step 2 of 4</div>
+      <div class="fwiz-step-title">What's your blood type?</div>
+      <div class="fwiz-group">
+        <label class="fwiz-label">Select your blood type</label>
+        <div class="fwiz-bt-grid" id="donBtGrid"></div>
+        <select id="d-blood" style="display:none"></select>
+      </div>
+      <div style="background:var(--nlight);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--navy);line-height:1.6;margin-top:14px;border:1px solid var(--nmid)">
+        <strong style="font-family:'Plus Jakarta Sans',sans-serif">Don't know your blood type?</strong> Visit any blood bank or clinic — they can test for free in under 5 minutes.
+      </div>
+    </div>`,
+    /* Step 3 */
+    `<div class="fwiz-panel">
+      <div class="fwiz-step-label">Step 3 of 4</div>
+      <div class="fwiz-step-title">Where are you located?</div>
+      <div class="fwiz-group">
+        <label class="fwiz-label">Your Area</label>
+        <div style="position:relative">
+          <select class="fwiz-inp don-focus" id="d-area" style="padding-right:46px"><option value="">Select your area</option></select>
+          <button type="button" id="locBtn" onclick="autoDetectArea()" title="Auto-detect" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--nlight);border:1.5px solid var(--nmid);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;color:var(--navy);font-weight:800;line-height:1;transition:all .2s">📍</button>
+        </div>
+        <div id="loc-status" style="display:none;font-size:11px;color:var(--navy);margin-top:8px;padding:6px 12px;background:var(--nlight);border-radius:7px;border-left:3px solid var(--navy)"></div>
+      </div>
+      <div class="fwiz-group">
+        <label class="fwiz-label">Last Donation Date <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+        <input class="fwiz-inp don-focus" id="d-last-donated" type="date">
+      </div>
+    </div>`,
+    /* Step 4 */
+    `<div class="fwiz-panel">
+      <div class="fwiz-step-label">Step 4 of 4</div>
+      <div class="fwiz-step-title">Final check &amp; register</div>
+      <div class="fwiz-summary" id="donSummary"></div>
+      <div style="background:var(--nlight);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--navy);line-height:1.65;border:1px solid var(--nmid)">
+        <strong style="display:block;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">After registering:</strong>
+        You'll get a WhatsApp welcome from Rotary Blood Line. We only reach you when your blood type is urgently needed near your area. You can decline any request — no obligation ever.
+      </div>
+    </div>`,
+  ];
+}
+
+function fwizPickBt(btn,gridId,selId,selClass){
+  document.querySelectorAll('#'+gridId+' .fwiz-bt-btn').forEach(b=>b.classList.remove(selClass));
+  btn.classList.add(selClass);
+  const s=document.getElementById(selId); if(s)s.value=btn.dataset.bt;
+}
+window.fwizPickBt=fwizPickBt;
+
+function fwizBuildBtGrid(gridId, selId, selClass){
+  const g=document.getElementById(gridId); if(!g) return;
+  const sel=document.getElementById(selId);
+  const cur=sel?.value||'';
+  g.innerHTML=['O+','O-','A+','A-','B+','B-','AB+','AB-'].map(bt=>`
+    <button type="button" class="fwiz-bt-btn${cur===bt?' '+selClass:''}" data-bt="${bt}">
+      <span class="bt-type">${bt}</span>
+      <span class="bt-sub">${BT_DESCS[bt]||''}</span>
+    </button>`).join('');
+  // Use addEventListener — more reliable than inline onclick in dynamically-injected HTML
+  g.querySelectorAll('.fwiz-bt-btn').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+      fwizPickBt(this,gridId,selId,selClass);
+    });
+  });
+}
+
+function fwizPickUrg(btn,gridId,selId){
+  document.querySelectorAll('#'+gridId+' .fwiz-urg-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const s=document.getElementById(selId); if(s)s.value=btn.dataset.val;
+}
+window.fwizPickUrg=fwizPickUrg;
+
+function openWizard(type){
+  _wizType=type; _wizStep=1;
+  const hd=document.getElementById('fwizHd');
+  const ico=document.getElementById('fwizIco');
+  const title=document.getElementById('fwizTitle');
+  const sub=document.getElementById('fwizSub');
+  const next=document.getElementById('fwizNext');
+  if(type==='request'){
+    hd.className='fwiz-hd req'; ico.textContent='🆘';
+    title.textContent='Request Blood'; sub.textContent='4 quick steps · alerts fire in 60 seconds';
+    next.className='fwiz-next req';
+  } else {
+    hd.className='fwiz-hd don'; ico.textContent='🩸';
+    title.textContent='Become a Donor'; sub.textContent='4 quick steps · join the community of heroes';
+    next.className='fwiz-next don';
+  }
+  _wizRender();
+  document.getElementById('fwizOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeWizard(){
+  document.getElementById('fwizOverlay')?.classList.remove('open');
+  document.body.style.overflow='';
+  const e=document.getElementById('fwizErr'); if(e){e.style.display='none';e.textContent='';}
+}
+
+function _wizRender(){
+  const panels=_wizType==='request'?_panelsReq():_panelsDon();
+  const body=document.getElementById('fwizBody');
+  if(body) body.innerHTML=panels[_wizStep-1];
+
+  // Dots
+  const dotsEl=document.getElementById('fwizStepDots');
+  const labels=WSTEP_LABELS[_wizType]||['1','2','3','4'];
+  if(dotsEl){
+    let h='';
+    for(let n=1;n<=4;n++){
+      const done=n<_wizStep, active=n===_wizStep;
+      const cls=done?'done':(active?'active':'');
+      const inner=done?'✓':n;
+      h+=`<div class="fwiz-dot-wrap">
+        <div class="fwiz-dot ${cls}">${inner}</div>
+        <span class="fwiz-dot-label" style="${done||active?'color:rgba(255,255,255,.78)':''}">${labels[n-1]}</span>
+      </div>`;
+      if(n<4) h+=`<div class="fwiz-line${done?' done':''}"></div>`;
+    }
+    dotsEl.innerHTML=h;
+  }
+
+  // Back / next
+  const back=document.getElementById('fwizBack');
+  if(back) back.disabled=(_wizStep===1);
+  const next=document.getElementById('fwizNext');
+  if(next) next.textContent=_wizStep===4?(_wizType==='request'?'🆘 Alert Donors Now':'🩸 Register as Donor'):'Next →';
+
+  // Post-render hooks
+  const delay=ms=>new Promise(r=>setTimeout(r,ms));
+  (async()=>{
+    await delay(10);
+    if(_wizType==='request'&&_wizStep===2) fwizBuildBtGrid('reqBtGrid','r-blood','sel-req');
+    if(_wizType==='donor'&&_wizStep===2) fwizBuildBtGrid('donBtGrid','d-blood','sel-don');
+    if(_wizType==='donor'&&_wizStep===3){
+      loadAreas();
+      const ld=document.getElementById('d-last-donated');
+      if(ld) ld.max=new Date().toISOString().split('T')[0];
+    }
+    if(_wizStep===4) _wizBuildSummary();
+    // Focus first input
+    const first=document.querySelector('#fwizBody input:not([type="hidden"]):not([type="date"]):not([style*="display:none"])');
+    if(first) first.focus();
+  })();
+
+  // Clear error
+  const err=document.getElementById('fwizErr'); if(err){err.style.display='none';err.textContent='';}
+}
+
+function _wizBuildSummary(){
+  if(_wizType==='request'){
+    const el=document.getElementById('reqSummary'); if(!el) return;
+    const urgLbl={normal:'Normal',urgent:'⚡ Urgent',critical:'🚨 Critical'};
+    const rad=document.getElementById('r-radius')?.value||'50';
+    const radLbl=rad==='100'?'All of Tamil Nadu':`Within ${rad} km`;
+    const units=document.getElementById('r-units')?.value||'1';
+    el.innerHTML=`<div class="fwiz-sum-title">Your Request Summary</div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Name</span><span class="fwiz-sum-val">${esc(v('r-name'))}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">WhatsApp</span><span class="fwiz-sum-val">+91 ${esc(document.getElementById('r-phone')?.value||'')}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Blood Needed</span><span class="fwiz-sum-val" style="color:var(--red);font-size:15px">${esc(v('r-blood'))}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Urgency</span><span class="fwiz-sum-val">${urgLbl[v('r-urgency')]||'Normal'}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Hospital</span><span class="fwiz-sum-val">${esc(v('r-hospital'))}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Units · Range</span><span class="fwiz-sum-val">${units} unit${units>1?'s':''} · ${radLbl}</span></div>`;
+  } else {
+    const el=document.getElementById('donSummary'); if(!el) return;
+    const ld=document.getElementById('d-last-donated')?.value;
+    const ldStr=ld?new Date(ld).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'Not provided';
+    el.innerHTML=`<div class="fwiz-sum-title">Your Donor Profile</div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Name</span><span class="fwiz-sum-val">${esc(v('d-name'))}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">WhatsApp</span><span class="fwiz-sum-val">+91 ${esc(document.getElementById('d-phone')?.value||'')}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Blood Type</span><span class="fwiz-sum-val" style="color:var(--navy);font-size:15px">${esc(v('d-blood'))}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Area</span><span class="fwiz-sum-val">${esc(v('d-area'))}</span></div>
+      <div class="fwiz-sum-row"><span class="fwiz-sum-key">Last Donation</span><span class="fwiz-sum-val">${ldStr}</span></div>`;
+  }
+}
+
+function _wizShowErr(msg){
+  const e=document.getElementById('fwizErr');
+  if(!e) return;
+  e.textContent=msg; e.style.display='block';
+  clearTimeout(e._t); e._t=setTimeout(()=>{e.style.display='none';},7000);
+}
+
+function _wizValidate(){
+  if(_wizType==='request'){
+    if(_wizStep===1){
+      if(!v('r-name')) return 'Please enter your full name.';
+      const d=(document.getElementById('r-phone')?.value||'').replace(/\D/g,'');
+      if(!d||d.length!==10) return 'Please enter a valid 10-digit WhatsApp number.';
+    }
+    if(_wizStep===2 && !v('r-blood')) return 'Please select the blood type needed.';
+    if(_wizStep===3 && !v('r-hospital')) return 'Please enter the hospital name.';
+  } else {
+    if(_wizStep===1){
+      if(!v('d-name')) return 'Please enter your full name.';
+      const d=(document.getElementById('d-phone')?.value||'').replace(/\D/g,'');
+      if(!d||d.length!==10) return 'Please enter a valid 10-digit WhatsApp number.';
+    }
+    if(_wizStep===2 && !v('d-blood')) return 'Please select your blood type.';
+    if(_wizStep===3 && !v('d-area')) return 'Please select your area (or tap 📍 to auto-detect).';
+    if(_wizStep===3){
+      const ld=document.getElementById('d-last-donated')?.value;
+      if(ld && new Date(ld).getTime()>Date.now()) return 'Last donation date cannot be in the future.';
+    }
+  }
+  return null;
+}
+
+async function wizNext(){
+  const err=_wizValidate(); if(err){_wizShowErr(err);return;}
+  if(_wizStep<4){_wizStep++;_wizRender();return;}
+
+  // Step 4 submit
+  const btn=document.getElementById('fwizNext');
+  if(btn){btn.textContent='⏳ Processing…';btn.disabled=true;}
+
+  if(_wizType==='request'){
+    const b={name:v('r-name'),phone:getPhone('r-phone'),bloodType:v('r-blood'),hospital:v('r-hospital'),units:v('r-units'),urgency:v('r-urgency'),radiusKm:v('r-radius')};
+    const r=await post('/api/requests',b);
+    if(r.ok){
+      closeWizard();
+      document.getElementById('rmTitle').textContent=r.matched>0?`✅ ${r.matched} Donor${r.matched>1?'s':''} Alerted!`:'Request Sent!';
+      document.getElementById('rmBody').textContent=r.msg||`${r.matched||0} matching donors are being alerted on WhatsApp right now.`;
+      const ne=document.getElementById('rmNearest');
+      if(r.nearest){ne.textContent='🏃 Nearest: '+r.nearest;ne.style.display='block';}else{ne.style.display='none';}
+      document.getElementById('reqModal').classList.add('open');
+      loadStats();
+    } else {
+      _wizShowErr(r.msg||'Something went wrong. Please try again.');
+    }
+  } else {
+    const b={name:v('d-name'),phone:getPhone('d-phone'),bloodType:v('d-blood'),area:v('d-area'),lastDonation:(()=>{const d=v('d-last-donated');return d?new Date(d).getTime():null;})()};
+    const r=await post('/api/donors/register',b);
+    if(r.ok){
+      closeWizard();
+      const p=new URLSearchParams({name:b.name,blood:b.bloodType,area:b.area,points:r.points||50,badge:r.badgeLabel||'New Hero',emoji:r.badgeEmoji||'🌱'});
+      window.location.href='/welcome.html?'+p.toString();
+    } else {
+      _wizShowErr(r.msg||'Registration failed. This number may already be registered.');
+    }
+  }
+
+  if(btn){btn.textContent=_wizType==='request'?'🆘 Alert Donors Now':'🩸 Register as Donor';btn.disabled=false;}
+}
+
+function wizBack(){
+  if(_wizStep>1){_wizStep--;_wizRender();}
+}
+
+// Close wizard on overlay click
+document.getElementById('fwizOverlay')?.addEventListener('click',function(e){if(e.target===this)closeWizard();});
+// ESC to close
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeWizard();});
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "defaultRadius": 50,
+  "maxDonorsPerAlert": 20,
+  "reengage90Days": true,
+  "morningCronEnabled": true,
+  "morningCronHour": 9,
+  "welcomeMessage": true,
+  "orgName": "Rotary Club of Legacy, Puducherry",
+  "orgPhone": "",
+  "alertCooldownHours": 24,
+  "updatedAt": 1780978242782
+}

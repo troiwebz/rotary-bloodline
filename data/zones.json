@@ -1,0 +1,52 @@
+[
+  {
+    "id": "puducherry",
+    "name": "Puducherry Zone",
+    "emoji": "📍",
+    "color": "#DC2626",
+    "areas": ["White Town","Ariyankuppam","Villianur","Bahour","Nettapakkam","Odiyan","Mudaliarpet","Lawspet","Reddiarpalayam","Cuddalore Road","Anna Nagar, Pondicherry","Ozhukarai","Mannadipet","Chunnambar","Karuvadikuppam","Kalapet","Kamaraj Nagar","Gorimedu","Thattanchavady","Kosapalayam","Pondicherry","Puducherry"],
+    "center": { "lat": 11.9416, "lon": 79.8083 },
+    "waNumber": "+917010811203",
+    "manager": "zone_puducherry"
+  },
+  {
+    "id": "chennai",
+    "name": "Chennai Zone",
+    "emoji": "🏙️",
+    "color": "#1D4ED8",
+    "areas": ["Adyar, Chennai","Anna Nagar, Chennai","T. Nagar, Chennai","Velachery, Chennai","Tambaram, Chennai","Chromepet, Chennai","Porur, Chennai","Guindy, Chennai","Kodambakkam, Chennai","Nungambakkam, Chennai","Perambur, Chennai","Mylapore, Chennai","Sholinganallur, Chennai","Ambattur, Chennai","Avadi, Chennai","Kolathur, Chennai"],
+    "center": { "lat": 13.0827, "lon": 80.2707 },
+    "waNumber": null,
+    "manager": "zone_chennai"
+  },
+  {
+    "id": "trichy",
+    "name": "Trichy Zone",
+    "emoji": "🌆",
+    "color": "#059669",
+    "areas": ["Srirangam, Trichy","Woraiyur, Trichy","Ariyamangalam, Trichy","Thillai Nagar, Trichy","Palakarai, Trichy","Tharanallur, Trichy","Alundur, Trichy","K.K. Nagar, Trichy","Golden Rock, Trichy","Cantonment, Trichy","Puthur, Trichy","Kattur, Trichy"],
+    "center": { "lat": 10.8210, "lon": 78.6970 },
+    "waNumber": null,
+    "manager": "zone_trichy"
+  },
+  {
+    "id": "coimbatore",
+    "name": "Coimbatore Zone",
+    "emoji": "🏭",
+    "color": "#D97706",
+    "areas": ["RS Puram, Coimbatore","Gandhipuram, Coimbatore","Saibaba Colony, Coimbatore","Peelamedu, Coimbatore","Singanallur, Coimbatore","Ukkadam, Coimbatore","Ganapathy, Coimbatore","Vadavalli, Coimbatore","Pappanaickenpalayam, Coimbatore"],
+    "center": { "lat": 11.0168, "lon": 77.0205 },
+    "waNumber": null,
+    "manager": "zone_coimbatore"
+  },
+  {
+    "id": "madurai",
+    "name": "Madurai Zone",
+    "emoji": "🏛️",
+    "color": "#7C3AED",
+    "areas": ["Anna Nagar, Madurai","KK Nagar, Madurai","Tallakulam, Madurai","Thirunagar, Madurai","Palanganatham, Madurai","Iyer Bungalow, Madurai","Vilangudi, Madurai","Arasaradi, Madurai","Mattuthavani, Madurai","Pasumalai, Madurai"],
+    "center": { "lat": 9.9252, "lon": 78.1198 },
+    "waNumber": null,
+    "manager": "zone_madurai"
+  }
+]

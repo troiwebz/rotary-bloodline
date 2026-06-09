@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Welcome — Rotary Blood Line</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#F8FAFC;color:#1E293B;min-height:100vh}
+
+/* Header */
+.header{background:#E53935;padding:18px 32px;display:flex;align-items:center;gap:14px}
+.header .logo{width:40px;height:40px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.header .htext{font-size:14px;font-weight:800;color:#fff}
+.header .hsub{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
+
+/* Hero block */
+.hero{background:linear-gradient(135deg,#1E293B 0%,#1A3C6E 60%,#E53935 100%);padding:60px 24px 40px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 18px;font-size:12px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:24px}
+.hero-tag .dot{width:8px;height:8px;border-radius:50%;background:#4ADE80;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:clamp(32px,6vw,52px);font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:12px;position:relative;z-index:1}
+.hero h1 span{color:#FCA5A5}
+.hero .sub{font-size:16px;color:rgba(255,255,255,.7);font-weight:500;position:relative;z-index:1;max-width:480px;margin:0 auto 32px}
+
+/* Donor card */
+.donor-card{background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1.5px solid rgba(255,255,255,.2);border-radius:20px;padding:24px 28px;max-width:380px;margin:0 auto;position:relative;z-index:1}
+.dc-row{display:flex;align-items:center;gap:16px}
+.bt-circle{width:60px;height:60px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;flex-shrink:0}
+.dc-info .name{font-size:20px;font-weight:800;color:#fff}
+.dc-info .area{font-size:13px;color:rgba(255,255,255,.6);margin-top:3px}
+.dc-divider{border:none;border-top:1px solid rgba(255,255,255,.15);margin:16px 0}
+.dc-pts{display:flex;align-items:center;justify-content:space-between}
+.pts-val{font-size:28px;font-weight:900;color:#FCA5A5;letter-spacing:-1px}
+.pts-lbl{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.badge-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:5px 14px;font-size:13px;font-weight:800;color:#fff}
+
+/* Content sections */
+.wrap{max-width:860px;margin:0 auto;padding:0 24px}
+
+/* How it works */
+.how-sec{padding:60px 0}
+.sec-label{display:inline-block;background:#FEE2E2;color:#E53935;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:16px}
+.sec-title{font-size:28px;font-weight:900;color:#1E293B;letter-spacing:-.5px;margin-bottom:8px}
+.sec-sub{font-size:14px;color:#64748B;margin-bottom:40px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.step{background:#fff;border-radius:20px;padding:28px 24px;border:1.5px solid #E2E8F0;position:relative}
+.step-num{width:40px;height:40px;border-radius:12px;background:#E53935;color:#fff;font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.step-icon{font-size:28px;margin-bottom:12px}
+.step-title{font-size:15px;font-weight:800;color:#1E293B;margin-bottom:8px}
+.step-desc{font-size:13px;color:#64748B;line-height:1.6}
+.step-connector{position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:24px;height:24px;background:#F1F5F9;border:1.5px solid #E2E8F0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#94A3B8;z-index:1}
+
+/* Reward section */
+.reward-sec{background:#fff;border-radius:24px;border:1.5px solid #E2E8F0;padding:36px;margin-bottom:32px}
+.reward-title{font-size:20px;font-weight:900;color:#1E293B;margin-bottom:6px}
+.reward-sub{font-size:13px;color:#64748B;margin-bottom:28px}
+.badges-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.badge-card{border-radius:14px;padding:18px 14px;text-align:center;border:1.5px solid}
+.badge-emoji{font-size:28px;margin-bottom:8px}
+.badge-name{font-size:12px;font-weight:800;margin-bottom:4px}
+.badge-pts{font-size:11px;color:#94A3B8}
+.badge-card.earned{box-shadow:0 0 0 2px currentColor}
+
+/* Points how-to */
+.pts-table{width:100%;border-collapse:collapse;margin-top:20px}
+.pts-table th{text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94A3B8;padding:8px 0;border-bottom:1px solid #F1F5F9}
+.pts-table td{padding:12px 0;font-size:13px;border-bottom:1px solid #F8FAFC;vertical-align:middle}
+.pts-table td:last-child{text-align:right;font-weight:800;color:#E53935}
+
+/* Share / CTA */
+.cta-sec{background:#1E293B;border-radius:24px;padding:36px;text-align:center;margin-bottom:32px}
+.cta-sec h2{font-size:22px;font-weight:900;color:#fff;margin-bottom:8px}
+.cta-sec p{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:14px;font-size:14px;font-weight:800;font-family:'Inter',sans-serif;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-red{background:#E53935;color:#fff}.btn-red:hover{background:#C62828;transform:translateY(-1px)}
+.btn-wa{background:#25D366;color:#fff}.btn-wa:hover{background:#1DB955;transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}.btn-ghost:hover{background:rgba(255,255,255,.18)}
+
+/* Footer */
+.foot{text-align:center;padding:32px 24px;color:#94A3B8;font-size:12px}
+.foot a{color:#E53935;text-decoration:none;font-weight:700}
+
+/* Confetti animation */
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.confetti-piece{position:fixed;top:-20px;border-radius:3px;animation:fall linear forwards;pointer-events:none;z-index:9999}
+
+/* Responsive */
+@media(max-width:600px){.hero{padding:40px 16px 32px}.dc-row{flex-direction:column;text-align:center}.cta-btns{flex-direction:column}.hero h1{font-size:32px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🩸</div>
+  <div>
+    <div class="htext">Rotary Blood Line</div>
+    <div class="hsub">Rotary Club of Legacy, Puducherry</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag"><div class="dot"></div>You are now registered!</div>
+  <h1>Welcome to the<br><span id="heroName">Hero</span> Family!</h1>
+  <p class="sub">You just became part of Puducherry's first automated blood network. Every life you help save starts with this one decision.</p>
+
+  <div class="donor-card">
+    <div class="dc-row">
+      <div class="bt-circle" id="btCircle" style="background:#E53935">B+</div>
+      <div class="dc-info">
+        <div class="name" id="donorName">Loading…</div>
+        <div class="area" id="donorArea">—</div>
+      </div>
+    </div>
+    <hr class="dc-divider">
+    <div class="dc-pts">
+      <div>
+        <div class="pts-val" id="ptsVal">50</div>
+        <div class="pts-lbl">Points Earned</div>
+      </div>
+      <div class="badge-pill" id="badgePill">🌱 New Hero</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS FOR YOU -->
+<section class="how-sec">
+  <div class="wrap">
+    <div class="sec-label">What Happens Next</div>
+    <h2 class="sec-title">How You'll Help Save Lives</h2>
+    <p class="sec-sub">Here's exactly what happens when someone in Puducherry needs your blood type.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-icon">🆘</div>
+        <div class="step-title">Patient Submits a Request</div>
+        <div class="step-desc">A family member enters the blood type, hospital, and phone on our website. One form — that's all they need to do at 2am in panic.</div>
+        <div class="step-connector">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-icon">🤖</div>
+        <div class="step-title">Our System Finds You</div>
+        <div class="step-desc">Within seconds, every eligible donor of the matching blood type is ranked by distance to the hospital. If you're eligible, you're on the list — automatically.</div>
+        <div class="step-connector">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-icon">📱</div>
+        <div class="step-title">You Get a WhatsApp</div>
+        <div class="step-desc">You receive a personal WhatsApp message: blood type needed, hospital name, patient's contact, and your exact distance. Nearest donors hear first.</div>
+        <div class="step-connector">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-icon">🦸</div>
+        <div class="step-title">You Decide — No Pressure</div>
+        <div class="step-desc">Reply <strong>YES</strong> to confirm you're going. Reply <strong>NO</strong> to decline — no explanation needed. We never judge. Every hero has limits, and we respect yours.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REWARD SYSTEM -->
+<section style="padding:0 0 48px">
+  <div class="wrap">
+    <div class="reward-sec">
+      <div class="sec-label" style="margin-bottom:12px">Your Journey</div>
+      <div class="reward-title">Earn Points. Level Up. Be Recognized.</div>
+      <div class="reward-sub">Every action you take earns points. As you help more, your badge grows — and Rotary recognises your contribution publicly.</div>
+
+      <div class="badges-grid">
+        <div class="badge-card" style="background:#F0FDF4;border-color:#BBF7D0;color:#16A34A" id="badge-newhero">
+          <div class="badge-emoji">🌱</div>
+          <div class="badge-name">New Hero</div>
+          <div class="badge-pts">50+ pts</div>
+        </div>
+        <div class="badge-card" style="background:#EFF6FF;border-color:#BFDBFE;color:#1D4ED8" id="badge-active">
+          <div class="badge-emoji">💉</div>
+          <div class="badge-name">Active Donor</div>
+          <div class="badge-pts">130+ pts</div>
+        </div>
+        <div class="badge-card" style="background:#FEF3C7;border-color:#FDE68A;color:#B45309" id="badge-firstresponder">
+          <div class="badge-emoji">⚡</div>
+          <div class="badge-name">First Responder</div>
+          <div class="badge-pts">200+ pts</div>
+        </div>
+        <div class="badge-card" style="background:#FEE2E2;border-color:#FECACA;color:#E53935" id="badge-lifesaver">
+          <div class="badge-emoji">🦸</div>
+          <div class="badge-name">Life Saver</div>
+          <div class="badge-pts">400+ pts</div>
+        </div>
+        <div class="badge-card" style="background:#FFF7ED;border-color:#FED7AA;color:#C2410C" id="badge-champion">
+          <div class="badge-emoji">🏆</div>
+          <div class="badge-name">Champion</div>
+          <div class="badge-pts">700+ pts</div>
+        </div>
+        <div class="badge-card" style="background:#F5F3FF;border-color:#DDD6FE;color:#7C3AED" id="badge-legend">
+          <div class="badge-emoji">👑</div>
+          <div class="badge-name">Legend</div>
+          <div class="badge-pts">1000+ pts</div>
+        </div>
+      </div>
+
+      <table class="pts-table">
+        <thead>
+          <tr><th>Action</th><th>Points</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>✅ Register as a donor</td><td>+50 pts</td></tr>
+          <tr><td>📱 Respond to a blood alert</td><td>+30 pts</td></tr>
+          <tr><td>🩸 Confirm a donation</td><td>+250 pts</td></tr>
+          <tr><td>🏥 3 donations milestone</td><td>Bonus Badge</td></tr>
+          <tr><td>👑 5+ donations</td><td>Legend Status</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SHARE / CTA -->
+<section style="padding:0 0 48px">
+  <div class="wrap">
+    <div class="cta-sec">
+      <h2>Bring More Heroes to Puducherry 🦸</h2>
+      <p>Every friend you bring in is another life that can be saved. Share this — it takes 30 seconds to register, and it can change everything at 2am.</p>
+      <div class="cta-btns">
+        <a id="waShareBtn" href="#" class="btn btn-wa" target="_blank">
+          📤 Share on WhatsApp
+        </a>
+        <a href="/" class="btn btn-ghost">← Back to Main Site</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="foot">
+  <p>Rotary Blood Line · Rotary Club of Legacy, Puducherry · District 2981 · RI ID: 224440</p>
+  <p style="margin-top:6px"><a href="/">Main Site</a> &nbsp;·&nbsp; <a href="/admin.html">Admin</a> &nbsp;·&nbsp; Free Forever — No Exceptions</p>
+</div>
+
+<script>
+const BT_COLORS = {
+  'O+':'#E53935','O-':'#C62828','A+':'#1E88E5','A-':'#1565C0',
+  'B+':'#43A047','B-':'#2E7D32','AB+':'#FB8C00','AB-':'#E65100'
+};
+const BADGE_IDS = {
+  'New Hero':'badge-newhero','Active Donor':'badge-active',
+  'First Responder':'badge-firstresponder','Life Saver':'badge-lifesaver',
+  'Champion':'badge-champion','Legend':'badge-legend'
+};
+
+function getParam(key) {
+  return new URLSearchParams(window.location.search).get(key) || '';
+}
+
+function animateCount(el, target, prefix = '', suffix = '') {
+  const steps = 40, dur = 1200;
+  let i = 0;
+  const timer = setInterval(() => {
+    i++;
+    el.textContent = prefix + Math.round(target * (i / steps)) + suffix;
+    if (i >= steps) { el.textContent = prefix + target + suffix; clearInterval(timer); }
+  }, dur / steps);
+}
+
+function launchConfetti() {
+  const colors = ['#E53935','#1A3C6E','#16A34A','#FCA5A5','#FDE68A','#BFDBFE'];
+  for (let i = 0; i < 60; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.cssText = `
+      left:${Math.random() * 100}vw;
+      width:${6 + Math.random() * 8}px;
+      height:${6 + Math.random() * 8}px;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      animation-duration:${2 + Math.random() * 3}s;
+      animation-delay:${Math.random() * 1.5}s;
+    `;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 6000);
+  }
+}
+
+function init() {
+  const name      = getParam('name') || 'Hero';
+  const blood     = getParam('blood') || 'O+';
+  const area      = getParam('area') || 'Puducherry';
+  const points    = parseInt(getParam('points')) || 50;
+  const badge     = getParam('badge') || 'New Hero';
+  const emoji     = getParam('emoji') || '🌱';
+
+  // Fill hero
+  document.getElementById('heroName').textContent = name.split(' ')[0];
+  document.getElementById('donorName').textContent = name;
+  document.getElementById('donorArea').textContent = area + ' · Tamil Nadu';
+
+  const btCircle = document.getElementById('btCircle');
+  btCircle.textContent = blood;
+  btCircle.style.background = BT_COLORS[blood] || '#E53935';
+
+  // Animate points
+  const ptsEl = document.getElementById('ptsVal');
+  ptsEl.textContent = '0';
+  setTimeout(() => animateCount(ptsEl, points), 600);
+
+  // Badge pill
+  document.getElementById('badgePill').textContent = emoji + ' ' + badge;
+
+  // Highlight earned badge card
+  const earnedId = BADGE_IDS[badge];
+  if (earnedId) {
+    const el = document.getElementById(earnedId);
+    if (el) {
+      el.style.boxShadow = '0 0 0 3px currentColor, 0 8px 24px rgba(0,0,0,.12)';
+      el.style.transform = 'scale(1.04)';
+      const star = document.createElement('div');
+      star.textContent = '✓ Earned!';
+      star.style.cssText = 'font-size:10px;font-weight:900;margin-top:6px;color:inherit';
+      el.appendChild(star);
+    }
+  }
+
+  // WhatsApp share button
+  const shareMsg = encodeURIComponent(
+    `I just registered as a ${blood} blood donor with Rotary Blood Line, Puducherry! 🩸\n\nIf someone urgently needs blood, this system alerts donors on WhatsApp in 60 seconds — completely free.\n\nYou can register too: http://localhost:4001\n\n— ${name}`
+  );
+  document.getElementById('waShareBtn').href = `https://wa.me/?text=${shareMsg}`;
+
+  // Confetti
+  setTimeout(launchConfetti, 400);
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reports — Rotary Blood Line</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#F1F5F9;color:#1E293B;min-height:100vh}
+.header{background:#1A3C6E;padding:18px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header .left{display:flex;align-items:center;gap:14px}
+.logo{width:38px;height:38px;background:#E53935;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.htxt{font-size:14px;font-weight:800;color:#fff}
+.hsub{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+.header-btns{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-white{background:#fff;color:#1A3C6E}.btn-white:hover{background:#F1F5F9}
+.btn-red{background:#E53935;color:#fff}.btn-red:hover{background:#C62828}
+.btn-outline{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.2)}.btn-outline:hover{background:rgba(255,255,255,.18)}
+
+.wrap{max-width:1100px;margin:0 auto;padding:32px 24px}
+
+/* Summary strip */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px}
+.sum-card{background:#fff;border-radius:16px;padding:22px 20px;border:1.5px solid #E2E8F0;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.sum-num{font-size:38px;font-weight:900;letter-spacing:-1.5px;line-height:1}
+.sum-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748B;margin-top:6px}
+.sum-note{font-size:11px;color:#94A3B8;margin-top:4px}
+
+/* Panels */
+.panel{background:#fff;border-radius:16px;border:1.5px solid #E2E8F0;margin-bottom:24px;overflow:hidden}
+.panel-head{padding:18px 24px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.panel-head h2{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+.panel-body{padding:24px}
+
+/* Monthly trend bars */
+.trend-chart{display:flex;align-items:flex-end;gap:10px;height:140px;margin-bottom:8px}
+.trend-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.trend-bar{width:100%;border-radius:6px 6px 0 0;background:#E53935;min-height:4px;transition:height .5s ease;position:relative}
+.trend-bar:hover::after{content:attr(data-val);position:absolute;top:-26px;left:50%;transform:translateX(-50%);background:#1E293B;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.trend-label{font-size:10px;font-weight:600;color:#94A3B8;text-align:center}
+.trend-val{font-size:11px;font-weight:800;color:#1E293B;text-align:center}
+
+/* Blood type supply vs demand */
+.bt-compare{display:grid;gap:14px}
+.bt-row{display:grid;grid-template-columns:52px 1fr 1fr;align-items:center;gap:12px}
+.bt-badge{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0}
+.bar-wrap{display:flex;flex-direction:column;gap:5px}
+.bar-label{font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.4px;display:flex;justify-content:space-between}
+.bar-track{height:8px;border-radius:4px;background:#F1F5F9;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+
+/* Area ranking */
+.area-list{display:grid;gap:10px}
+.area-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:12px;background:#F8FAFC;border:1px solid #F1F5F9}
+.area-rank{width:28px;height:28px;border-radius:8px;background:#E53935;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.area-rank.gold{background:#D97706}
+.area-rank.silver{background:#6B7280}
+.area-rank.bronze{background:#92400E}
+.area-name{flex:1;font-size:13px;font-weight:700}
+.area-count{font-size:20px;font-weight:900;color:#E53935}
+.area-bar-track{flex:2;height:6px;border-radius:3px;background:#E2E8F0;overflow:hidden}
+.area-bar-fill{height:100%;border-radius:3px;background:#E53935;transition:width .6s ease}
+
+/* Top donors leaderboard */
+.leaderboard{display:grid;gap:12px}
+.lb-row{display:flex;align-items:center;gap:14px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;padding:14px 16px}
+.lb-rank{width:32px;height:32px;border-radius:10px;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-size:14px;font-weight:800;color:#1E293B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-meta{font-size:11px;color:#64748B;margin-top:2px}
+.lb-pts{font-size:22px;font-weight:900;color:#E53935}
+.lb-badge{font-size:11px;font-weight:800;padding:3px 10px;border-radius:10px;white-space:nowrap}
+
+/* Badge distribution */
+.badge-dist{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.bd-card{border-radius:14px;padding:18px;text-align:center;border:1.5px solid #E2E8F0;background:#fff}
+.bd-emoji{font-size:26px;margin-bottom:8px}
+.bd-label{font-size:12px;font-weight:800;color:#1E293B;margin-bottom:4px}
+.bd-count{font-size:28px;font-weight:900;color:#E53935}
+.bd-pct{font-size:11px;color:#94A3B8;margin-top:2px}
+
+/* CSV export */
+.export-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+/* Loading */
+#loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px}
+.spinner{width:48px;height:48px;border:4px solid #E2E8F0;border-top-color:#E53935;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Meta */
+.meta{text-align:center;padding:24px;color:#94A3B8;font-size:12px}
+.meta a{color:#E53935;text-decoration:none;font-weight:700}
+
+/* Two col layout */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.two-col{grid-template-columns:1fr}.bt-row{grid-template-columns:44px 1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="left">
+    <div class="logo">🩸</div>
+    <div>
+      <div class="htxt">Rotary Blood Line — Reports</div>
+      <div class="hsub">Rotary Club of Legacy, Puducherry · District 2981</div>
+    </div>
+  </div>
+  <div class="header-btns">
+    <button class="btn btn-outline" onclick="loadReport()">🔄 Refresh</button>
+    <button class="btn btn-white" onclick="exportCSV()">⬇ Export CSV</button>
+    <a href="/admin.html" class="btn btn-red">← Admin</a>
+  </div>
+</div>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div style="font-size:14px;color:#94A3B8;font-weight:600">Loading report data…</div>
+</div>
+
+<div id="mainContent" style="display:none">
+<div class="wrap">
+
+  <!-- Generated at -->
+  <div style="text-align:right;font-size:12px;color:#94A3B8;margin-bottom:20px" id="genAt"></div>
+
+  <!-- Summary cards -->
+  <div class="summary-grid">
+    <div class="sum-card"><div class="sum-num" style="color:#E53935" id="r-donors">—</div><div class="sum-lbl">Total Donors</div><div class="sum-note" id="r-active">— active</div></div>
+    <div class="sum-card"><div class="sum-num" style="color:#1A3C6E" id="r-requests">—</div><div class="sum-lbl">Total Requests</div><div class="sum-note" id="r-month-req">— this month</div></div>
+    <div class="sum-card"><div class="sum-num" style="color:#16A34A" id="r-responses">—</div><div class="sum-lbl">Total Responses</div><div class="sum-note" id="r-month-res">— this month</div></div>
+    <div class="sum-card"><div class="sum-num" style="color:#0891B2" id="r-fulfill">—</div><div class="sum-lbl">Fulfillment Rate</div><div class="sum-note">Requests resolved</div></div>
+    <div class="sum-card"><div class="sum-num" style="color:#7C3AED" id="r-resprate">—</div><div class="sum-lbl">Response Rate</div><div class="sum-note">Positive replies</div></div>
+  </div>
+
+  <!-- Monthly trend + Badge distribution -->
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-head"><h2>📈 Monthly Donor Registrations</h2></div>
+      <div class="panel-body">
+        <div class="trend-chart" id="trendChart"></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap" id="trendLabels"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>🏅 Badge Distribution</h2></div>
+      <div class="panel-body">
+        <div class="badge-dist" id="badgeDist"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blood type supply vs demand -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2>🩸 Blood Type — Supply vs Demand</h2>
+      <div style="display:flex;gap:16px;font-size:12px;font-weight:600">
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:4px;background:#E53935;display:inline-block"></span>Supply (donors)</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:4px;background:#FCA5A5;display:inline-block"></span>Demand (requests)</span>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="bt-compare" id="btCompare"></div>
+    </div>
+  </div>
+
+  <!-- Top donors + Area ranking -->
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-head"><h2>🏆 Top Donors Leaderboard</h2></div>
+      <div class="panel-body">
+        <div class="leaderboard" id="leaderboard"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>📍 Area-wise Donor Count</h2></div>
+      <div class="panel-body">
+        <div class="area-list" id="areaRanking"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export -->
+  <div class="panel">
+    <div class="panel-head"><h2>⬇ Export Data</h2></div>
+    <div class="panel-body">
+      <p style="font-size:13px;color:#64748B;margin-bottom:16px">Download raw data for analysis or official Rotary Club records.</p>
+      <div class="export-row">
+        <button class="btn btn-red" onclick="exportCSV('donors')">🩸 Donors CSV</button>
+        <button class="btn btn-red" onclick="exportCSV('requests')">🆘 Requests CSV</button>
+        <button class="btn btn-red" onclick="exportCSV('responses')">📱 Responses CSV</button>
+        <button class="btn btn-outline" style="background:#F1F5F9;color:#1E293B;border:1.5px solid #E2E8F0" onclick="window.print()">🖨 Print Report</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div class="meta">
+  Rotary Blood Line · Report generated on demand · <a href="/">Main Site</a> · <a href="/admin.html">Admin Dashboard</a>
+</div>
+
+<script>
+const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API = IS_LOCAL ? '' : 'http://localhost:4001';
+const BT_COLORS = {
+  'O+':'#E53935','O-':'#C62828','A+':'#1E88E5','A-':'#1565C0',
+  'B+':'#43A047','B-':'#2E7D32','AB+':'#FB8C00','AB-':'#E65100'
+};
+const BADGE_COLORS = {
+  'New Hero':{'bg':'#F0FDF4','color':'#16A34A'},
+  'Active Donor':{'bg':'#EFF6FF','color':'#1D4ED8'},
+  'First Responder':{'bg':'#FEF3C7','color':'#B45309'},
+  'Life Saver':{'bg':'#FEE2E2','color':'#E53935'},
+  'Champion':{'bg':'#FFF7ED','color':'#C2410C'},
+  'Legend':{'bg':'#F5F3FF','color':'#7C3AED'},
+  'Registered':{'bg':'#F8FAFC','color':'#64748B'},
+};
+const BADGE_EMOJIS = {
+  'New Hero':'🌱','Active Donor':'💉','First Responder':'⚡',
+  'Life Saver':'🦸','Champion':'🏆','Legend':'👑','Registered':'🩸'
+};
+
+let reportData = null;
+
+function el(id) { return document.getElementById(id); }
+
+function loadReport() {
+  fetch(API + '/api/report')
+    .then(r => r.json())
+    .then(data => {
+      reportData = data;
+      render(data);
+      el('loading').style.display = 'none';
+      el('mainContent').style.display = 'block';
+    })
+    .catch(() => {
+      el('loading').innerHTML = '<div style="font-size:32px">⚠️</div><div style="font-size:14px;color:#EF4444;font-weight:700">Cannot reach server at localhost:4001.<br>Make sure it is running.</div>';
+    });
+}
+
+function render(d) {
+  // Summary
+  el('r-donors').textContent    = d.totalDonors;
+  el('r-active').textContent    = d.activeDonors + ' active';
+  el('r-requests').textContent  = d.totalRequests;
+  el('r-month-req').textContent = d.thisMonthReqs + ' this month';
+  el('r-responses').textContent = d.totalResponses;
+  el('r-month-res').textContent = d.thisMonthResps + ' this month';
+  el('r-fulfill').textContent   = d.fulfillmentRate + '%';
+  el('r-resprate').textContent  = d.avgResponseRate + '%';
+  el('genAt').textContent       = 'Generated: ' + new Date(d.generatedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST';
+
+  // Monthly trend chart
+  const maxCount = Math.max(...d.monthlyTrend.map(m => m.count), 1);
+  const trendHtml = d.monthlyTrend.map((m, i) => {
+    const pct = Math.max(6, Math.round((m.count / maxCount) * 100));
+    const isLast = i === d.monthlyTrend.length - 1;
+    return `<div class="trend-bar-wrap">
+      <div class="trend-val">${m.count}</div>
+      <div class="trend-bar" style="height:${pct}%;background:${isLast?'#E53935':'#FECACA'}" data-val="${m.count} donors"></div>
+    </div>`;
+  }).join('');
+  el('trendChart').innerHTML = trendHtml;
+  el('trendLabels').innerHTML = d.monthlyTrend.map(m =>
+    `<div style="font-size:10px;font-weight:600;color:#94A3B8;text-align:center;flex:1">${m.label}</div>`
+  ).join('');
+
+  // Badge distribution
+  const totalBadge = Object.values(d.badgeCounts).reduce((s, n) => s + n, 0) || 1;
+  const badgeOrder = ['Registered','New Hero','Active Donor','First Responder','Life Saver','Champion','Legend'];
+  el('badgeDist').innerHTML = badgeOrder.filter(b => d.badgeCounts[b]).map(b => {
+    const count = d.badgeCounts[b] || 0;
+    const pct   = Math.round(count / totalBadge * 100);
+    const bc    = BADGE_COLORS[b] || BADGE_COLORS['Registered'];
+    return `<div class="bd-card" style="background:${bc.bg};border-color:${bc.color}33">
+      <div class="bd-emoji">${BADGE_EMOJIS[b] || '🩸'}</div>
+      <div class="bd-label" style="color:${bc.color}">${b}</div>
+      <div class="bd-count" style="color:${bc.color}">${count}</div>
+      <div class="bd-pct">${pct}% of donors</div>
+    </div>`;
+  }).join('');
+
+  // Blood type supply vs demand
+  const BTS = ['O+','O-','A+','A-','B+','B-','AB+','AB-'];
+  const maxS = Math.max(...BTS.map(bt => d.supplyByType[bt] || 0), 1);
+  const maxD = Math.max(...BTS.map(bt => d.demandByType[bt] || 0), 1);
+  el('btCompare').innerHTML = BTS.map(bt => {
+    const supply = d.supplyByType[bt] || 0;
+    const demand = d.demandByType[bt] || 0;
+    const spct = Math.round(supply / maxS * 100);
+    const dpct = Math.round(demand / maxD * 100);
+    const col  = BT_COLORS[bt];
+    return `<div class="bt-row">
+      <div class="bt-badge" style="background:${col}">${bt}</div>
+      <div class="bar-wrap">
+        <div class="bar-label"><span>Supply</span><span>${supply}</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${spct}%;background:${col}"></div></div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-label"><span>Demand</span><span>${demand}</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${dpct}%;background:#FCA5A5"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Leaderboard
+  const rankColors = ['#D97706','#6B7280','#92400E'];
+  el('leaderboard').innerHTML = d.topDonors.slice(0, 8).map((donor, i) => {
+    const bc = BADGE_COLORS[donor.badgeLabel] || BADGE_COLORS['Registered'];
+    const rankBg = i < 3 ? rankColors[i] : '#E53935';
+    return `<div class="lb-row">
+      <div class="lb-rank" style="background:${rankBg}">${i + 1}</div>
+      <div class="lb-info">
+        <div class="lb-name">${donor.name}</div>
+        <div class="lb-meta">${donor.bloodType} · ${donor.area} · ${donor.donationCount} donations · ${donor.responseCount} alerts responded</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="lb-pts">${donor.points}</div>
+        <div class="lb-badge" style="background:${bc.bg};color:${bc.color}">${donor.badgeEmoji} ${donor.badgeLabel}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Area ranking
+  el('areaRanking').innerHTML = d.areaRanking.slice(0, 10).map((row, i) => {
+    const maxA = d.areaRanking[0]?.count || 1;
+    const pct  = Math.round(row.count / maxA * 100);
+    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    return `<div class="area-row">
+      <div class="area-rank ${rankClass}">${i + 1}</div>
+      <div class="area-name">${row.area}</div>
+      <div class="area-bar-track"><div class="area-bar-fill" style="width:${pct}%"></div></div>
+      <div class="area-count">${row.count}</div>
+    </div>`;
+  }).join('');
+}
+
+function exportCSV(type) {
+  if (!type || type === true) {
+    // Export summary as CSV
+    if (!reportData) return;
+    const rows = [
+      ['Metric', 'Value'],
+      ['Total Donors', reportData.totalDonors],
+      ['Active Donors', reportData.activeDonors],
+      ['Total Requests', reportData.totalRequests],
+      ['Requests This Month', reportData.thisMonthReqs],
+      ['Total Responses', reportData.totalResponses],
+      ['Fulfillment Rate %', reportData.fulfillmentRate],
+      ['Response Rate %', reportData.avgResponseRate],
+      [],
+      ['Blood Type', 'Supply (Donors)', 'Demand (Requests)'],
+      ...['O+','O-','A+','A-','B+','B-','AB+','AB-'].map(bt => [
+        bt,
+        reportData.supplyByType[bt] || 0,
+        reportData.demandByType[bt] || 0,
+      ]),
+      [],
+      ['Area', 'Donors'],
+      ...reportData.areaRanking.map(r => [r.area, r.count]),
+    ];
+    downloadCSV(rows, 'rotary-bloodline-report.csv');
+    return;
+  }
+  // Fetch raw data
+  const endpoints = {
+    donors:    '/api/donors?all=1',
+    requests:  '/api/requests?limit=200',
+    responses: '/api/responses?limit=500',
+  };
+  fetch(API + endpoints[type])
+    .then(r => r.json())
+    .then(data => {
+      if (!data.length) return alert('No data yet.');
+      const keys = Object.keys(data[0]).filter(k => !['phone'].includes(k));
+      const rows = [keys, ...data.map(row => keys.map(k => {
+        const v = row[k];
+        if (typeof v === 'number' && v > 1e12) return new Date(v).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+        return v ?? '';
+      }))];
+      downloadCSV(rows, `rotary-${type}-${new Date().toISOString().split('T')[0]}.csv`);
+    })
+    .catch(() => alert('Could not fetch data.'));
+}
+
+function downloadCSV(rows, filename) {
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = filename;
+  a.click();
+}
+
+loadReport();
+</script>
+</body>
+</html>

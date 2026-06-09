@@ -1,0 +1,11 @@
+node_modules/
+.wwebjs_auth/
+.wwebjs_cache/
+.env
+*.env.local
+.vercel/
+vercel-site/
+.claude/
+npm-debug.log*
+.DS_Store
+public/index\ 2.html
