@@ -1819,77 +1819,6 @@ html,body{overflow-x:hidden;max-width:100%}
 </section>
 
 <!-- ═══════════ LIVE RADAR ═══════════ -->
-<section class="radar-sec" id="radar">
-  <div class="radar-layout">
-
-    <!-- Left: copy + stats + controls -->
-    <div class="radar-left fade-in">
-      <div class="label label-green">🛰 Live Radar</div>
-      <h2 class="title radar-title">Who's Near You<br>Right Now</h2>
-      <p class="radar-sub">The radar scans your surroundings and shows how many eligible donors are within reach — completely anonymous. No names. No numbers. Just blips.</p>
-
-      <!-- Stats (hidden until location granted) -->
-      <div id="radarStats" style="display:none">
-        <div class="radar-stat-row">
-          <div class="radar-stat">
-            <div class="radar-stat-num" id="rStat10">—</div>
-            <div class="radar-stat-lbl">Within<br>10 km</div>
-          </div>
-          <div class="radar-stat">
-            <div class="radar-stat-num" id="rStat25">—</div>
-            <div class="radar-stat-lbl">10 – 25<br>km</div>
-          </div>
-          <div class="radar-stat">
-            <div class="radar-stat-num" id="rStat50">—</div>
-            <div class="radar-stat-lbl">25 – 50<br>km</div>
-          </div>
-        </div>
-        <div class="radar-found" id="radarFound">Scanning…</div>
-      </div>
-
-      <!-- Blood type legend -->
-      <div class="radar-legend">
-        <div class="rleg"><div class="rleg-dot" style="background:#EF4444;box-shadow:0 0 6px #EF4444"></div> O± type</div>
-        <div class="rleg"><div class="rleg-dot" style="background:#3B82F6;box-shadow:0 0 6px #3B82F6"></div> A± type</div>
-        <div class="rleg"><div class="rleg-dot" style="background:#10B981;box-shadow:0 0 6px #10B981"></div> B± type</div>
-        <div class="rleg"><div class="rleg-dot" style="background:#F59E0B;box-shadow:0 0 6px #F59E0B"></div> AB± type</div>
-      </div>
-
-      <!-- Permission prompt -->
-      <div id="radarPerm">
-        <button class="radar-loc-btn" onclick="initRadar()">📍 Show Donors Near Me</button>
-        <p class="radar-perm-note">Your location stays in your browser — never sent to any server or stored.</p>
-      </div>
-
-      <!-- Loading state -->
-      <div class="radar-loading" id="radarLoading" style="display:none">
-        <div class="radar-spinner"></div>
-        <span>Scanning your area…</span>
-      </div>
-
-      <!-- Error -->
-      <div class="radar-err" id="radarErr" style="display:none"></div>
-    </div>
-
-    <!-- Right: canvas radar -->
-    <div class="radar-right fade-in d2">
-      <div class="radar-canvas-wrap">
-        <canvas id="radarCanvas" width="340" height="340"></canvas>
-        <!-- Distance ring labels -->
-        <div class="rr-label rr-l1">10 km</div>
-        <div class="rr-label rr-l2">25 km</div>
-        <div class="rr-label rr-l3">50 km</div>
-        <!-- Donor count badge -->
-        <div class="rr-badge" id="rrBadge" style="display:none">
-          <span class="rr-badge-num" id="rrCount">0</span> donors detected
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════ LOCATION TRUST BLOCK ═══════════ -->
 <section class="loc-trust-sec" id="loc-trust">
   <div class="wrap">
     <div class="loc-trust-inner fade-in">
@@ -1971,6 +1900,77 @@ html,body{overflow-x:hidden;max-width:100%}
       </div>
 
     </div>
+  </div>
+</section>
+
+<!-- ═══════════ RADAR SECTION ═══════════ -->
+<section class="radar-sec" id="radar">
+  <div class="radar-layout">
+
+    <!-- Left: copy + stats + controls -->
+    <div class="radar-left fade-in">
+      <div class="label label-green">🛰 Live Radar</div>
+      <h2 class="title radar-title">Who's Near You<br>Right Now</h2>
+      <p class="radar-sub">The radar scans your surroundings and shows how many eligible donors are within reach — completely anonymous. No names. No numbers. Just blips.</p>
+
+      <!-- Stats (hidden until location granted) -->
+      <div id="radarStats" style="display:none">
+        <div class="radar-stat-row">
+          <div class="radar-stat">
+            <div class="radar-stat-num" id="rStat10">—</div>
+            <div class="radar-stat-lbl">Within<br>10 km</div>
+          </div>
+          <div class="radar-stat">
+            <div class="radar-stat-num" id="rStat25">—</div>
+            <div class="radar-stat-lbl">10 – 25<br>km</div>
+          </div>
+          <div class="radar-stat">
+            <div class="radar-stat-num" id="rStat50">—</div>
+            <div class="radar-stat-lbl">25 – 50<br>km</div>
+          </div>
+        </div>
+        <div class="radar-found" id="radarFound">Scanning…</div>
+      </div>
+
+      <!-- Blood type legend -->
+      <div class="radar-legend">
+        <div class="rleg"><div class="rleg-dot" style="background:#EF4444;box-shadow:0 0 6px #EF4444"></div> O± type</div>
+        <div class="rleg"><div class="rleg-dot" style="background:#3B82F6;box-shadow:0 0 6px #3B82F6"></div> A± type</div>
+        <div class="rleg"><div class="rleg-dot" style="background:#10B981;box-shadow:0 0 6px #10B981"></div> B± type</div>
+        <div class="rleg"><div class="rleg-dot" style="background:#F59E0B;box-shadow:0 0 6px #F59E0B"></div> AB± type</div>
+      </div>
+
+      <!-- Permission prompt -->
+      <div id="radarPerm">
+        <button class="radar-loc-btn" onclick="initRadar()">📍 Show Donors Near Me</button>
+        <p class="radar-perm-note">Your location stays in your browser — never sent to any server or stored.</p>
+      </div>
+
+      <!-- Loading state -->
+      <div class="radar-loading" id="radarLoading" style="display:none">
+        <div class="radar-spinner"></div>
+        <span>Scanning your area…</span>
+      </div>
+
+      <!-- Error -->
+      <div class="radar-err" id="radarErr" style="display:none"></div>
+    </div>
+
+    <!-- Right: canvas radar -->
+    <div class="radar-right fade-in d2">
+      <div class="radar-canvas-wrap">
+        <canvas id="radarCanvas" width="340" height="340"></canvas>
+        <!-- Distance ring labels -->
+        <div class="rr-label rr-l1">10 km</div>
+        <div class="rr-label rr-l2">25 km</div>
+        <div class="rr-label rr-l3">50 km</div>
+        <!-- Donor count badge -->
+        <div class="rr-badge" id="rrBadge" style="display:none">
+          <span class="rr-badge-num" id="rrCount">0</span> donors detected
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
