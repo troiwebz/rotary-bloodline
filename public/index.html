@@ -3980,83 +3980,109 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeWizard(
     },step);
   }
 
+  // ── Reveal the location card with radar data ──────────────────────────────
+  function revealLocCard(lat, lng, areaName){
+    var btn=document.querySelector('.loc-cta-btn');
+    var area = areaName || 'Puducherry';
+
+    document.getElementById('locRevArea').textContent = area;
+    document.getElementById('locRevZone').textContent = '';
+    document.getElementById('locPillText').textContent = '📍 You are in ' + area;
+    document.getElementById('locPillWrap').style.display = 'block';
+
+    fetch(API_BASE+'/api/radar?lat='+lat+'&lng='+lng+'&radius=10')
+      .then(function(r){ return r.ok ? r.json() : {ok:false,total:0,within10:0,blips:[]}; })
+      .then(function(rd){
+        var near  = rd.within10 || 0;
+
+        // Animate donor count
+        animNum(document.getElementById('locRevCount'), near, 900);
+
+        // Blood type breakdown pills
+        var btCounts={};
+        (rd.blips||[]).forEach(function(b){ btCounts[b.bloodType]=(btCounts[b.bloodType]||0)+1; });
+        var btRow = document.getElementById('locRevBtRow');
+        if(btRow){
+          var BTC = BT_COLOR;
+          btRow.innerHTML = Object.keys(btCounts).sort().map(function(bt){
+            var c = BTC[bt]||'#94a3b8';
+            return '<span class="loc-rev-bt-pill" style="border-color:'+c+'55;color:'+c+'">'+bt+' ×'+btCounts[bt]+'</span>';
+          }).join('');
+        }
+
+        // Donors pill message
+        document.getElementById('locDonorsMsg').textContent =
+          near + ' verified donor' + (near===1?'':'s') + ' within 10 km — ready to help.';
+
+        // Nearest donor blip
+        var nearest = rd.blips && rd.blips[0];
+        if(nearest){
+          document.getElementById('locRevNearestVal').textContent =
+            nearest.bloodType + ' donor — ' + nearest.distance + ' km away';
+          document.getElementById('locRevNearest').style.display = 'block';
+        }
+
+        // Flip card locked → revealed
+        document.getElementById('locLocked').style.display = 'none';
+        document.getElementById('locRevealed').style.display = 'flex';
+        document.getElementById('locRevealed').style.flexDirection = 'column';
+        if(btn){ btn.style.display='none'; }
+      })
+      .catch(function(){
+        // Radar call failed — still flip the card, show 0
+        document.getElementById('locRevCount').textContent = '0';
+        document.getElementById('locDonorsMsg').textContent = 'Could not load nearby donors right now.';
+        document.getElementById('locLocked').style.display = 'none';
+        document.getElementById('locRevealed').style.display = 'flex';
+        document.getElementById('locRevealed').style.flexDirection = 'column';
+        if(btn){ btn.style.display='none'; }
+      });
+  }
+
   window.initLocTrust=function(){
+    var btn=document.querySelector('.loc-cta-btn');
+    if(btn){ btn.textContent='📡 Detecting…'; btn.disabled=true; }
+
+    // Fallback: if geolocation unavailable or denied, use Puducherry centre
+    var PUDU_LAT=11.9340, PUDU_LNG=79.8297;
+
     if(!navigator.geolocation){
-      document.getElementById('locDonorsMsg').textContent='Geolocation not supported on this device.';
-      document.getElementById('locPillWrap').style.display='block';
+      revealLocCard(PUDU_LAT, PUDU_LNG, 'Puducherry');
       return;
     }
-    var btn=document.querySelector('.loc-cta-btn');
-    if(btn){btn.textContent='📡 Detecting…';btn.disabled=true;}
 
-    navigator.geolocation.getCurrentPosition(function(pos){
-      var lat=pos.coords.latitude, lng=pos.coords.longitude;
+    // 8-second timeout then fall back to Puducherry coords
+    var done = false;
+    var fallbackTimer = setTimeout(function(){
+      if(!done){ done=true; revealLocCard(PUDU_LAT, PUDU_LNG, 'Puducherry'); }
+    }, 8000);
 
-      // Detect area name
-      fetch(API_BASE+'/api/detect-area?lat='+lat+'&lng='+lng)
-        .then(function(r){return r.json();})
-        .then(function(d){
-          var area=d.area||d.nearest||'Your Area';
-          var zone=d.zone||'';
-          document.getElementById('locRevArea').textContent=area;
-          document.getElementById('locRevZone').textContent=zone?'Zone: '+zone:'';
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        if(done) return;
+        done = true;
+        clearTimeout(fallbackTimer);
+        var lat=pos.coords.latitude, lng=pos.coords.longitude;
 
-          // Update pill
-          document.getElementById('locPillText').textContent='You are in '+area;
-          document.getElementById('locPillWrap').style.display='block';
-
-          // Get nearby donors
-          fetch(API_BASE+'/api/radar?lat='+lat+'&lng='+lng+'&radius=10')
-            .then(function(r){return r.json();})
-            .then(function(rd){
-              var near=rd.within10||0, total=rd.total||0;
-
-              // Animate count
-              animNum(document.getElementById('locRevCount'), near, 800);
-
-              // Blood type breakdown pills
-              var btCounts={};
-              (rd.blips||[]).forEach(function(b){btCounts[b.bloodType]=(btCounts[b.bloodType]||0)+1;});
-              var btRow=document.getElementById('locRevBtRow');
-              if(btRow){
-                btRow.innerHTML=Object.keys(btCounts).sort().map(function(bt){
-                  return '<span class="loc-rev-bt-pill" style="border-color:'+BT_COLOR[bt]+'55;color:'+BT_COLOR[bt]+'">'+bt+' ×'+btCounts[bt]+'</span>';
-                }).join('');
-              }
-
-              // Donors msg
-              document.getElementById('locDonorsMsg').textContent=
-                near+' verified donors within 10 km of you are ready to help.';
-
-              // Nearest donor (from blips)
-              var nearest=rd.blips&&rd.blips[0];
-              if(nearest){
-                document.getElementById('locRevNearestVal').textContent=
-                  nearest.bloodType+' donor — '+nearest.distance+' km away';
-                document.getElementById('locRevNearest').style.display='block';
-              }
-
-              // Switch card to revealed
-              document.getElementById('locLocked').style.display='none';
-              document.getElementById('locRevealed').style.display='flex';
-              document.getElementById('locRevealed').style.flexDirection='column';
-
-              // Hide button, keep pill
-              if(btn){btn.style.display='none';}
-            }).catch(function(){
-              document.getElementById('locDonorsMsg').textContent='Could not load nearby donors right now.';
-            });
-        }).catch(function(){
-          document.getElementById('locPillText').textContent='Location detected';
-          document.getElementById('locPillWrap').style.display='block';
-          if(btn){btn.textContent='📍 Show My Nearest Donors';btn.disabled=false;}
-        });
-    }, function(){
-      document.getElementById('locPillText').textContent='Location permission denied';
-      document.getElementById('locPillWrap').style.display='block';
-      document.getElementById('locDonorsMsg').textContent='Allow location access to see donors near you.';
-      if(btn){btn.textContent='📍 Show My Nearest Donors';btn.disabled=false;}
-    }, {timeout:10000,maximumAge:60000});
+        // Fix: server expects 'lon', not 'lng'
+        fetch(API_BASE+'/api/detect-area?lat='+lat+'&lon='+lng)
+          .then(function(r){ return r.ok ? r.json() : {area:'Puducherry'}; })
+          .then(function(d){
+            revealLocCard(lat, lng, d.area || d.nearest || 'Puducherry');
+          })
+          .catch(function(){
+            revealLocCard(lat, lng, 'Puducherry');
+          });
+      },
+      function(){
+        // Permission denied or error — use Puducherry
+        if(done) return;
+        done = true;
+        clearTimeout(fallbackTimer);
+        revealLocCard(PUDU_LAT, PUDU_LNG, 'Puducherry');
+      },
+      {timeout:7000, maximumAge:60000, enableHighAccuracy:false}
+    );
   };
 })();
 </script>
