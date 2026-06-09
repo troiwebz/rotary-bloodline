@@ -32,7 +32,7 @@ function getZoneForArea(area) {
 }
 
 const app  = express();
-const PORT = 4001;
+const PORT = process.env.PORT || 4001;
 
 // ── CORS — allow any origin (Vercel, mobile, etc.) ───────────────────────────
 app.use(cors({ origin: '*', methods: ['GET','POST','PUT','DELETE','OPTIONS'] }));

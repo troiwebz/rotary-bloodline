@@ -9,3 +9,4 @@ vercel-site/
 npm-debug.log*
 .DS_Store
 public/index\ 2.html
+.vercel

@@ -2054,8 +2054,10 @@ function getPhone(id){
 }
 
 // ── API base — always relative (works on localhost:4001 and Vercel) ────────
-const API_BASE = '';
 const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+// On Vercel → point to Railway backend. Locally → same server.
+const RAILWAY_URL = 'https://rotary-bloodline-production.up.railway.app';
+const API_BASE = IS_LOCAL ? '' : RAILWAY_URL;
 
 // ── Server status banner ───────────────────────────────────────────────────
 async function checkServerStatus(){
@@ -2383,7 +2385,7 @@ async function checkServerStatus(){
     navigator.geolocation.getCurrentPosition(
       function(pos) {
         var lat = pos.coords.latitude, lng = pos.coords.longitude;
-        var url = (window.API_BASE||'') + '/api/radar?lat='+lat+'&lng='+lng+'&radius=50';
+        var url = (window.API_BASE||API_BASE||'') + '/api/radar?lat='+lat+'&lng='+lng+'&radius=50';
         fetch(url).then(function(r){return r.json();}).then(function(data){
           if (loadDiv) loadDiv.style.display='none';
           if (statsDiv) statsDiv.style.display='block';
@@ -3510,7 +3512,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeWizard(
       var lat=pos.coords.latitude, lng=pos.coords.longitude;
 
       // Detect area name
-      fetch('/api/detect-area?lat='+lat+'&lng='+lng)
+      fetch(API_BASE+'/api/detect-area?lat='+lat+'&lng='+lng)
         .then(function(r){return r.json();})
         .then(function(d){
           var area=d.area||d.nearest||'Your Area';
@@ -3523,7 +3525,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeWizard(
           document.getElementById('locPillWrap').style.display='block';
 
           // Get nearby donors
-          fetch('/api/radar?lat='+lat+'&lng='+lng+'&radius=10')
+          fetch(API_BASE+'/api/radar?lat='+lat+'&lng='+lng+'&radius=10')
             .then(function(r){return r.json();})
             .then(function(rd){
               var near=rd.within10||0, total=rd.total||0;
