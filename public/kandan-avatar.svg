@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <clipPath id="circle-k">
+      <circle cx="100" cy="100" r="100"/>
+    </clipPath>
+    <linearGradient id="bg-k" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="100%" style="stop-color:#2563EB"/>
+    </linearGradient>
+    <linearGradient id="suit-k" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a2744"/>
+      <stop offset="100%" style="stop-color:#243560"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="100" cy="100" r="100" fill="url(#bg-k)"/>
+
+  <!-- Suit body (bottom) -->
+  <ellipse cx="100" cy="195" rx="72" ry="40" fill="url(#suit-k)" clip-path="url(#circle-k)"/>
+  <rect x="28" y="148" width="144" height="60" fill="url(#suit-k)" clip-path="url(#circle-k)"/>
+
+  <!-- Shirt / collar white -->
+  <polygon points="86,148 100,165 114,148 108,138 92,138" fill="#F8FAFC"/>
+
+  <!-- Tie -->
+  <polygon points="97,140 103,140 106,165 100,170 94,165" fill="#DC2626"/>
+  <polygon points="97,140 103,140 101,147 99,147" fill="#B91C1C"/>
+
+  <!-- Left suit lapel -->
+  <polygon points="28,148 86,148 80,128 60,128 28,148" fill="#1a2744"/>
+  <!-- Right suit lapel -->
+  <polygon points="172,148 114,148 120,128 140,128 172,148" fill="#1a2744"/>
+
+  <!-- Rotary pin on left lapel -->
+  <circle cx="72" cy="136" r="5" fill="#FFD700" opacity="0.9"/>
+  <circle cx="72" cy="136" r="3" fill="#1E40AF"/>
+
+  <!-- Neck -->
+  <rect x="88" y="112" width="24" height="28" rx="6" fill="#C68642"/>
+
+  <!-- Head -->
+  <ellipse cx="100" cy="93" rx="34" ry="38" fill="#C68642"/>
+
+  <!-- Hair (dark, slightly receding, professional) -->
+  <ellipse cx="100" cy="60" rx="34" ry="16" fill="#1a0a00"/>
+  <ellipse cx="100" cy="56" rx="30" ry="12" fill="#1a0a00"/>
+  <!-- Side hair -->
+  <ellipse cx="68" cy="75" rx="8" ry="16" fill="#1a0a00"/>
+  <ellipse cx="132" cy="75" rx="8" ry="16" fill="#1a0a00"/>
+
+  <!-- Ears -->
+  <ellipse cx="67" cy="93" rx="6" ry="9" fill="#C68642"/>
+  <ellipse cx="133" cy="93" rx="6" ry="9" fill="#C68642"/>
+  <ellipse cx="67" cy="93" rx="3" ry="5" fill="#B5763A"/>
+  <ellipse cx="133" cy="93" rx="3" ry="5" fill="#B5763A"/>
+
+  <!-- Eyebrows -->
+  <path d="M82 76 Q90 72 98 75" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M102 75 Q110 72 118 76" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Eyes -->
+  <ellipse cx="90" cy="85" rx="7" ry="5.5" fill="#fff"/>
+  <ellipse cx="110" cy="85" rx="7" ry="5.5" fill="#fff"/>
+  <circle cx="91" cy="86" r="3.5" fill="#2d1a00"/>
+  <circle cx="111" cy="86" r="3.5" fill="#2d1a00"/>
+  <circle cx="92" cy="84" r="1.2" fill="#fff" opacity="0.7"/>
+  <circle cx="112" cy="84" r="1.2" fill="#fff" opacity="0.7"/>
+  <!-- Eyelids subtle -->
+  <path d="M83 82 Q90 80 97 82" stroke="#1a0a00" stroke-width="1" fill="none"/>
+  <path d="M103 82 Q110 80 117 82" stroke="#1a0a00" stroke-width="1" fill="none"/>
+
+  <!-- Nose -->
+  <path d="M98 90 Q97 102 92 106 Q100 110 108 106 Q103 102 102 90" fill="#B5763A" opacity="0.6"/>
+
+  <!-- Smile -->
+  <path d="M87 113 Q100 122 113 113" stroke="#8B3A3A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M88 114 Q100 120 112 114" fill="#D97070" opacity="0.5"/>
+
+  <!-- Light mustache -->
+  <path d="M91 109 Q100 112 109 109" stroke="#3d1a00" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+  <!-- Glasses -->
+  <rect x="81" y="80" width="16" height="12" rx="4" fill="none" stroke="#4A3728" stroke-width="1.5" opacity="0.7"/>
+  <rect x="103" y="80" width="16" height="12" rx="4" fill="none" stroke="#4A3728" stroke-width="1.5" opacity="0.7"/>
+  <line x1="97" y1="85" x2="103" y2="85" stroke="#4A3728" stroke-width="1.5" opacity="0.7"/>
+  <line x1="67" y1="84" x2="81" y2="84" stroke="#4A3728" stroke-width="1" opacity="0.5"/>
+  <line x1="119" y1="84" x2="133" y2="84" stroke="#4A3728" stroke-width="1" opacity="0.5"/>
+</svg>
