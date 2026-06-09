@@ -51,7 +51,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,255,255,
 .vid-content{padding:0 80px;max-width:740px;position:relative;z-index:2}
 .vid-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(220,38,38,.18);border:1px solid rgba(220,38,38,.36);border-radius:30px;padding:8px 18px;font-size:11px;font-weight:700;color:#FCA5A5;letter-spacing:.8px;text-transform:uppercase;margin-bottom:28px;font-family:'Plus Jakarta Sans',sans-serif}
 .vid-tag .dot-live{width:7px;height:7px;border-radius:50%;background:#EF4444;box-shadow:0 0 8px #EF4444;animation:pulse 1.8s infinite}
-.vid-content h2{font-size:70px;font-weight:900;line-height:1.02;letter-spacing:-3.5px;color:#fff;margin-bottom:22px;text-shadow:0 2px 40px rgba(0,0,0,.5);font-family:'Plus Jakarta Sans',sans-serif}
+.vid-content h2{font-size:clamp(26px,6.5vw,70px);font-weight:900;line-height:1.06;letter-spacing:-3.5px;color:#fff;margin-bottom:22px;text-shadow:0 2px 40px rgba(0,0,0,.5);font-family:'Plus Jakarta Sans',sans-serif}
 .vid-content h2 em{font-style:normal;color:#FCA5A5}
 .vid-content p{font-size:17px;color:rgba(255,255,255,.72);line-height:1.85;margin-bottom:38px;max-width:520px;font-weight:400}
 .vid-btns{display:flex;gap:14px;flex-wrap:wrap}
@@ -1119,6 +1119,359 @@ footer{background:#070B14;padding:72px 52px 44px}
   .loc-trust-sub{font-size:14px}
   .loc-ts-num{font-size:22px}
   .loc-ts{padding:0 14px}
+}
+
+/* ══════════════════════════════════════════════════
+   MOBILE-FIRST OVERHAUL  ·  pixel-perfect at 390px
+   No horizontal scroll · All content centred
+   3 breakpoints: 768 / 480 / 360
+══════════════════════════════════════════════════ */
+
+/* Global: kill horizontal scroll on every device */
+html,body{overflow-x:hidden;max-width:100%}
+*,*::before,*::after{box-sizing:border-box}
+
+/* ─────────── 768px — tablet / large phone ─────────── */
+@media(max-width:768px){
+
+  /* Base */
+  html,body{overflow-x:hidden}
+
+  /* ── AI Banner ── */
+  .ai-world-banner{
+    font-size:9px;padding:7px 12px;
+    text-align:center;line-height:1.6;
+    flex-wrap:wrap;justify-content:center;gap:4px
+  }
+
+  /* ── Nav ── */
+  nav{padding:0 16px;height:60px;grid-template-columns:auto auto}
+  .nav-links{display:none}
+  .nav-cta-wrap{justify-content:flex-end}
+  .nbl-top{font-size:14px;letter-spacing:-.2px}
+  .nbl-sub{font-size:8px}
+  .nbl-drop{font-size:22px}
+  .nav-cta{padding:9px 16px;font-size:12.5px}
+
+  /* ── Hero ── */
+  .vid-strip{height:calc(100svh - 60px);min-height:520px}
+  .vid-strip-overlay{justify-content:center;padding:0}
+  .vid-content{
+    padding:0 24px;max-width:100%;width:100%;
+    display:flex;flex-direction:column;align-items:center;text-align:center
+  }
+  .vid-tag{font-size:10px;padding:6px 14px;align-self:center;margin-bottom:20px}
+  /* Hero heading — readable size, centred, clear word separation */
+  .vid-content h2{
+    font-size:28px;font-weight:900;letter-spacing:.2px;
+    line-height:1.18;text-align:center;word-spacing:3px;
+    margin-bottom:16px
+  }
+  .vid-content p{
+    font-size:14.5px;margin-bottom:28px;
+    text-align:center;max-width:100%;line-height:1.7
+  }
+  .vid-btns{flex-direction:column;gap:10px;align-items:center;width:100%}
+  .vid-btn-red,.vid-btn-ghost{
+    width:100%;max-width:320px;justify-content:center;
+    padding:14px 20px;font-size:14px;text-align:center
+  }
+  .vid-mute-btn{bottom:14px;right:14px}
+  .vid-scroll-cue{display:none}
+
+  /* ── Ticker ── */
+  .ticker-wrap{overflow:hidden;width:100%}
+
+  /* ── Section padding — uniform 52px → 20px sides ── */
+  section{padding:60px 20px}
+  .how-sec,.why-sec,.impact-sec,.blood-sec{padding:60px 20px}
+  .about-compact{padding:52px 20px}
+  .action-sec{padding:52px 20px!important}
+  .radar-sec{padding:60px 20px}
+  .loc-trust-sec{padding:60px 20px}
+  .heroes-sec{padding:60px 0}
+  .heroes-sec .wrap{padding:0 20px}
+  .emg-strip,.emg-inner{width:100%;overflow:hidden}
+
+  /* Container widths */
+  .wrap{max-width:100%;padding:0 2px}
+
+  /* ── All section headers → centred ── */
+  h2.title{
+    font-size:28px;letter-spacing:-.5px;
+    line-height:1.15;text-align:center!important
+  }
+  .sec-head,.sec-head.center{text-align:center;max-width:100%}
+  .label-pill,.label-green,.label-blue{
+    display:inline-flex;margin-left:auto;margin-right:auto;margin-bottom:14px
+  }
+  p.sub{font-size:14.5px;text-align:center;line-height:1.7}
+
+  /* ── How It Works ── */
+  .steps-row{
+    grid-template-columns:1fr 1fr;gap:14px;
+    max-width:100%;margin:0 auto
+  }
+  .steps-row::before{display:none}
+  .step-card{text-align:center;padding:22px 14px}
+  .step-num{margin:0 auto 10px}
+
+  /* ── Impact stats  2×2 ── */
+  .impact-grid{grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
+  .impact-card{padding:28px 14px;text-align:center}
+  .impact-num{font-size:36px}
+  .impact-label{font-size:12.5px}
+
+  /* ── Blood type grid ── */
+  .bt-grid{grid-template-columns:repeat(4,1fr);gap:8px}
+  .bt-card{padding:16px 4px;text-align:center}
+  .bt-type{font-size:16px}
+  .bt-count{font-size:19px}
+
+  /* ── Features ── */
+  .features-grid{grid-template-columns:1fr;max-width:100%;gap:16px;margin-top:36px}
+  .feat-visual{height:200px}
+  .feat-content{padding:20px 18px 22px;text-align:center}
+  .feat-title{font-size:17px;text-align:center}
+  .feat-desc{font-size:13.5px;line-height:1.75;text-align:center}
+  .feat-proof{margin-top:14px;font-size:11.5px;text-align:center}
+  .fv-free-amt{font-size:54px}
+
+  /* ── Why Donate ── */
+  .why-inner{grid-template-columns:1fr;gap:28px}
+  .why-sec .sec-head{margin-bottom:0;text-align:center}
+
+  /* ── Action / Request forms ── */
+  .action-grid{
+    grid-template-columns:1fr;gap:16px;
+    max-width:100%;margin:0 auto
+  }
+  .form-card.req,.form-card.don{padding:22px 16px}
+  .fc-header{text-align:center}
+  .fc-title{font-size:17px;text-align:center}
+  .fc-cta-body{padding:18px 16px 22px;text-align:center}
+  .action-hotline{
+    flex-direction:column;align-items:center;
+    text-align:center;gap:12px;padding:16px 16px
+  }
+  .action-hotline-call{width:100%;max-width:260px;justify-content:center}
+
+  /* ── Wizard popup ── */
+  .fwiz-overlay{padding:12px}
+  .fwiz-box{
+    width:calc(100vw - 20px);max-width:440px;
+    border-radius:20px;max-height:92svh
+  }
+  .fwiz-hd{padding:18px 18px 16px}
+  .fwiz-hd-title{font-size:17px;text-align:center}
+  .fwiz-body{padding:16px 18px 6px}
+  .fwiz-nav{padding:10px 18px 18px}
+  .fwiz-err{margin:0 18px 8px}
+  .fwiz-step-title{font-size:16px;text-align:center;margin-bottom:14px}
+  .fwiz-bt-grid{grid-template-columns:repeat(4,1fr);gap:8px}
+  .fwiz-bt-btn{padding:10px 4px;text-align:center}
+  .bt-type{font-size:15px}
+  .bt-sub{font-size:9px}
+  .f-row{grid-template-columns:1fr;gap:10px}
+  .fwiz-steps{gap:4px}
+  input[type=text],input[type=tel],input[type=number],
+  select,textarea,.fwiz-input{width:100%!important;font-size:16px}
+
+  /* ── Live Radar ── */
+  .radar-layout{grid-template-columns:1fr;gap:36px}
+  .radar-right{order:-1;justify-content:center;width:100%}
+  .radar-left{text-align:center}
+  .radar-sub{max-width:100%;text-align:center}
+  .radar-title{text-align:center!important}
+  .radar-stat-row{justify-content:center;gap:10px}
+  #radarCanvas{width:260px!important;height:260px!important}
+  .radar-canvas-wrap{margin:0 auto}
+  .radar-loc-btn{
+    width:100%;max-width:280px;
+    justify-content:center;margin:20px auto 0
+  }
+  .radar-legend{justify-content:center;gap:12px}
+  .radar-perm-note{text-align:center}
+  .radar-found{text-align:center}
+
+  /* ── Location Trust ── */
+  .loc-trust-inner{grid-template-columns:1fr;gap:36px}
+  .loc-trust-right{order:-1;align-items:center;width:100%}
+  .loc-trust-left{text-align:center}
+  .loc-card{max-width:100%;width:100%}
+  .loc-trust-h2{font-size:28px;letter-spacing:-.5px;text-align:center}
+  .loc-trust-sub{font-size:14px;text-align:center;max-width:100%}
+  .loc-ai-badge{display:inline-flex;margin:0 auto 18px}
+  .loc-trust-stats{justify-content:center;flex-wrap:wrap;gap:0}
+  .loc-ts{padding:0 16px}
+  .loc-ts:first-child{padding-left:0}
+  .loc-pill-wrap{text-align:center}
+  .loc-cta-btn{width:100%;max-width:280px;display:block;margin:0 auto}
+  .loc-ai-tag{max-width:100%}
+
+  /* ── Heroes / Leaderboard ── */
+  .heroes-hd{
+    flex-direction:column;align-items:center;
+    text-align:center;gap:14px;margin-bottom:24px
+  }
+  .heroes-hd-left h2{font-size:28px;letter-spacing:-.5px;text-align:center}
+  .heroes-hd-left p{text-align:center}
+  .heroes-layout{grid-template-columns:1fr;gap:20px}
+  .live-panel{max-height:280px}
+  .hof-podium{
+    grid-template-columns:1fr;gap:12px;
+    max-width:300px;margin:0 auto
+  }
+  .hof-rank-1,.hof-rank-2,.hof-rank-3{margin-top:0}
+
+  /* ── About Rotary ── */
+  .ac-header{
+    flex-direction:column;align-items:center;
+    text-align:center;gap:14px
+  }
+  .ac-header h2{font-size:28px;text-align:center}
+  .ac-header p{text-align:center}
+  .ac-dg-card{padding:28px 18px 24px}
+  .ac-dg-body{flex-direction:column;gap:22px;align-items:center;text-align:center}
+  .ac-dg-openquote{text-align:center}
+  .ac-dg-quote{font-size:17px;text-align:center}
+  .ac-dg-meta{align-items:center}
+  .ac-dg-divider{margin:12px auto}
+  .ac-leaders{grid-template-columns:1fr;gap:12px}
+  .ac-leaders-row{
+    grid-template-columns:1fr;
+    max-width:320px;margin:20px auto 0
+  }
+  .ac-lead-card{padding:22px 18px;text-align:center}
+  .ac-facts{justify-content:center;gap:8px}
+  .ac-fact{font-size:11px;padding:6px 12px}
+
+  /* ── Emergency strip ── */
+  .emg-inner{
+    flex-direction:column;align-items:center;
+    text-align:center;padding:28px 20px;gap:18px
+  }
+  .emg-left{flex-direction:column;align-items:center;gap:12px}
+  .emg-copy h3{font-size:20px;text-align:center}
+  .emg-copy p{text-align:center}
+  .emg-btn{
+    width:100%;max-width:280px;
+    text-align:center;padding:14px 20px
+  }
+
+  /* ── Footer ── */
+  footer{padding:48px 20px 32px}
+  .ft-top{grid-template-columns:1fr 1fr;gap:24px;margin-bottom:36px}
+  .ft-col h4{font-size:13px}
+  .ft-col ul li a{font-size:12.5px}
+  .ft-bottom{flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .ft-brand p{font-size:12.5px;line-height:1.75}
+  .ft-meet-box{padding:14px 16px}
+
+  /* ── AI chat ── */
+  .ai-window{width:calc(100vw - 24px);right:12px;bottom:84px;max-height:72svh}
+  .ai-fab{bottom:18px;right:18px;width:52px;height:52px;font-size:22px}
+
+  /* ── Toast ── */
+  .join-toast{left:10px;right:10px;max-width:none;bottom:14px}
+
+  /* ── Live log ── */
+  .fv-live-log{width:92%;left:4%}
+  .fv-log-name{max-width:80px}
+}
+
+/* ─────────── 480px — standard phone portrait ─────────── */
+@media(max-width:480px){
+
+  /* Nav */
+  nav{padding:0 14px;height:56px}
+  .nbl-top{font-size:13px}
+  .nbl-sub{display:none}
+  .nbl-drop{font-size:20px}
+  .nav-cta{padding:8px 13px;font-size:12px}
+
+  /* Hero */
+  .vid-content h2{
+    font-size:26px;letter-spacing:.3px;
+    line-height:1.2;word-spacing:3px
+  }
+  .vid-content p{font-size:14px}
+
+  /* Section headings */
+  h2.title{font-size:26px;letter-spacing:-.3px}
+  p.sub{font-size:14px}
+
+  /* How-it-works: keep 2-col on 480 */
+  .steps-row{grid-template-columns:1fr 1fr;gap:12px}
+  .step-num{font-size:20px}
+
+  /* Impact 2×2 */
+  .impact-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .impact-card{padding:22px 12px}
+  .impact-num{font-size:32px}
+  .impact-label{font-size:12px}
+
+  /* Blood type — 4 across */
+  .bt-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .bt-card{padding:14px 4px}
+  .bt-type{font-size:15px}
+  .bt-count{font-size:17px}
+
+  /* Footer 1 col */
+  .ft-top{grid-template-columns:1fr;gap:22px}
+
+  /* Radar canvas */
+  #radarCanvas{width:240px!important;height:240px!important}
+
+  /* About leader cards — full width, max 320 */
+  .ac-leaders-row{max-width:300px}
+  .ac-lead-name{font-size:13.5px}
+  .ac-lead-role{font-size:11px}
+  .ac-lead-photo,.ac-lead-initials{width:80px;height:80px}
+  .ac-lead-photo-wrap{width:80px;height:80px}
+
+  /* Emergency */
+  .emg-ico{font-size:30px}
+  .emg-copy h3{font-size:18px}
+
+  /* Ticker */
+  .tick{font-size:10.5px;padding:0 14px}
+
+  /* Feat visual shorter */
+  .feat-visual{height:185px}
+  .fv-free-amt{font-size:48px}
+
+  /* Wizard blood type grid */
+  .fwiz-bt-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+}
+
+/* ─────────── 360px — small / older phones ─────────── */
+@media(max-width:360px){
+  nav{padding:0 10px}
+  .nbl-top{font-size:12px}
+  .nav-cta{padding:7px 10px;font-size:11px}
+
+  h2.title{font-size:23px;letter-spacing:-.2px}
+  .vid-content h2{font-size:24px;letter-spacing:.4px;word-spacing:3px}
+  .vid-content p{font-size:13px}
+  p.sub{font-size:13px}
+
+  .impact-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .impact-card{padding:18px 10px}
+  .impact-num{font-size:27px}
+
+  .bt-grid{grid-template-columns:repeat(4,1fr);gap:4px}
+  .bt-type{font-size:13px}
+  .bt-count{font-size:15px}
+
+  .steps-row{grid-template-columns:1fr}
+
+  .ac-leaders-row{max-width:260px}
+
+  #radarCanvas{width:210px!important;height:210px!important}
+
+  footer{padding:36px 14px 24px}
+  .ft-top{gap:18px}
 }
 </style>
 </head>
