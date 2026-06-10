@@ -21,10 +21,24 @@ const sessions = new Map();
 
 const clientIdFor = id => id === 'master' ? 'bloodline' : `bloodline-${id}`;
 
-// ── Remove stale SingletonLock before init ────────────────────────────────────
+// ── Remove ALL stale Chromium singleton locks before init ─────────────────────
+// (crash loops can leave SingletonLock/Socket/Cookie behind → launch Code 21)
 function clearLock(id) {
-  const p = path.join(AUTH_DIR, `session-${clientIdFor(id)}`, 'SingletonLock');
-  try { if (fs.existsSync(p)) { fs.unlinkSync(p); console.log('[WA] Cleared lock:', p); } } catch {}
+  const dir = path.join(AUTH_DIR, `session-${clientIdFor(id)}`);
+  ['SingletonLock', 'SingletonSocket', 'SingletonCookie'].forEach(f => {
+    const p = path.join(dir, f);
+    try { if (fs.existsSync(p)) { fs.rmSync(p, { force: true }); console.log('[WA] Cleared', f, 'for', id); } } catch {}
+  });
+  // Also clear Crashpad lock remnants inside the profile
+  try {
+    const crash = path.join(dir, 'Default');
+    if (fs.existsSync(crash)) {
+      ['SingletonLock', 'SingletonSocket', 'SingletonCookie'].forEach(f => {
+        const p = path.join(crash, f);
+        if (fs.existsSync(p)) fs.rmSync(p, { force: true });
+      });
+    }
+  } catch {}
 }
 
 const _retryMemory = new Map();   // id → retry count, survives session deletion
