@@ -665,6 +665,12 @@ app.post('/api/donors/register', async (req, res) => {
   if (!name || !phone || !bloodType || !area)
     return res.status(400).json({ ok: false, msg: 'All fields required' });
 
+  // WhatsApp must be verified upfront (OTP-style) while the engine is up
+  const cleanPh = String(phone).replace(/\D/g, '');
+  const vEntry = loadVerify().find(v => v.phone === cleanPh && v.verified);
+  if (wa.isReady() && !vEntry)
+    return res.status(403).json({ ok: false, code: 'VERIFY_REQUIRED', msg: 'Please verify your WhatsApp first — tap the green verify button.' });
+
   const result = db.registerDonor(name, phone, bloodType, area, lastDonation, camp, {
     pincode: pincode ? String(pincode).replace(/\D/g, '').slice(0, 6) : null,
     lat: Number.isFinite(Number(lat)) ? Number(lat) : null,
@@ -673,8 +679,13 @@ app.post('/api/donors/register', async (req, res) => {
   });
   if (!result.ok) return res.status(409).json(result);
 
-  // NO proactive welcome DM — the donor says Hi to US first (the handshake),
-  // and the welcome arrives as a reply. We are never the stranger.
+  // Donor verified upfront → born waVerified; welcome rides the open conversation
+  if (vEntry) {
+    db.updateDonor(result.donor.id, { waVerified: true, waVerifiedAt: Date.now() });
+    saveVerify(loadVerify().filter(v => v.phone !== cleanPh));
+    const profileUrl = 'https://rotary-bloodline.vercel.app/profile.html?id=' + result.donor.id + '&p=' + result.donor.phone.slice(-4);
+    wa.sendWelcome(name, phone, bloodType, area, 'master', profileUrl).catch(() => {});
+  }
 
   const stats = db.getStats();
   broadcastSSE('donor_registered', { name, bloodType, area, stats });
@@ -962,6 +973,53 @@ You are what Rotary means. 🙏
 // ── Donor reply processing (shared by WhatsApp listener + webhook) ────────────
 // Classifies YES/NO, finds which request the donor is answering, records it,
 // pushes SSE to the site, and sends a follow-up WhatsApp confirmation.
+// ── Pre-registration WhatsApp verification (OTP-style, via the Hi) ────────────
+const VERIFY_FILE = path.join(DATA_ROOT, 'verify.json');
+function loadVerify()  { try { return JSON.parse(fs.readFileSync(VERIFY_FILE, 'utf8')); } catch { return []; } }
+function saveVerify(v) { fs.writeFileSync(VERIFY_FILE, JSON.stringify(v, null, 2)); }
+
+// Start verification: returns a short code the donor sends us on WhatsApp
+app.post('/api/verify/start', (req, res) => {
+  const phone = String(req.body?.phone || '').replace(/\D/g, '');
+  const name  = String(req.body?.name || '').slice(0, 60);
+  if (phone.length !== 10) return res.status(400).json({ ok: false, msg: 'Valid 10-digit phone required' });
+  if (!wa.isReady()) return res.json({ ok: true, skip: true });   // WA engine down → don't block donors
+  let list = loadVerify().filter(v => Date.now() - v.at < 24 * 3600000);  // prune old
+  let entry = list.find(v => v.phone === phone && !v.verified);
+  if (!entry) {
+    entry = { phone, name, code: String(Math.floor(1000 + Math.random() * 9000)), verified: false, at: Date.now() };
+    list.push(entry);
+  }
+  saveVerify(list);
+  res.json({ ok: true, code: entry.code });
+});
+
+app.get('/api/verify/status', (req, res) => {
+  const phone = String(req.query.phone || '').replace(/\D/g, '');
+  const entry = loadVerify().find(v => v.phone === phone);
+  res.json({ ok: true, verified: !!entry?.verified });
+});
+
+// Incoming VERIFY-code (or any message from a pending phone) → confirm + reply
+async function tryVerify(from, body) {
+  const clean = String(from).replace(/\D/g, '').replace(/^91/, '');
+  const list = loadVerify();
+  const entry = list.find(v => v.phone === clean && !v.verified);
+  if (!entry) return false;
+  const codeMatch = new RegExp('\\b' + entry.code + '\\b').test(body || '');
+  const greeting  = /^(hi|hello|hai|vanakkam|வணக்கம்)/i.test((body || '').trim());
+  if (!codeMatch && !greeting) return false;
+  entry.verified = true;
+  saveVerify(list);
+  await wa.sendMessage(from,
+`✅ *WhatsApp verified!* Vanakkam ${entry.name || 'hero'} — Rtn. Uyir here. 🤝
+
+Now go back to the website and tap *Continue* to finish your registration. Your emergency alerts will be active the moment you're done. 🩸`);
+  audit('wa_verify', 'phone:' + clean.slice(-4), {});
+  console.log(`[VERIFY] ${clean} WhatsApp-verified pre-registration`);
+  return true;
+}
+
 // ── The "Hi handshake" — donor messages US first, we're never strangers ───────
 // Detects a greeting / ID-tag from a registered donor, marks them WA-verified,
 // and replies with the Rtn. Uyir welcome. Returns true if handled.
@@ -992,6 +1050,8 @@ Ask me anything, or just stay ready: when *${donor.bloodType}* blood is needed n
 }
 
 async function processDonorReply(from, body, requestId) {
+  // Pre-registration verification code?
+  if (await tryVerify(from, body)) return { type: 'verify' };
   // Greeting from a registered donor? Handle the handshake, skip response logging
   if (await tryHandshake(from, body)) return { type: 'handshake' };
 
