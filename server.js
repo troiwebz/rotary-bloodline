@@ -970,12 +970,26 @@ app.delete('/api/admin/team/:id', requireMaster, (req, res) => {
 
 // ── Admin: per-zone WhatsApp sessions ─────────────────────────────────────────
 app.get('/api/admin/zone-wa', requireMaster, (req, res) => {
+  const managers = loadManagers();
   const zones = loadZones().map(z => ({
     id: z.id, name: z.name, emoji: z.emoji,
     enabled: !!z.waEnabled,
+    waNumber: z.waNumber || '',
+    managerPhone: managers.find(m => m.zoneId === z.id)?.phone || '',
     ...wa.sessionState(z.id),
   }));
   res.json({ master: wa.sessionState('master'), zones });
+});
+
+// Master: set a zone's alert/WhatsApp number
+app.post('/api/admin/zones/:id/update', requireMaster, (req, res) => {
+  const zones = loadZones();
+  const z = zones.find(x => x.id === req.params.id);
+  if (!z) return res.status(404).json({ ok: false });
+  if (req.body.waNumber !== undefined) z.waNumber = String(req.body.waNumber).replace(/[^\d+]/g, '');
+  saveZones(zones);
+  audit('zone_update', req.auth.actor, { zoneId: z.id, waNumber: z.waNumber });
+  res.json({ ok: true, zone: z });
 });
 
 app.post('/api/admin/zone-wa/:zoneId/enable', requireMaster, async (req, res) => {

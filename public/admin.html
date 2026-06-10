@@ -321,6 +321,15 @@ tr:hover td{background:rgba(255,255,255,.02)}
   <div style="display:flex;gap:10px"><button class="btn-main" onclick="saveConn()">Add Hero</button><button class="act can" style="padding:13px 20px" onclick="closeModals()">Cancel</button></div>
 </div></div>
 
+<!-- Zone QR modal (master) -->
+<div class="modal-bg" id="zwQrModal"><div class="modal" style="text-align:center">
+  <h3 id="zwQrTitle">Scan</h3>
+  <div id="zwQrMState" class="pill warn" style="margin-bottom:14px">Loading…</div>
+  <div style="background:#fff;border-radius:14px;padding:14px;width:fit-content;margin:0 auto 14px"><canvas id="zwQrMCanvas"></canvas></div>
+  <div style="color:var(--tx3);font-size:12px;line-height:1.8;margin-bottom:14px">Zone phone → WhatsApp → ⋮ → Linked Devices → Link a Device</div>
+  <button class="act can" style="padding:12px 24px" onclick="zwCloseQr()">Close</button>
+</div></div>
+
 <!-- Bloodline Team modal -->
 <div class="modal-bg" id="teamModal"><div class="modal">
   <h3>Add Bloodline Team Member</h3>
@@ -515,18 +524,37 @@ async function loadZoneWa(){
   const r=await J('/api/admin/zone-wa'); if(r.code!==200)return;
   const rows=(r.d.zones||[]);
   document.getElementById('zwRows').innerHTML=rows.map(z=>{
-    const st = z.connected ? '<span class="pill ok">🟢 Connected — own number live</span>'
+    const st = z.connected ? '<span class="pill ok">🟢 Connected'+(z.number?' as +'+esc(z.number):'')+'</span>'
       : z.enabled && z.hasQR ? '<span class="pill warn">📱 Awaiting scan</span>'
-      : z.enabled ? '<span class="pill warn">⏳ Starting…</span>'
+      : z.enabled ? '<span class="pill warn">⏳ Starting… (~30s)</span>'
       : '<span class="pill off">Master line (shared)</span>';
-    return `<tr><td><b>${z.emoji||'📍'} ${esc(z.name)}</b></td><td>${st}</td>
+    const mgrHint = z.managerPhone ? '' : ' <span title="Manager phone missing — set it in Zone Managers to use Send scan link" style="color:#FBBF24">⚠️</span>';
+    return `<tr><td><b>${z.emoji||'📍'} ${esc(z.name)}</b>${mgrHint}</td><td>${st}</td>
       <td style="white-space:nowrap">
         <button class="act ${z.enabled?'can':'ful'}" onclick="zwEnable('${z.id}',${!z.enabled})">${z.enabled?'Disable':'Enable own number'}</button>
-        ${z.enabled?`<button class="act rev" onclick="zwSendLink('${z.id}')">📨 Send scan link</button>`:''}
+        ${z.enabled&&!z.connected?`<button class="act ful" onclick="zwShowQr('${z.id}','${esc(z.name)}')">👁 Show QR</button>`:''}
+        ${z.enabled?`<button class="act rev" onclick="zwSendLink('${z.id}')" ${z.managerPhone?'':'title="Set manager phone first"'}>📨 Send scan link</button>`:''}
         ${z.enabled?`<button class="act del" onclick="zwReset('${z.id}')">↺ Re-pair</button>`:''}
       </td></tr>`;
   }).join('');
 }
+
+/* Master-side QR modal — scan any zone's QR right here */
+let _zwQrTimer=null;
+function zwShowQr(id,name){
+  document.getElementById('zwQrModal').style.display='flex';
+  document.getElementById('zwQrTitle').textContent='📱 '+name+' — Scan with the zone phone';
+  async function tick(){
+    const r=await J('/api/admin/zone-wa/'+id+'/qr'); if(r.code!==200)return;
+    const st=document.getElementById('zwQrMState'), cv=document.getElementById('zwQrMCanvas');
+    if(r.d.connected){st.className='pill ok';st.textContent='✅ CONNECTED'+(r.d.number?' as +'+r.d.number:'');cv.style.display='none';clearInterval(_zwQrTimer);loadZoneWa();return;}
+    if(r.d.qr){st.className='pill warn';st.textContent='📱 Scan now — auto-refreshes';cv.style.display='block';QRCode.toCanvas(cv, r.d.qr, {width:280,margin:1});}
+    else{st.className='pill warn';st.textContent='⏳ Generating QR… wait ~30s';cv.style.display='none';}
+  }
+  if(_zwQrTimer)clearInterval(_zwQrTimer);
+  tick(); _zwQrTimer=setInterval(tick, 8000);
+}
+function zwCloseQr(){document.getElementById('zwQrModal').style.display='none';if(_zwQrTimer)clearInterval(_zwQrTimer);}
 async function zwEnable(id,on){
   const r=await J('/api/admin/zone-wa/'+id+'/enable',{method:'POST',body:JSON.stringify({enabled:on})});
   toast(r.d.ok?(on?'Zone WhatsApp starting — QR ready in ~30s':'Zone line disabled — back to master'):'Failed',!r.d.ok);
@@ -574,6 +602,7 @@ async function loadZonesMgrs(){
     return `<tr><td><b>${esc(m.name)}</b></td><td>${esc(m.username)}</td><td>${esc(z?.name||m.zoneId)}</td><td>${esc(m.phone||'—')}</td>
       <td>${m.active!==false?'<span class="pill ok">Active</span>':'<span class="pill off">Disabled</span>'}</td>
       <td style="white-space:nowrap">
+        <button class="act rev" onclick="editMgrPhone('${esc(m.username)}','${esc(m.phone||'')}')">📞 Phone</button>
         <button class="act rev" onclick="resetPass('${esc(m.username)}')">🔑 Reset pass</button>
         <button class="act can" onclick="toggleMgr('${esc(m.username)}',${m.active===false})">${m.active===false?'Enable':'Disable'}</button>
         <button class="act del" onclick="delMgr('${esc(m.username)}')">🗑</button></td></tr>`;
@@ -591,6 +620,18 @@ async function saveMgr(){
   if(!body.username||!body.password)return toast('Username + password required',true);
   const r=await J('/api/admin/managers',{method:'POST',body:JSON.stringify(body)});
   if(r.d.ok){toast('Manager added');closeModals();loadZonesMgrs();}else toast(r.d.msg||'Failed',true);
+}
+async function editZoneNum(id,cur){
+  const n=prompt('Zone alert/WhatsApp number (with or without +91):',cur);
+  if(n===null)return;
+  const r=await J('/api/admin/zones/'+id+'/update',{method:'POST',body:JSON.stringify({waNumber:n})});
+  toast(r.d.ok?'Zone number saved':'Failed',!r.d.ok);loadZonesMgrs();loadZoneWa();
+}
+async function editMgrPhone(u,cur){
+  const p=prompt('Manager WhatsApp/phone number for '+u+':',cur);
+  if(p===null)return;
+  const r=await J('/api/admin/managers/'+u,{method:'POST',body:JSON.stringify({phone:p})});
+  toast(r.d.ok?'Phone saved — Send scan link now works':'Failed',!r.d.ok);loadZonesMgrs();loadZoneWa();
 }
 async function resetPass(u){const p=prompt('New password for '+u+':');if(!p)return;await J('/api/admin/managers/'+u,{method:'POST',body:JSON.stringify({password:p})});toast('Password updated');}
 async function toggleMgr(u,en){await J('/api/admin/managers/'+u,{method:'POST',body:JSON.stringify({active:en})});loadZonesMgrs();}

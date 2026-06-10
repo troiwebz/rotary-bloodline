@@ -61,7 +61,8 @@ function initSession(id) {
     st.ready  = true;
     st.lastQR = null;
     st.retries = 0;
-    console.log(`\n✅ [WA:${id}] CONNECTED — session live\n`);
+    st.number = client.info?.wid?.user || null;
+    console.log(`\n✅ [WA:${id}] CONNECTED — session live as +${st.number || '?'}\n`);
   });
 
   // Donor replies can land on ANY session — same pipeline
@@ -118,7 +119,7 @@ function isReady(id = 'master')   { return !!sessions.get(id)?.ready; }
 function getLastQR(id = 'master') { return sessions.get(id)?.lastQR || null; }
 function sessionState(id) {
   const st = sessions.get(id);
-  return { running: !!st, connected: !!st?.ready, hasQR: !!st?.lastQR };
+  return { running: !!st, connected: !!st?.ready, hasQR: !!st?.lastQR, number: st?.number || null };
 }
 
 // ── Normalize phone → WhatsApp ID ─────────────────────────────────────────────
