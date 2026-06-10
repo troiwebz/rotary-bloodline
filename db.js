@@ -157,10 +157,15 @@ const DEFAULT_SETTINGS = {
   orgName:             'Rotary Club of Legacy, Puducherry',
   orgPhone:            '',
   alertCooldownHours:  24,
+  // 3-Layer Lifeline
+  autoEscalate:        true,
+  layer1WaitMin:       10,   // minutes before Layer 1 → 2
+  layer2WaitMin:       10,   // minutes before Layer 2 → 3
+  expertPhones:        '',   // comma-separated coordinator numbers for Layer 3
   updatedAt:           null,
 };
 
-initFile(DONORS_FILE,    generateDonors());
+initFile(DONORS_FILE,    []);   // real registrations only — never seed fake donors
 initFile(REQUESTS_FILE,  []);
 initFile(RESPONSES_FILE, []);
 initFile(ACTIVITY_FILE,  []);
@@ -408,6 +413,16 @@ function updateRequestStatus(id, status, matchedDonors) {
   return true;
 }
 
+// Patch arbitrary fields on a request (layer tracking, escalation history)
+function patchRequest(id, patch) {
+  const requests = read(REQUESTS_FILE);
+  const r = requests.find(x => x.id === Number(id));
+  if (!r) return null;
+  Object.assign(r, patch, { updatedAt: Date.now() });
+  write(REQUESTS_FILE, requests);
+  return r;
+}
+
 // ── Stats ─────────────────────────────────────────────────────────────────────
 function getStats() {
   const donors   = read(DONORS_FILE).filter(d => d.available);
@@ -549,7 +564,7 @@ module.exports = {
   // responses
   recordDonorResponse, getRecentResponses,
   // requests
-  getRequests, addRequest, updateRequestStatus,
+  getRequests, addRequest, updateRequestStatus, patchRequest,
   // stats & activity
   getStats, getActivity, pushActivity, getRecentDonors, getReportData, getBadge, migratePoints,
   // settings

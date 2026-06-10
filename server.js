@@ -54,6 +54,55 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ── Run one-time migrations ───────────────────────────────────────────────────
 db.migratePoints();
 
+// ── Role-based auth ───────────────────────────────────────────────────────────
+const crypto    = require('crypto');
+const ADMIN_KEY = process.env.ADMIN_KEY || process.env.ADMIN_RESET_KEY || '';
+const zoneTokens = new Map();   // token → {username, name, zoneId}
+
+function isMaster(req) {
+  const k = req.headers['x-admin-key'] || req.query.adminKey;
+  return !!ADMIN_KEY && k === ADMIN_KEY;
+}
+function zoneSession(req) {
+  const t = req.headers['x-zone-token'] || req.query.zoneToken;
+  return (t && zoneTokens.get(t)) || null;
+}
+function requireMaster(req, res, next) {
+  if (isMaster(req)) { req.auth = { role: 'master', actor: 'master' }; return next(); }
+  res.status(403).json({ ok: false, msg: 'Master admin key required' });
+}
+function requireAuth(req, res, next) {
+  if (isMaster(req)) { req.auth = { role: 'master', actor: 'master' }; return next(); }
+  const z = zoneSession(req);
+  if (z) { req.auth = { role: 'zone', actor: z.username, ...z }; return next(); }
+  res.status(401).json({ ok: false, msg: 'Login required' });
+}
+
+// ── Privacy helpers ───────────────────────────────────────────────────────────
+const maskPhone = p => {
+  const d = String(p || '').replace(/\D/g, '');
+  return d.length >= 7 ? d.slice(0, 4) + '•••' + d.slice(-2) : '•••';
+};
+
+const AUDIT_FILE = path.join(DATA_ROOT, 'audit.json');
+function audit(action, actor, detail) {
+  let log = [];
+  try { log = JSON.parse(fs.readFileSync(AUDIT_FILE, 'utf8')); } catch {}
+  log.unshift({ id: (log[0]?.id || 0) + 1, at: Date.now(), action, actor, detail });
+  fs.writeFileSync(AUDIT_FILE, JSON.stringify(log.slice(0, 1000), null, 2));
+}
+
+// ── Partners (Layer 2 network: blood banks, NGOs, sister Rotary clubs) ────────
+const PARTNERS_FILE = path.join(DATA_ROOT, 'partners.json');
+function loadPartners()  { try { return JSON.parse(fs.readFileSync(PARTNERS_FILE, 'utf8')); } catch { return []; } }
+function savePartners(p) { fs.writeFileSync(PARTNERS_FILE, JSON.stringify(p, null, 2)); }
+
+function donorInZone(d, zone) {
+  return zone.areas.some(a =>
+    (d.area || '').toLowerCase() === a.toLowerCase() ||
+    (d.area || '').toLowerCase().includes(a.split(',')[0].toLowerCase()));
+}
+
 // ── Init WhatsApp (non-fatal — server still runs without it) ──────────────────
 try { wa.initWhatsApp(); } catch(e) { console.warn('[WA] Init skipped:', e.message); }
 
@@ -381,8 +430,13 @@ app.post('/api/respond', async (req, res) => {
 });
 
 // ── Donors ────────────────────────────────────────────────────────────────────
-app.get('/api/donors', (req, res) => {
+app.get('/api/donors', requireAuth, (req, res) => {
   let donors = db.getAllDonors();
+  // Zone admins only see their own zone
+  if (req.auth.role === 'zone') {
+    const zone = loadZones().find(z => z.id === req.auth.zoneId);
+    if (zone) donors = donors.filter(d => donorInZone(d, zone));
+  }
   const { q, bloodType, area, eligible } = req.query;
   if (q)         donors = donors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.phone.includes(q));
   if (bloodType) donors = donors.filter(d => d.bloodType === bloodType);
@@ -391,7 +445,46 @@ app.get('/api/donors', (req, res) => {
     const n = Date.now(), NINETY = 90 * 86400000;
     donors = donors.filter(d => !d.lastDonation || (n - d.lastDonation) >= NINETY);
   }
+  // Phones masked for zone admins — full numbers only via audited reveal
+  if (req.auth.role === 'zone') donors = donors.map(d => ({ ...d, phone: maskPhone(d.phone) }));
   res.json(donors);
+});
+
+// ── Audited phone reveal — zone admins get the number only when acting ────────
+app.post('/api/admin/reveal-phone', requireAuth, (req, res) => {
+  const donor = db.getAllDonors().find(d => d.id === Number(req.body?.donorId));
+  if (!donor) return res.status(404).json({ ok: false });
+  if (req.auth.role === 'zone') {
+    const zone = loadZones().find(z => z.id === req.auth.zoneId);
+    if (!zone || !donorInZone(donor, zone))
+      return res.status(403).json({ ok: false, msg: 'Donor is outside your zone' });
+  }
+  audit('reveal_phone', req.auth.actor, { donorId: donor.id, donorName: donor.name, reason: req.body?.reason || 'unspecified' });
+  res.json({ ok: true, phone: donor.phone });
+});
+
+// ── Donor moderation (verify / deactivate) — zone-scoped ─────────────────────
+app.post('/api/admin/donor/:id/update', requireAuth, (req, res) => {
+  const donor = db.getAllDonors().find(d => d.id === Number(req.params.id));
+  if (!donor) return res.status(404).json({ ok: false });
+  if (req.auth.role === 'zone') {
+    const zone = loadZones().find(z => z.id === req.auth.zoneId);
+    if (!zone || !donorInZone(donor, zone))
+      return res.status(403).json({ ok: false, msg: 'Donor is outside your zone' });
+  }
+  const patch = {};
+  if (req.body.verified  !== undefined) patch.verified  = !!req.body.verified;
+  if (req.body.available !== undefined) patch.available = !!req.body.available;
+  const updated = db.updateDonor(donor.id, patch);
+  audit('donor_update', req.auth.actor, { donorId: donor.id, patch });
+  res.json({ ok: true, donor: { ...updated, phone: req.auth.role === 'zone' ? maskPhone(updated.phone) : updated.phone } });
+});
+
+// Master only: delete donor permanently
+app.delete('/api/admin/donor/:id', requireMaster, (req, res) => {
+  const ok = db.deleteDonor(Number(req.params.id));
+  audit('donor_delete', req.auth.actor, { donorId: Number(req.params.id) });
+  res.json({ ok });
 });
 
 app.post('/api/donors/register', async (req, res) => {
@@ -445,6 +538,7 @@ app.post('/api/requests', async (req, res) => {
     return res.status(400).json({ ok: false, msg: 'Name, phone, blood type and hospital are required.' });
 
   const request = db.addRequest(name, phone, bloodType, hospital, units, urgency);
+  db.patchRequest(request.id, { layer: 1, layerHistory: [{ layer: 1, at: Date.now(), by: 'system' }] });
 
   // Find eligible donors
   const donors      = db.getEligibleDonors(bloodType);
@@ -585,7 +679,7 @@ app.post('/api/wa-reply', async (req, res) => {
 });
 
 // ── Manual blast ──────────────────────────────────────────────────────────────
-app.post('/api/blast', async (req, res) => {
+app.post('/api/blast', requireMaster, async (req, res) => {
   const { bloodType, message } = req.body;
   const donors = bloodType ? db.getEligibleDonors(bloodType) : db.getDonors();
   if (!message) return res.status(400).json({ ok: false, msg: 'Message required' });
@@ -595,6 +689,7 @@ app.post('/api/blast', async (req, res) => {
     if (ok) sent++;
     await new Promise(r => setTimeout(r, 700));
   }
+  audit('blast', req.auth.actor, { bloodType: bloodType || 'ALL', sent, total: donors.length });
   res.json({ ok: true, sent, total: donors.length });
 });
 
@@ -608,8 +703,123 @@ app.post('/api/admin/reset-data', (req, res) => {
   res.json({ ok: true, msg: 'Donor, request, response and activity data cleared.' });
 });
 
+// ── Admin: requests with layer status + manual escalation ────────────────────
+app.get('/api/admin/requests', requireAuth, (req, res) => {
+  let requests = db.getRequests(Number(req.query.limit) || 100);
+  if (req.auth.role === 'zone') {
+    const zone = loadZones().find(z => z.id === req.auth.zoneId);
+    if (zone) requests = requests.filter(r => {
+      const h = (r.hospital || '').toLowerCase();
+      return zone.areas.some(a => h.includes(a.split(',')[0].toLowerCase())) ||
+             h.includes(zone.id) || h.includes(zone.name.toLowerCase().split(' ')[0]);
+    });
+  }
+  res.json(requests);
+});
+
+app.post('/api/admin/requests/:id/escalate', requireAuth, async (req, res) => {
+  const r = db.getRequests(500).find(x => x.id === Number(req.params.id));
+  if (!r) return res.status(404).json({ ok: false });
+  const toLayer = Math.min(3, (r.layer || 1) + 1);
+  const done = await escalateRequest(r, toLayer, req.auth.actor);
+  res.json({ ok: done, layer: toLayer });
+});
+
+app.post('/api/admin/requests/:id/fulfill', requireAuth, (req, res) => {
+  db.updateRequestStatus(Number(req.params.id), 'fulfilled');
+  audit('request_fulfill', req.auth.actor, { requestId: Number(req.params.id) });
+  broadcastSSE('request_fulfilled', { requestId: Number(req.params.id) });
+  res.json({ ok: true });
+});
+
+app.post('/api/admin/requests/:id/cancel', requireAuth, (req, res) => {
+  db.updateRequestStatus(Number(req.params.id), 'cancelled');
+  audit('request_cancel', req.auth.actor, { requestId: Number(req.params.id) });
+  res.json({ ok: true });
+});
+
+// ── Admin: partners (Layer 2 network) — master only ──────────────────────────
+app.get('/api/admin/partners', requireMaster, (req, res) => res.json(loadPartners()));
+
+app.post('/api/admin/partners', requireMaster, (req, res) => {
+  const { name, type, phone, area } = req.body || {};
+  if (!name || !phone) return res.status(400).json({ ok: false, msg: 'Name and phone required' });
+  const partners = loadPartners();
+  const p = { id: (partners[0]?.id || 0) + 1, name, type: type || 'blood-bank', phone: String(phone).replace(/\D/g, ''), area: area || '', active: true, createdAt: Date.now() };
+  partners.unshift(p);
+  savePartners(partners);
+  audit('partner_add', req.auth.actor, { name, type: p.type });
+  res.json({ ok: true, partner: p });
+});
+
+app.post('/api/admin/partners/:id', requireMaster, (req, res) => {
+  const partners = loadPartners();
+  const p = partners.find(x => x.id === Number(req.params.id));
+  if (!p) return res.status(404).json({ ok: false });
+  ['name', 'type', 'phone', 'area', 'active'].forEach(k => { if (req.body[k] !== undefined) p[k] = req.body[k]; });
+  savePartners(partners);
+  res.json({ ok: true, partner: p });
+});
+
+app.delete('/api/admin/partners/:id', requireMaster, (req, res) => {
+  savePartners(loadPartners().filter(x => x.id !== Number(req.params.id)));
+  audit('partner_delete', req.auth.actor, { partnerId: Number(req.params.id) });
+  res.json({ ok: true });
+});
+
+// ── Admin: zone managers — master only ───────────────────────────────────────
+app.get('/api/admin/managers', requireMaster, (req, res) => {
+  const managers = loadManagers().map(m => ({ ...m, password: undefined }));
+  res.json({ managers, zones: loadZones() });
+});
+
+app.post('/api/admin/managers', requireMaster, (req, res) => {
+  const { username, password, name, zoneId, phone } = req.body || {};
+  if (!username || !password || !zoneId) return res.status(400).json({ ok: false, msg: 'username, password, zoneId required' });
+  const managers = loadManagers();
+  if (managers.find(m => m.username === username)) return res.status(409).json({ ok: false, msg: 'Username taken' });
+  managers.push({ username, password, name: name || username, zoneId, phone: phone || '', active: true, createdAt: Date.now() });
+  saveManagers(managers);
+  audit('manager_add', req.auth.actor, { username, zoneId });
+  res.json({ ok: true });
+});
+
+app.post('/api/admin/managers/:username', requireMaster, (req, res) => {
+  const managers = loadManagers();
+  const m = managers.find(x => x.username === req.params.username);
+  if (!m) return res.status(404).json({ ok: false });
+  ['password', 'name', 'zoneId', 'phone', 'active'].forEach(k => { if (req.body[k] !== undefined) m[k] = req.body[k]; });
+  saveManagers(managers);
+  audit('manager_update', req.auth.actor, { username: m.username });
+  res.json({ ok: true });
+});
+
+app.delete('/api/admin/managers/:username', requireMaster, (req, res) => {
+  saveManagers(loadManagers().filter(x => x.username !== req.params.username));
+  audit('manager_delete', req.auth.actor, { username: req.params.username });
+  res.json({ ok: true });
+});
+
+// ── Admin: audit log — master only ───────────────────────────────────────────
+app.get('/api/admin/audit', requireMaster, (req, res) => {
+  let log = [];
+  try { log = JSON.parse(fs.readFileSync(AUDIT_FILE, 'utf8')); } catch {}
+  res.json(log.slice(0, Number(req.query.limit) || 200));
+});
+
+// ── Admin: who am I (validates stored credentials on dashboard load) ─────────
+app.get('/api/admin/whoami', requireAuth, (req, res) => {
+  const out = { ok: true, role: req.auth.role };
+  if (req.auth.role === 'zone') {
+    out.username = req.auth.username;
+    out.name     = req.auth.name;
+    out.zone     = loadZones().find(z => z.id === req.auth.zoneId) || null;
+  }
+  res.json(out);
+});
+
 // ── Admin API ─────────────────────────────────────────────────────────────────
-app.get('/api/admin/summary', (req, res) => {
+app.get('/api/admin/summary', requireAuth, (req, res) => {
   const stats     = db.getStats();
   const requests  = db.getRequests(10);
   const donors    = db.getAllDonors();
@@ -618,9 +828,9 @@ app.get('/api/admin/summary', (req, res) => {
   res.json({ stats, recentRequests: requests, recentResponses: responses, activity, waReady: wa.isReady() });
 });
 
-app.get('/api/admin/settings', (req, res) => res.json(db.getSettings()));
+app.get('/api/admin/settings', requireMaster, (req, res) => res.json(db.getSettings()));
 
-app.post('/api/admin/settings', (req, res) => {
+app.post('/api/admin/settings', requireMaster, (req, res) => {
   const s = db.saveSettings(req.body);
   res.json({ ok: true, settings: s });
 });
@@ -636,7 +846,10 @@ app.post('/api/zone/login', (req, res) => {
   if (!mgr) return res.status(401).json({ ok: false, msg: 'Invalid credentials' });
   const zones = loadZones();
   const zone  = zones.find(z => z.id === mgr.zoneId);
-  res.json({ ok: true, manager: { username: mgr.username, name: mgr.name, zoneId: mgr.zoneId, active: mgr.active }, zone });
+  const token = crypto.randomBytes(24).toString('hex');
+  zoneTokens.set(token, { username: mgr.username, name: mgr.name, zoneId: mgr.zoneId });
+  audit('zone_login', mgr.username, { zoneId: mgr.zoneId });
+  res.json({ ok: true, token, manager: { username: mgr.username, name: mgr.name, zoneId: mgr.zoneId, active: mgr.active }, zone });
 });
 
 // Zone dashboard — donors + requests for this zone
@@ -721,6 +934,94 @@ app.post('/api/zone/toggle-active', (req, res) => {
   managers[idx].active = !!active;
   saveManagers(managers);
   res.json({ ok: true, active: managers[idx].active });
+});
+
+// ── 3-LAYER LIFELINE — escalation engine ─────────────────────────────────────
+// Layer 1: registered donors near the hospital (fires at request time)
+// Layer 2: partner network — wider-radius donors + partner organisations
+// Layer 3: expert response — zone manager + coordinators step in personally
+async function escalateRequest(r, toLayer, by) {
+  const fresh = db.getRequests(500).find(x => x.id === r.id);
+  if (!fresh || (fresh.layer || 1) >= toLayer) return false;
+  if (['fulfilled', 'cancelled'].includes(fresh.status)) return false;
+
+  const hist = fresh.layerHistory || [];
+  hist.push({ layer: toLayer, at: Date.now(), by });
+  db.patchRequest(fresh.id, { layer: toLayer, layerHistory: hist });
+  audit('escalate', by, { requestId: fresh.id, toLayer, bloodType: fresh.bloodType, hospital: fresh.hospital });
+  broadcastSSE('request_escalated', { requestId: fresh.id, layer: toLayer, bloodType: fresh.bloodType, hospital: fresh.hospital });
+
+  if (toLayer === 2) {
+    // Wider-radius donors not yet alerted
+    const donors  = db.getEligibleDonors(fresh.bloodType);
+    const sorted  = geo.sortByProximity(donors, fresh.hospital);
+    const already = new Set(fresh.matchedDonors || []);
+    const extra   = sorted.filter(d => !already.has(d.id)).slice(0, 20);
+    if (extra.length) {
+      db.patchRequest(fresh.id, { matchedDonors: [...already, ...extra.map(d => d.id)] });
+      wa.alertDonors(extra, fresh).then(n => console.log(`[L2] ${n} wider-radius donors alerted for #${fresh.id}`)).catch(() => {});
+    }
+    // Partner organisations
+    const partners = loadPartners().filter(p => p.active !== false && p.phone);
+    for (const p of partners) {
+      wa.sendMessage(p.phone,
+`🤝 *PARTNER ALERT — Rotary Blood Line* (Layer 2)
+
+We urgently need *${fresh.bloodType}* blood.
+Hospital: *${fresh.hospital}*
+Units: ${fresh.units || 1} · Urgency: ${(fresh.urgency || 'normal').toUpperCase()}
+
+Please circulate to your donor network. Anyone willing can reply here or go directly to the hospital blood bank and mention Rotary Blood Line.
+
+— Rotary Club of Legacy, Puducherry`).catch(() => {});
+      await new Promise(rs => setTimeout(rs, 700));
+    }
+    console.log(`[L2] Partner network notified (${partners.length} partners) for #${fresh.id}`);
+  }
+
+  if (toLayer === 3) {
+    const zones = loadZones();
+    const zone  = zones.find(z => z.areas.some(a => (fresh.hospital || '').toLowerCase().includes(a.split(',')[0].toLowerCase()))) || zones[0];
+    const targets = new Set();
+    if (zone?.waNumber) targets.add(zone.waNumber);
+    const s2 = db.getSettings();
+    String(s2.expertPhones || '').split(',').map(x => x.trim()).filter(Boolean).forEach(p => targets.add(p));
+    for (const phone of targets) {
+      wa.sendMessage(phone,
+`🚨 *LAYER 3 — EXPERT RESPONSE NEEDED*
+
+A blood request is unfulfilled after two alert waves. Personal intervention required NOW.
+
+Blood Type: *${fresh.bloodType}* · Units: ${fresh.units || 1}
+Hospital: *${fresh.hospital}*
+Patient contact: ${fresh.phone}
+Request age: ${Math.round((Date.now() - fresh.createdAt) / 60000)} min
+
+Please call the hospital blood bank, activate personal contacts, and coordinate directly.
+
+— Rotary Blood Line Mission Control`).catch(() => {});
+      await new Promise(rs => setTimeout(rs, 700));
+    }
+    console.log(`[L3] Expert escalation sent to ${targets.size} coordinator(s) for #${fresh.id}`);
+  }
+  return true;
+}
+
+// Auto-escalation: every 2 minutes, move stale unanswered requests up a layer
+cron.schedule('*/2 * * * *', async () => {
+  const st = db.getSettings();
+  if (st.autoEscalate === false) return;
+  const w1 = Number(st.layer1WaitMin) || 10;
+  const w2 = Number(st.layer2WaitMin) || 10;
+  const open = db.getRequests(200).filter(r =>
+    !['fulfilled', 'cancelled', 'no_donors_found'].includes(r.status) &&
+    !(r.respondingDonors || []).length);
+  for (const r of open) {
+    const ageMin = (Date.now() - r.createdAt) / 60000;
+    const layer  = r.layer || 1;
+    if (layer === 1 && ageMin >= w1)            await escalateRequest(r, 2, 'auto');
+    else if (layer === 2 && ageMin >= w1 + w2)  await escalateRequest(r, 3, 'auto');
+  }
 });
 
 // ── CRON: 9am re-engagement ───────────────────────────────────────────────────
