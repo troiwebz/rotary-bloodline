@@ -815,6 +815,13 @@ app.post('/api/requests', async (req, res) => {
   if (!name || !phone || !bloodType || !hospital)
     return res.status(400).json({ ok: false, msg: 'Name, phone, blood type and hospital are required.' });
 
+  // Requester must be connected to the AI first (skip if WA engine down)
+  const cleanReqPh = String(phone).replace(/\D/g, '');
+  const reqVerified = loadVerify().find(v => v.phone === cleanReqPh && v.verified)
+    || db.getAllDonors().find(d => d.waVerified && (d.phone === cleanReqPh));
+  if (wa.isReady() && !reqVerified)
+    return res.status(403).json({ ok: false, code: 'VERIFY_REQUIRED', msg: 'Please connect to Rtn. Uyir on WhatsApp first.' });
+
   const request = db.addRequest(name, phone, bloodType, hospital, units, urgency);
   db.patchRequest(request.id, { layer: 1, layerHistory: [{ layer: 1, at: Date.now(), by: 'system' }] });
 
@@ -1014,7 +1021,7 @@ async function tryVerify(from, body) {
   await wa.sendMessage(from,
 `✅ *WhatsApp verified!* Vanakkam ${entry.name || 'hero'} — Rtn. Uyir here. 🤝
 
-Now go back to the website and tap *Continue* to finish your registration. Your emergency alerts will be active the moment you're done. 🩸`);
+I'm with you now — go back to the website and tap *Continue*. I'll keep you updated right here in this chat. 🩸`);
   audit('wa_verify', 'phone:' + clean.slice(-4), {});
   console.log(`[VERIFY] ${clean} WhatsApp-verified pre-registration`);
   return true;
@@ -1082,6 +1089,15 @@ async function processDonorReply(from, body, requestId) {
   if (wa.isReady()) {
     const req2 = db.getRequests(200).find(r => r.id === reqId);
     if (type === 'responding' && req2) {
+      // Live update to the requester — rides their open Uyir conversation
+      wa.sendMessage(req2.phone,
+`🎉 *GOOD NEWS — a donor just confirmed!*
+
+A *${req2.bloodType}* donor replied YES and is heading to *${req2.hospital}*.
+
+Track live: https://rotary-bloodline.vercel.app/track.html?id=${req2.id}
+— Rtn. Uyir, Rotary Blood Line`).catch(() => {});
+
       await wa.sendMessage(from,
 `✅ Thank you for responding!
 
