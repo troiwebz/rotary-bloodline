@@ -119,6 +119,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
     <button class="btn-main" onclick="doLogin()">Sign In →</button>
     <div class="login-err" id="loginErr"></div>
+    <div id="srvCheck" style="margin-top:14px;text-align:center;font-size:11.5px;font-weight:700;color:var(--tx3)">⏳ Checking server…</div>
 
     <!-- Quick access for the team -->
     <div class="ql-box">
@@ -335,6 +336,7 @@ function setRole(r){loginRole=r;
   document.getElementById('zoneFields').style.display=r==='zone'?'block':'none';}
 async function doLogin(){
   const err=document.getElementById('loginErr'); err.style.display='none';
+  try{
   if(loginRole==='master'){
     const k=document.getElementById('masterKey').value.trim();
     if(!k) return;
@@ -348,6 +350,10 @@ async function doLogin(){
     if(r.code!==200){err.textContent=r.d.msg||'Invalid credentials';err.style.display='block';return;}
     localStorage.setItem('rb_ztoken',r.d.token); localStorage.removeItem('rb_master');
     enter({role:'zone',name:r.d.manager.name,username:r.d.manager.username,zone:r.d.zone});
+  }
+  }catch(e){
+    err.textContent='⚠️ Connection error: '+(e.message||e)+' — check internet / try again';
+    err.style.display='block';
   }
 }
 function enter(who){
@@ -570,6 +576,19 @@ async function loadAudit(){
 }
 
 boot();
+
+// Connectivity self-test so login failures are never silent
+(async function(){
+  const el=document.getElementById('srvCheck');
+  try{
+    const r=await fetch(API+'/api/status',{cache:'no-store'}).then(x=>x.json());
+    el.innerHTML = r.ok ? '🟢 Server connected · WhatsApp '+(r.whatsapp?'paired':'offline') : '🟠 Server responded abnormally';
+    el.style.color = '#4ADE80';
+  }catch(e){
+    el.innerHTML = '🔴 Cannot reach server ('+(e.message||'network error')+')<br>Login will not work until this is green — check internet/VPN';
+    el.style.color = '#FCA5A5';
+  }
+})();
 </script>
 </body>
 </html>
