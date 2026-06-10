@@ -1721,6 +1721,21 @@ async function escalateRequest(r, toLayer, by) {
   audit('escalate', by, { requestId: fresh.id, toLayer, bloodType: fresh.bloodType, hospital: fresh.hospital });
   broadcastSSE('request_escalated', { requestId: fresh.id, layer: toLayer, bloodType: fresh.bloodType, hospital: fresh.hospital });
 
+  // Reassure the requester at every escalation — silence feels like abandonment
+  if (fresh.phone) {
+    const msgs = {
+      2: `💪 *Update on your ${fresh.bloodType} request* — I haven't found a confirmed donor yet, so I just EXPANDED the search: wider radius + our partner network is now alerted too. The search is growing, not stopping. 🩸
+
+Track live: https://rotary-bloodline.vercel.app/track.html?id=${fresh.id}
+— ${aiName()}`,
+      3: `🚨 *Your ${fresh.bloodType} request — top priority now.* I've escalated to our Rotary experts: senior coordinators with hospital and blood-bank connections are personally on your case this minute.
+
+You are not alone in this. 🙏
+— ${aiName()}`
+    };
+    if (msgs[toLayer]) wa.sendMessage(fresh.phone, msgs[toLayer]).catch(() => {});
+  }
+
   if (toLayer === 2) {
     // Wider-radius donors not yet alerted
     const donors  = db.getEligibleDonors(fresh.bloodType);
@@ -1780,6 +1795,14 @@ Please call the hospital blood bank, activate personal contacts, and coordinate 
 // Team follow-up: if NOBODY responded after teamFollowUpMin, tell the
 // front-line team to start CALLING — includes the nearest donors' numbers.
 async function teamFollowUp(r) {
+  // Tell the requester that real humans just took over the phones
+  if (r.phone) {
+    wa.sendMessage(r.phone,
+`📞 *Update on your ${r.bloodType} request* — our Rotary Blood Line Team has been activated and is now PERSONALLY CALLING donors near ${r.hospital || 'your hospital'}, one by one.
+
+Humans + AI, both working for you now. 🙏
+— ${aiName()}`).catch(() => {});
+  }
   const members = loadTeam().filter(m => m.active !== false && m.phone);
   if (!members.length) return;
   const nearest = geo.sortByProximity(db.getEligibleDonors(r.bloodType), r.hospital).slice(0, 5);
