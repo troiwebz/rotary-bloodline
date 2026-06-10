@@ -1838,7 +1838,7 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="loc-trust-stats">
           <div class="loc-ts"><div class="loc-ts-num">60s</div><div class="loc-ts-lbl">Average alert time</div></div>
           <div class="loc-ts-div"></div>
-          <div class="loc-ts"><div class="loc-ts-num">130+</div><div class="loc-ts-lbl">Verified donors</div></div>
+          <div class="loc-ts"><div class="loc-ts-num" id="locTsDonors">—</div><div class="loc-ts-lbl">Verified donors</div></div>
           <div class="loc-ts-div"></div>
           <div class="loc-ts"><div class="loc-ts-num">42</div><div class="loc-ts-lbl">Areas covered</div></div>
         </div>
@@ -2968,7 +2968,8 @@ async function loadStats(){
 
     // Header + ticker donor count
     const tc=document.getElementById('totalCounter');if(tc)tc.textContent=`${s.totalDonors||0} donors strong`;
-    const hdc=document.getElementById('headerDonorCount');if(hdc)hdc.textContent=s.totalDonors||105;
+    const hdc=document.getElementById('headerDonorCount');if(hdc)hdc.textContent=s.totalDonors||0;
+    const ltd=document.getElementById('locTsDonors');if(ltd)ltd.textContent=s.totalDonors||0;
 
     const bg=document.getElementById('btGrid');
     if(bg)bg.innerHTML=BTS.map(bt=>{const c=s.byBloodType?.[bt]||0;return`<div class="bt-card ${c?'has-donors':''}"><div class="bt-type">${bt}</div><div class="bt-count">${c}</div><div class="bt-label">donors</div></div>`;}).join('');
@@ -3060,7 +3061,7 @@ async function loadLiveFeed(){
   try{
     const data=await fetch(API_BASE+'/api/responses?limit=8').then(r=>r.json());
     const el=document.getElementById('liveFeed'); if(!el)return;
-    const rc=document.getElementById('liveRespCount'); if(rc) countUp(rc, data.length||47);
+    const rc=document.getElementById('liveRespCount'); if(rc) countUp(rc, data.length||0);
     const lc=document.getElementById('lspCount'); if(lc) lc.textContent=data.length||0;
     if(!data.length){
       el.innerHTML='<div class="lsp-empty"><div style="font-size:28px;margin-bottom:8px">📱</div>Donor responses appear here live.<br>Submit a blood request to trigger.</div>';
@@ -3092,7 +3093,7 @@ async function loadLeaderboard(){
   try{
     const d=await fetch(API_BASE+'/api/leaderboard?limit=10').then(r=>r.json());
     const el_total=document.getElementById('hofTotalDonors');
-    if(el_total) countUp(el_total, d.totalDonors||130);
+    if(el_total) countUp(el_total, d.totalDonors||0);
 
     // Most Responsive honour
     if(d.mostResponsive){
@@ -3341,7 +3342,7 @@ async function registerDonor(){
 // Set last-donated max to today
 (()=>{const el=document.getElementById('d-last-donated');if(el)el.max=new Date().toISOString().split('T')[0];})();
 checkServerStatus();
-loadStats();loadAreas();loadLiveFeed();loadLeaderboard();connectLiveSSE();loadRecentDonors();startStatLiveTick();
+loadStats();loadAreas();loadLiveFeed();loadLeaderboard();connectLiveSSE();loadRecentDonors();
 setInterval(loadStats,30000);setInterval(loadLiveFeed,15000);setInterval(loadLeaderboard,60000);
 setInterval(checkServerStatus,60000);
 

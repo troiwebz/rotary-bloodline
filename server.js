@@ -598,6 +598,16 @@ app.post('/api/blast', async (req, res) => {
   res.json({ ok: true, sent, total: donors.length });
 });
 
+// ── Admin: wipe donor/request/response/activity data (key-guarded) ───────────
+app.post('/api/admin/reset-data', (req, res) => {
+  const key = req.body?.key || req.query?.key;
+  if (!process.env.ADMIN_RESET_KEY || key !== process.env.ADMIN_RESET_KEY)
+    return res.status(403).json({ ok: false, msg: 'Invalid key' });
+  ['donors', 'requests', 'responses', 'activity'].forEach(f =>
+    fs.writeFileSync(path.join(DATA_ROOT, f + '.json'), '[]'));
+  res.json({ ok: true, msg: 'Donor, request, response and activity data cleared.' });
+});
+
 // ── Admin API ─────────────────────────────────────────────────────────────────
 app.get('/api/admin/summary', (req, res) => {
   const stats     = db.getStats();
