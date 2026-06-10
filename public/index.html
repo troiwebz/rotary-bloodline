@@ -857,6 +857,52 @@ footer{background:#070B14;padding:72px 52px 44px}
 .form-card.don .fc-launch-btn{background:linear-gradient(135deg,#1D4ED8,var(--navy));box-shadow:0 6px 22px rgba(30,64,175,.35)}
 .form-card.don .fc-launch-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(30,64,175,.48)}
 
+/* ══ FUNNEL BEAUTIFICATION ══════════════════════════ */
+/* Animated gradient headers */
+.fwiz-hd.req{background:linear-gradient(135deg,#6B0F0F,#991B1B,#DC2626,#991B1B,#6B0F0F);background-size:300% 300%;animation:wizGrad 8s ease infinite}
+.fwiz-hd.don{background:linear-gradient(135deg,#172554,#1E3A8A,#2563EB,#1E3A8A,#172554);background-size:300% 300%;animation:wizGrad 8s ease infinite}
+@keyframes wizGrad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+/* Progress bar under header */
+.fwiz-prog{height:4px;background:#F1F5F9;overflow:hidden}
+.fwiz-prog-fill{height:100%;width:25%;border-radius:0 4px 4px 0;transition:width .5s cubic-bezier(.22,1,.36,1)}
+.fwiz-prog-fill.req{background:linear-gradient(90deg,#DC2626,#F87171)}
+.fwiz-prog-fill.don{background:linear-gradient(90deg,#1D4ED8,#60A5FA)}
+
+/* Encouraging microcopy */
+.fwiz-hint{display:flex;align-items:center;gap:8px;margin:0 28px 4px;padding:10px 14px;background:#F8FAFC;border-radius:10px;font-size:12px;color:#64748B;font-weight:600;line-height:1.5}
+.fwiz-hint .hint-dot{width:7px;height:7px;border-radius:50%;background:#16A34A;flex-shrink:0;animation:hintPulse 1.6s ease infinite}
+@keyframes hintPulse{0%,100%{box-shadow:0 0 0 0 rgba(22,163,74,.4)}50%{box-shadow:0 0 0 5px rgba(22,163,74,0)}}
+
+/* Blood-type pick pop */
+@keyframes btPop{0%{transform:scale(1)}45%{transform:scale(1.12)}100%{transform:scale(1)}}
+.fwiz-bt-btn.sel-req,.fwiz-bt-btn.sel-don{animation:btPop .3s cubic-bezier(.34,1.56,.64,1)}
+
+/* Final-step CTA pulse */
+.fwiz-next.final-pulse{animation:nextPulse 1.8s ease infinite}
+@keyframes nextPulse{0%,100%{box-shadow:0 5px 18px rgba(220,38,38,.3)}50%{box-shadow:0 5px 30px rgba(220,38,38,.6)}}
+.fwiz-next.don.final-pulse{animation:nextPulseDon 1.8s ease infinite}
+@keyframes nextPulseDon{0%,100%{box-shadow:0 5px 18px rgba(30,64,175,.3)}50%{box-shadow:0 5px 30px rgba(30,64,175,.6)}}
+
+/* Flow chips cascade on the action cards */
+.fc-flow-step{animation:chipGlow 4s ease infinite}
+.fc-flow-step:nth-child(1){animation-delay:0s}
+.fc-flow-step:nth-child(3){animation-delay:.8s}
+.fc-flow-step:nth-child(5){animation-delay:1.6s}
+.fc-flow-step:nth-child(7){animation-delay:2.4s}
+@keyframes chipGlow{0%,18%,100%{background:rgba(255,255,255,.1);transform:translateY(0)}6%{background:rgba(255,255,255,.28);transform:translateY(-2px)}}
+
+/* Card hover lift + glow */
+.form-card{transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
+.form-card:hover{transform:translateY(-6px)}
+.form-card.req:hover{box-shadow:0 30px 70px rgba(220,38,38,.28)}
+.form-card.don:hover{box-shadow:0 30px 70px rgba(30,64,175,.28)}
+
+/* CTA shimmer sweep */
+.fc-launch-btn{position:relative;overflow:hidden}
+.fc-launch-btn::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:ctaShine 3.5s ease infinite}
+@keyframes ctaShine{0%,60%{left:-80%}100%{left:140%}}
+
 /* ══════════════════════════════════════════════════
    MOBILE / RESPONSIVE  —  comprehensive pass
    768px = tablet / phone landscape
@@ -3618,8 +3664,12 @@ document.addEventListener('click',function(e){
       <div class="fwiz-hd-sub" id="fwizSub">4 quick steps · alerts fire in 60 seconds</div>
       <div class="fwiz-steps" id="fwizStepDots"></div>
     </div>
+    <!-- Progress bar -->
+    <div class="fwiz-prog"><div class="fwiz-prog-fill req" id="fwizProg"></div></div>
     <!-- Body -->
     <div class="fwiz-body" id="fwizBody"></div>
+    <!-- Encouraging hint -->
+    <div class="fwiz-hint" id="fwizHint" style="display:none"><span class="hint-dot"></span><span id="fwizHintText"></span></div>
     <!-- Error -->
     <div class="fwiz-err" id="fwizErr"></div>
     <!-- Nav -->
@@ -3866,7 +3916,38 @@ function _wizRender(){
   const back=document.getElementById('fwizBack');
   if(back) back.disabled=(_wizStep===1);
   const next=document.getElementById('fwizNext');
-  if(next) next.textContent=_wizStep===4?(_wizType==='request'?'🆘 Alert Donors Now':'🩸 Register as Donor'):'Next →';
+  if(next){
+    next.textContent=_wizStep===4?(_wizType==='request'?'🆘 Alert Donors Now':'🩸 Register as Donor'):'Next →';
+    next.classList.toggle('final-pulse',_wizStep===4);
+  }
+
+  // Progress bar
+  const prog=document.getElementById('fwizProg');
+  if(prog){
+    prog.style.width=(_wizStep*25)+'%';
+    prog.className='fwiz-prog-fill '+(_wizType==='request'?'req':'don');
+  }
+
+  // Encouraging microcopy per step
+  const HINTS={
+    request:[
+      '⏱ Takes under 60 seconds — donors are alerted the moment you finish.',
+      'AI instantly finds every eligible donor matching this blood type.',
+      'We rank donors by distance to this hospital — nearest reached first.',
+      'One tap left — WhatsApp alerts fire to all matched donors instantly.'
+    ],
+    donor:[
+      'Welcome, hero! Registration takes 2 minutes, saves up to 3 lives.',
+      'We only contact you when YOUR blood type is needed near you.',
+      'Your area helps us match you to the nearest emergencies only.',
+      'One tap left — you\'ll get a welcome message on WhatsApp instantly.'
+    ]
+  };
+  const hintEl=document.getElementById('fwizHint'), hintTx=document.getElementById('fwizHintText');
+  if(hintEl&&hintTx){
+    const t=(HINTS[_wizType]||[])[_wizStep-1];
+    if(t){hintTx.textContent=t;hintEl.style.display='flex';}else hintEl.style.display='none';
+  }
 
   // Post-render hooks
   const delay=ms=>new Promise(r=>setTimeout(r,ms));
