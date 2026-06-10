@@ -891,6 +891,34 @@ footer{background:#070B14;padding:72px 52px 44px}
 .form-card.don .fc-launch-btn{background:linear-gradient(135deg,#1D4ED8,var(--navy));box-shadow:0 6px 22px rgba(30,64,175,.35)}
 .form-card.don .fc-launch-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(30,64,175,.48)}
 
+/* ══ SITE-WIDE DESIGN LANGUAGE ══════════════════════ */
+/* Key-point lists (light sections) */
+.kp{list-style:none;padding:0;margin:0}
+.kp li{position:relative;padding:6px 0 6px 25px;font-size:13.5px;color:var(--muted);line-height:1.55;transition:color .2s,transform .2s}
+.kp li::before{content:'✓';position:absolute;left:0;top:7px;width:16px;height:16px;border-radius:50%;background:var(--rlight);color:var(--red);font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.kp li:hover{color:var(--g900);transform:translateX(4px)}
+/* Dark variant */
+.kp.dark li{color:rgba(255,255,255,.55);border-bottom:1px solid rgba(255,255,255,.05)}
+.kp.dark li:last-child{border-bottom:none}
+.kp.dark li::before{background:rgba(52,211,153,.16);color:#34D399}
+.kp.dark li:hover{color:rgba(255,255,255,.85)}
+
+/* Blinking title cursor */
+.t-cursor{display:inline-block;width:.14em;height:.78em;background:currentColor;margin-left:.12em;vertical-align:baseline;animation:curBlink 1.05s steps(1) infinite;opacity:.85;border-radius:2px}
+
+/* Shine sweep on primary CTAs site-wide */
+.vid-btn-red,.radar-loc-btn,.loc-cta-btn,.nav-cta,.mission-badge{position:relative;overflow:hidden}
+.vid-btn-red::after,.radar-loc-btn::after,.loc-cta-btn::after,.nav-cta::after,.mission-badge::after{content:'';position:absolute;top:0;left:-90%;width:50%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.32),transparent);transform:skewX(-20deg);animation:ctaShine 4s ease infinite;pointer-events:none}
+.mission-badge::after{animation-delay:1.2s}
+
+/* Hover lift polish where missing */
+.step-box{transition:transform .3s cubic-bezier(.23,1,.32,1),box-shadow .3s}
+.step-box:hover{transform:translateY(-5px);box-shadow:0 16px 44px rgba(220,38,38,.1)}
+.loc-ts{transition:transform .25s}
+.loc-ts:hover{transform:translateY(-3px)}
+.heroes-stat-pill{transition:transform .25s,border-color .25s}
+.heroes-stat-pill:hover{transform:translateY(-3px);border-color:rgba(248,113,113,.4)}
+
 /* ══ FUNNEL BEAUTIFICATION ══════════════════════════ */
 /* Animated gradient headers */
 .fwiz-hd.req{background:linear-gradient(135deg,#6B0F0F,#991B1B,#DC2626,#991B1B,#6B0F0F);background-size:300% 300%;animation:wizGrad 8s ease infinite}
@@ -1937,7 +1965,11 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="feat-content">
           <div class="feat-tag">24 / 7 · Automated</div>
           <div class="feat-title">Fires While the City Sleeps</div>
-          <div class="feat-desc">The instant a request arrives — 2am, festival day, power cut — the system finds every eligible donor of that blood type, ranks them by distance to the hospital, and fires individual WhatsApp messages. Zero human involvement. Zero delay.</div>
+          <ul class="kp">
+            <li>Works at 2am, festival day, power cut</li>
+            <li>Donors ranked by distance to hospital</li>
+            <li>Personal WhatsApp to each — zero delay</li>
+          </ul>
           <div class="feat-proof">Last alert: <strong>16 donors reached in under 5 seconds</strong></div>
         </div>
       </div>
@@ -1965,7 +1997,11 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="feat-content">
           <div class="feat-tag">Smart · Proximity-First</div>
           <div class="feat-title">Nearest Donor Hears First</div>
-          <div class="feat-desc">The closest match is always called first — so the donor who can arrive fastest responds fastest. If nobody in range replies, the system silently expands: 10 km → 25 km → 50 km → all of Tamil Nadu. No request dies unanswered.</div>
+          <ul class="kp">
+            <li>Closest match always called first</li>
+            <li>Auto-expands: 10 → 25 → 50 km → all TN</li>
+            <li>No request dies unanswered</li>
+          </ul>
           <div class="feat-proof">Search auto-expands — <strong>every request finds a donor</strong></div>
         </div>
       </div>
@@ -1992,7 +2028,11 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="feat-content">
           <div class="feat-tag">Free · Forever</div>
           <div class="feat-title">Zero Cost. Zero Compromise.</div>
-          <div class="feat-desc">Rotary Club of Legacy volunteers built this and run it entirely as a community act. No grants to renew. No subscription to lapse. If you need blood at 3am and have nothing in your pocket — this still works for you. Completely. Full stop.</div>
+          <ul class="kp">
+            <li>Built &amp; run by Rotary volunteers</li>
+            <li>No fees · no subscriptions · no barriers</li>
+            <li>Works at 3am with ₹0 in your pocket</li>
+          </ul>
           <div class="feat-proof">Built &amp; maintained by <strong>Rotary Club of Legacy, Puducherry</strong></div>
         </div>
       </div>
@@ -2012,8 +2052,12 @@ html,body{overflow-x:hidden;max-width:100%}
           <span class="loc-ai-dot"></span>
           Tamil Nadu's First AI-Powered Blood Emergency Network
         </div>
-        <h2 class="loc-trust-h2">The System Knows<br>Where You Are</h2>
-        <p class="loc-trust-sub">The moment a request is submitted, our AI cross-matches blood type, distance, eligibility and donation history — then fires alerts in under 60 seconds. No human delay.</p>
+        <h2 class="loc-trust-h2">The System Knows<br>Where You Are<span class="t-cursor"></span></h2>
+        <ul class="kp dark">
+          <li>Blood type + distance + eligibility cross-matched</li>
+          <li>Alerts fire in under 60 seconds</li>
+          <li>Zero human delay</li>
+        </ul>
 
         <!-- Trust stats row -->
         <div class="loc-trust-stats">
@@ -2129,7 +2173,7 @@ html,body{overflow-x:hidden;max-width:100%}
     <!-- Left: copy + stats + controls -->
     <div class="radar-left fade-in">
       <div class="label label-green">🛰 Live Radar</div>
-      <h2 class="title radar-title">Who's Near You<br>Right Now</h2>
+      <h2 class="title radar-title">Who's Near You<br>Right Now<span class="t-cursor"></span></h2>
       <p class="radar-sub">The radar scans your surroundings and shows how many eligible donors are within reach — completely anonymous. No names. No numbers. Just blips.</p>
 
       <!-- Stats (hidden until location granted) -->
@@ -2207,7 +2251,11 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="ben-emoji">🏥</div>
         <div>
           <div class="ben-title">Emergency Patients</div>
-          <div class="ben-text">Accident victims, surgery patients, dialysis patients, cancer patients — anyone who needs blood urgently. Our system alerts every matching donor in the district, not just those in someone's contact list.</div>
+          <ul class="kp">
+            <li>Accidents · surgery · dialysis · cancer</li>
+            <li>Every matching donor in the district alerted</li>
+            <li>Never limited to one contact list</li>
+          </ul>
           <div class="ben-pill" style="background:var(--rlight);color:var(--red)">Most Critical Impact</div>
         </div>
       </div>
@@ -2215,7 +2263,11 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="ben-emoji">👨‍👩‍👧</div>
         <div>
           <div class="ben-title">Patient Families</div>
-          <div class="ben-text">Stop posting in 15 WhatsApp groups at midnight hoping someone responds. Submit once here — the system does the equivalent of 100 phone calls in 30 seconds. Less panic. More results.</div>
+          <ul class="kp">
+            <li>One form replaces 15 midnight group posts</li>
+            <li>100 phone calls done in 30 seconds</li>
+            <li>Less panic. More results</li>
+          </ul>
           <div class="ben-pill" style="background:var(--nlight);color:var(--navy)">Peace of Mind</div>
         </div>
       </div>
@@ -2223,7 +2275,11 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="ben-emoji">🦸</div>
         <div>
           <div class="ben-title">Blood Donors</div>
-          <div class="ben-text">Register once. We only contact you when someone near you urgently needs your specific blood type and you're eligible (90+ days since last donation). You can decline. No pressure. No obligation. Ever.</div>
+          <ul class="kp">
+            <li>Register once — called only when matched</li>
+            <li>90-day eligibility tracked for you</li>
+            <li>Decline anytime. Zero pressure</li>
+          </ul>
           <div class="ben-pill" style="background:var(--gnl);color:var(--green)">Be a Hero</div>
         </div>
       </div>
@@ -2231,7 +2287,11 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="ben-emoji">🏘️</div>
         <div>
           <div class="ben-title">Rural Villages</div>
-          <div class="ben-text">Ariyankuppam, Odiyan, Villianur, Bahour, Nettapakkam, Chunnambar — villages where accessing a blood bank at 2am means an hour-long journey. Our donor network brings help closer to where people actually live.</div>
+          <ul class="kp">
+            <li>Ariyankuppam · Villianur · Bahour + more</li>
+            <li>No more hour-long 2am journeys</li>
+            <li>Help close to where people live</li>
+          </ul>
           <div class="ben-pill" style="background:var(--glight);color:#B45309"><span id="benAreas">42</span> Areas Covered</div>
         </div>
       </div>
@@ -2289,7 +2349,7 @@ html,body{overflow-x:hidden;max-width:100%}
     <div class="heroes-hd fade-in">
       <div class="heroes-hd-left">
         <div class="label-live"><div class="ld"></div>Live Activity</div>
-        <h2>Donors <em>Reaching Back</em></h2>
+        <h2>Donors <em>Reaching Back</em><span class="t-cursor"></span></h2>
         <p>Real-time responses + community honour board — people saving lives in Tamil Nadu.</p>
       </div>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
