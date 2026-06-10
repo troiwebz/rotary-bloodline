@@ -111,7 +111,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <button class="role-tab" id="tabZone" onclick="setRole('zone')">📍 Zone Manager</button>
     </div>
     <div id="masterFields">
-      <div class="fld"><label>Master Admin Key</label><input type="password" id="masterKey" placeholder="Enter master key" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="fld"><label>Master Admin Key</label><input type="text" id="masterKey" value="RBL-master-60b46c5ca05a28c5" onkeydown="if(event.key==='Enter')doLogin()"></div>
     </div>
     <div id="zoneFields" style="display:none">
       <div class="fld"><label>Username</label><input id="zUser" placeholder="zone username"></div>
@@ -122,8 +122,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
     <!-- Quick access for the team -->
     <div class="ql-box">
-      <div class="ql-title" onclick="document.getElementById('qlList').classList.toggle('open')">🔑 Team quick login — tap to show</div>
-      <div class="ql-list" id="qlList">
+      <div class="ql-title" onclick="document.getElementById('qlList').classList.toggle('open')">🔑 Team quick login — test phase</div>
+      <div class="ql-list open" id="qlList">
         <div class="ql-row" onclick="qlMaster()"><span class="ql-role">👑 Master</span><code>RBL-master-60b46c5ca05a28c5</code><span class="ql-go">Use →</span></div>
         <div class="ql-row" onclick="qlZone('zone_puducherry','rbl@pondy2024')"><span class="ql-role">📍 Puducherry</span><code>zone_puducherry / rbl@pondy2024</code><span class="ql-go">Use →</span></div>
         <div class="ql-row" onclick="qlZone('zone_chennai','rbl@chn2024')"><span class="ql-role">📍 Chennai</span><code>zone_chennai / rbl@chn2024</code><span class="ql-go">Use →</span></div>
