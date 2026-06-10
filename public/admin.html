@@ -192,9 +192,11 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <input id="dq" placeholder="🔍 Search name…" oninput="renderDonors()">
         <select id="dbt" onchange="renderDonors()"><option value="">All types</option><option>O+</option><option>O-</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option></select>
         <select id="dst" onchange="renderDonors()"><option value="">All status</option><option value="eligible">Eligible now</option><option value="cooldown">In 90-day cooldown</option></select>
+        <select id="dprec" onchange="renderDonors()"><option value="">All precision</option><option value="gps">🎯 GPS verified</option><option value="pin">📮 Pincode</option><option value="area">📍 Area only</option></select>
+        <select id="dnight" onchange="renderDonors()"><option value="">Any availability</option><option value="night">🌙 Night-willing</option></select>
       </div>
       <div class="panel" style="overflow-x:auto"><table>
-        <thead><tr><th>Name</th><th>Blood</th><th>Area</th><th>Phone</th><th>Donations</th><th>Status</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Name</th><th>Blood</th><th>Location</th><th>Precision</th><th>Avail.</th><th>Phone</th><th>Don.</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="donorRows"></tbody>
       </table><div class="empty" id="donorEmpty" style="display:none">No donors registered yet. Share the website to grow the network!</div></div>
     </div>
@@ -496,16 +498,28 @@ async function loadDonors(){const r=await J('/api/donors');if(r.code!==200)retur
 function renderDonors(){
   const q=(document.getElementById('dq').value||'').toLowerCase();
   const bt=document.getElementById('dbt').value, st=document.getElementById('dst').value;
+  const prec=document.getElementById('dprec')?.value||'', nt=document.getElementById('dnight')?.value||'';
   const NINETY=90*86400000, now=Date.now();
-  let rows=DONORS.filter(d=>(!q||d.name.toLowerCase().includes(q))&&(!bt||d.bloodType===bt));
+  let rows=DONORS.filter(d=>(!q||d.name.toLowerCase().includes(q)||(d.pincode||'').includes(q))&&(!bt||d.bloodType===bt));
   if(st==='eligible') rows=rows.filter(d=>!d.lastDonation||(now-d.lastDonation)>=NINETY);
   if(st==='cooldown') rows=rows.filter(d=>d.lastDonation&&(now-d.lastDonation)<NINETY);
+  if(prec==='gps')  rows=rows.filter(d=>d.hasGps);
+  if(prec==='pin')  rows=rows.filter(d=>!d.hasGps&&d.pincode);
+  if(prec==='area') rows=rows.filter(d=>!d.hasGps&&!d.pincode);
+  if(nt==='night')  rows=rows.filter(d=>d.nightOk===true);
   document.getElementById('donorEmpty').style.display=rows.length?'none':'block';
   document.getElementById('donorRows').innerHTML=rows.map(d=>{
     const elig=!d.lastDonation||(now-d.lastDonation)>=NINETY;
+    const precPill = d.hasGps ? '<span class="pill ok" title="Exact GPS on file">🎯 GPS</span>'
+      : d.pincode ? '<span class="pill warn" title="Pincode-level">📮 '+esc(d.pincode)+'</span>'
+      : '<span class="pill off" title="Area centroid only">📍 area</span>';
+    const avail = (d.nightOk===true?'🌙':'')+(d.hasVehicle===true?'🛵':'')+(d.maxTravelKm?' ≤'+d.maxTravelKm+'km':'');
     return `<tr>
-      <td><b>${esc(d.name)}</b>${d.verified?' <span title="Verified">✅</span>':''}</td>
-      <td><span class="bt-badge">${esc(d.bloodType)}</span></td><td>${esc(d.area||'—')}</td>
+      <td><b>${esc(d.name)}</b>${d.verified?' <span title="Verified">✅</span>':''}${d.camp?' <span class="pill l2" title="Registered at camp">🏕 '+esc(d.camp)+'</span>':''}</td>
+      <td><span class="bt-badge">${esc(d.bloodType)}</span></td>
+      <td title="${esc(d.landmark||'')}">${esc(d.area||'—')}</td>
+      <td>${precPill}</td>
+      <td style="font-size:12px;white-space:nowrap">${avail||'<span style="color:var(--tx3)">—</span>'}</td>
       <td id="ph-${d.id}">${esc(d.phone)}</td><td>${d.donationCount||0}</td>
       <td>${d.available===false?'<span class="pill off">Inactive</span>':elig?'<span class="pill ok">Eligible</span>':'<span class="pill warn">Cooldown</span>'}</td>
       <td style="white-space:nowrap">

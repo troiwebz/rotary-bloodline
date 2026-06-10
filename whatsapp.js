@@ -185,17 +185,20 @@ Thank you for being a community hero 🦸
   return sent;
 }
 
-async function sendWelcome(name, phone, bloodType, area, via = 'master') {
+async function sendWelcome(name, phone, bloodType, area, via = 'master', profileUrl = null) {
   const msg =
 `🩸 Welcome to Rotary Blood Line!
 
-Hi *${name}*, you are now registered as a *${bloodType}* donor in *${area}*, Puducherry.
+Hi *${name}*, you are now registered as a *${bloodType}* donor in *${area}*.
 
-✅ We will contact you *only* when someone near you urgently needs *${bloodType}* blood.
+✅ We contact you *only* when someone near you urgently needs *${bloodType}* blood.
 ✅ You can decline any request — no pressure.
 ✅ Your 90-day eligibility window is tracked automatically.
-
-You are now part of Puducherry's first automated blood network.
+${profileUrl ? `
+⭐ *One more minute makes you a 5-star hero:* complete your Hero Profile (night availability, travel distance, exact location) so we only alert you when it truly fits:
+${profileUrl}
+` : ''}
+You are now part of Tamil Nadu's first AI blood network.
 *You are a hero.* 🦸
 
 — Rotary Club of Legacy, Puducherry (District 2981)`;

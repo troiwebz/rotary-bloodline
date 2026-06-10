@@ -235,7 +235,7 @@ function calcPoints(donor) {
   return reg + donated + responded;
 }
 
-function registerDonor(name, phone, bloodType, area, lastDonationTs, camp) {
+function registerDonor(name, phone, bloodType, area, lastDonationTs, camp, extra = {}) {
   const donors = read(DONORS_FILE);
   const clean  = phone.replace(/\D/g, '');
   if (donors.some(d => d.phone === clean))
@@ -255,12 +255,28 @@ function registerDonor(name, phone, bloodType, area, lastDonationTs, camp) {
     responseCount: 0, declineCount: 0,
     points, badgeLabel: badge.label, badgeEmoji: badge.emoji,
     available: true, registered: camp ? 'camp' : 'app', camp: camp || null,
+    pincode: extra.pincode || null, lat: extra.lat ?? null, lng: extra.lng ?? null,
+    landmark: extra.landmark || null,
+    nightOk: null, maxTravelKm: null, hasVehicle: null,
     lastSeen: Date.now(), createdAt: Date.now()
   };
   donors.push(donor);
   write(DONORS_FILE, donors);
   pushActivity('donor_registered', { name, bloodType, area });
   return { ok: true, donor };
+}
+
+// Hero Profile self-update (validated by phone last-4 in server layer)
+function updateDonorProfile(id, patch) {
+  const donors = read(DONORS_FILE);
+  const dn = donors.find(x => x.id === Number(id));
+  if (!dn) return null;
+  ['pincode','lat','lng','landmark','nightOk','maxTravelKm','hasVehicle'].forEach(k => {
+    if (patch[k] !== undefined) dn[k] = patch[k];
+  });
+  dn.lastSeen = Date.now();
+  write(DONORS_FILE, donors);
+  return dn;
 }
 
 function markDonated(id) {
@@ -560,7 +576,7 @@ function saveSettings(fields) {
 
 module.exports = {
   // donors
-  getDonors, getAllDonors, registerDonor, markDonated, updateDonor, deleteDonor,
+  getDonors, getAllDonors, registerDonor, markDonated, updateDonor, deleteDonor, updateDonorProfile,
   getEligibleDonors, getDueForReminder,
   // responses
   recordDonorResponse, getRecentResponses,

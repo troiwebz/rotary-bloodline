@@ -537,7 +537,12 @@ app.get('/api/donors', requireAuth, requirePerm('donors'), (req, res) => {
     donors = donors.filter(d => !d.lastDonation || (n - d.lastDonation) >= NINETY);
   }
   // Phones masked for zone admins — full numbers only via audited reveal
-  if (req.auth.role === 'zone') donors = donors.map(d => ({ ...d, phone: maskPhone(d.phone) }));
+  // Raw GPS coordinates are master-only; zone admins see a hasGps flag
+  if (req.auth.role === 'zone') donors = donors.map(d => {
+    const { lat, lng, ...rest } = d;
+    return { ...rest, phone: maskPhone(d.phone), hasGps: lat != null };
+  });
+  else donors = donors.map(d => ({ ...d, hasGps: d.lat != null }));
   res.json(donors);
 });
 
@@ -580,15 +585,22 @@ app.delete('/api/admin/donor/:id', requireMaster, (req, res) => {
 
 app.post('/api/donors/register', async (req, res) => {
   req.body = req.body || {};
-  const { name, phone, bloodType, area, lastDonation, camp } = req.body;
+  const { name, phone, bloodType, area, lastDonation, camp, pincode, lat, lng, landmark } = req.body;
   if (!name || !phone || !bloodType || !area)
     return res.status(400).json({ ok: false, msg: 'All fields required' });
 
-  const result = db.registerDonor(name, phone, bloodType, area, lastDonation, camp);
+  const result = db.registerDonor(name, phone, bloodType, area, lastDonation, camp, {
+    pincode: pincode ? String(pincode).replace(/\D/g, '').slice(0, 6) : null,
+    lat: Number.isFinite(Number(lat)) ? Number(lat) : null,
+    lng: Number.isFinite(Number(lng)) ? Number(lng) : null,
+    landmark: landmark ? String(landmark).slice(0, 120) : null,
+  });
   if (!result.ok) return res.status(409).json(result);
 
-  // Welcome WhatsApp
-  if (wa.isReady()) await wa.sendWelcome(name, phone, bloodType, area);
+  // Welcome WhatsApp — includes the Hero Profile completion link
+  const profileUrl = 'https://rotary-bloodline.vercel.app/profile.html?id=' + result.donor.id
+    + '&p=' + result.donor.phone.slice(-4);
+  if (wa.isReady()) await wa.sendWelcome(name, phone, bloodType, area, 'master', profileUrl);
 
   const stats = db.getStats();
   broadcastSSE('donor_registered', { name, bloodType, area, stats });
@@ -655,6 +667,39 @@ app.post('/api/scan', (req, res) => {
   });
 });
 
+// ── Hero Profile — donor self-service (validated by id + phone last-4) ────────
+function profileDonor(req) {
+  const d = db.getAllDonors().find(x => x.id === Number(req.params.id));
+  if (!d) return null;
+  const p4 = String(req.query.p || req.body?.p || '');
+  return d.phone.endsWith(p4) && p4.length === 4 ? d : null;
+}
+
+app.get('/api/donors/:id/profile', (req, res) => {
+  const d = profileDonor(req);
+  if (!d) return res.status(403).json({ ok: false });
+  res.json({ ok: true, name: d.name, bloodType: d.bloodType, area: d.area,
+    pincode: d.pincode, landmark: d.landmark, hasGps: d.lat != null,
+    nightOk: d.nightOk, maxTravelKm: d.maxTravelKm, hasVehicle: d.hasVehicle,
+    points: d.points, badgeLabel: d.badgeLabel, badgeEmoji: d.badgeEmoji });
+});
+
+app.post('/api/donors/:id/profile', (req, res) => {
+  const d = profileDonor(req);
+  if (!d) return res.status(403).json({ ok: false });
+  const b = req.body || {};
+  const patch = {};
+  if (b.pincode !== undefined)    patch.pincode = String(b.pincode).replace(/\D/g, '').slice(0, 6) || null;
+  if (b.landmark !== undefined)   patch.landmark = String(b.landmark).slice(0, 120) || null;
+  if (b.nightOk !== undefined)    patch.nightOk = !!b.nightOk;
+  if (b.hasVehicle !== undefined) patch.hasVehicle = !!b.hasVehicle;
+  if (b.maxTravelKm !== undefined) patch.maxTravelKm = Math.min(100, Math.max(2, Number(b.maxTravelKm) || 25));
+  if (Number.isFinite(Number(b.lat)) && Number.isFinite(Number(b.lng))) { patch.lat = Number(b.lat); patch.lng = Number(b.lng); }
+  const updated = db.updateDonorProfile(d.id, patch);
+  audit('profile_update', 'donor:' + d.id, { fields: Object.keys(patch) });
+  res.json({ ok: true, hasGps: updated.lat != null });
+});
+
 // ── Public live tracking — sanitized, shareable (no patient phone) ────────────
 app.get('/api/track/:id', (req, res) => {
   const r = db.getRequests(500).find(x => x.id === Number(req.params.id));
@@ -692,8 +737,14 @@ app.post('/api/requests', async (req, res) => {
   const donors      = db.getEligibleDonors(bloodType);
   const sorted      = geo.sortByProximity(donors, hospital);
   const radius      = Number(radiusKm) || 50;
-  const inRange     = sorted.filter(d => d.distanceKm <= radius);
-  const toAlert     = inRange.length > 0 ? inRange : sorted;
+  // Respect each donor's stated willingness: night availability + max travel
+  const istHour     = Number(new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', hour12: false }));
+  const isNight     = istHour >= 22 || istHour < 6;
+  const willing     = sorted.filter(d =>
+    !(isNight && d.nightOk === false) &&
+    d.distanceKm <= (Number(d.maxTravelKm) || 999));
+  const inRange     = willing.filter(d => d.distanceKm <= radius);
+  const toAlert     = inRange.length > 0 ? inRange : willing;
   const settings    = db.getSettings();
   const capped      = toAlert.slice(0, settings.maxDonorsPerAlert || 20);
 

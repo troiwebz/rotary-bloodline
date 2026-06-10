@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hero Profile — Rotary Blood Line</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:linear-gradient(160deg,#070B14,#0F1A33);color:#E2E8F0;min-height:100vh;padding:28px 16px}
+.wrap{max-width:480px;margin:0 auto}
+.hd{text-align:center;margin-bottom:24px}
+.hd .e{font-size:40px;display:block;margin-bottom:8px}
+h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;font-weight:900}
+.sub{color:rgba(255,255,255,.45);font-size:12.5px;margin-top:5px;line-height:1.6}
+.badge-row{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0 22px}
+.bdg{background:rgba(217,119,6,.15);border:1px solid rgba(251,191,36,.35);color:#FBBF24;font-size:12px;font-weight:800;padding:7px 16px;border-radius:18px;font-family:'Plus Jakarta Sans',sans-serif}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:20px;margin-bottom:14px}
+.card h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}
+input,select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:11px;padding:13px 14px;font-size:14.5px;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:rgba(248,113,113,.6)}
+select option{background:#0F1A33}
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.tog-row:last-child{border-bottom:none}
+.tog-l b{display:block;font-size:13.5px;font-family:'Plus Jakarta Sans',sans-serif}
+.tog-l span{font-size:11.5px;color:rgba(255,255,255,.4)}
+.tog{position:relative;width:52px;height:30px;background:rgba(255,255,255,.12);border-radius:16px;cursor:pointer;transition:background .25s;flex-shrink:0}
+.tog::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .25s}
+.tog.on{background:#16A34A}
+.tog.on::after{left:25px}
+.gps-btn{width:100%;padding:14px;border:1.5px dashed rgba(96,165,250,.5);border-radius:12px;background:rgba(59,130,246,.1);color:#93C5FD;font-weight:800;font-size:13.5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.gps-btn.done{border-style:solid;border-color:rgba(74,222,128,.5);background:rgba(22,163,74,.12);color:#4ADE80}
+.save{width:100%;background:linear-gradient(135deg,#DC2626,#B91C1C);color:#fff;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:900;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;margin-top:6px;transition:transform .2s}
+.save:hover{transform:translateY(-2px)}
+.note{text-align:center;font-size:10.5px;color:rgba(255,255,255,.3);margin-top:14px;line-height:1.7}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#16A34A;color:#fff;padding:13px 26px;border-radius:12px;font-weight:800;font-size:13.5px;display:none;z-index:99}
+.err{text-align:center;padding:70px 20px;color:rgba(255,255,255,.5);display:none}
+.err a{color:#F87171}
+</style>
+</head>
+<body>
+<div class="wrap" id="main" style="display:none">
+  <div class="hd">
+    <span class="e">⭐</span>
+    <h1>Complete your Hero Profile</h1>
+    <div class="sub">One minute of detail = alerts that fit your life perfectly.<br>We only message you when it truly makes sense.</div>
+  </div>
+  <div class="badge-row"><span class="bdg" id="bName">—</span><span class="bdg" id="bBadge">—</span></div>
+
+  <div class="card">
+    <h3>📍 Your location precision</h3>
+    <div class="fld"><label>Pincode</label><input id="pPin" type="tel" maxlength="6" inputmode="numeric" placeholder="605001"></div>
+    <div class="fld"><label>Landmark</label><input id="pLandmark" placeholder="e.g. near Villianur bus stand"></div>
+    <button class="gps-btn" id="pGps" onclick="captureGps()">📍 Share my exact GPS location</button>
+    <input type="hidden" id="pLat"><input type="hidden" id="pLng">
+  </div>
+
+  <div class="card">
+    <h3>🕐 Your availability</h3>
+    <div class="tog-row">
+      <div class="tog-l"><b>Night emergencies (10 pm – 6 am)</b><span>Can we alert you at night?</span></div>
+      <div class="tog" id="tNight" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="tog-row">
+      <div class="tog-l"><b>I have my own vehicle</b><span>Helps us know who can reach fastest</span></div>
+      <div class="tog" id="tVehicle" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="fld" style="margin-top:14px"><label>Maximum distance you'd travel to donate</label>
+      <select id="pMax">
+        <option value="5">Up to 5 km</option>
+        <option value="10">Up to 10 km</option>
+        <option value="25" selected>Up to 25 km</option>
+        <option value="50">Up to 50 km</option>
+        <option value="100">Anywhere in the district</option>
+      </select></div>
+  </div>
+
+  <button class="save" onclick="save()">💾 Save my Hero Profile</button>
+  <div class="note">🔒 Your exact location is used only for distance matching — never displayed publicly, never shared.<br>Rotary Club of Legacy, Puducherry · rotary-bloodline.vercel.app</div>
+</div>
+
+<div class="err" id="err">This profile link is invalid or expired.<br><br><a href="/">← Rotary Blood Line</a></div>
+<div class="toast" id="toast">✅ Profile saved — you're a 5-star hero!</div>
+
+<script>
+const IS_LOCAL = ['localhost','127.0.0.1'].includes(location.hostname);
+const API = IS_LOCAL ? '' : 'https://rotary-bloodline-production-d586.up.railway.app';
+const q = new URLSearchParams(location.search);
+const id = q.get('id'), p = q.get('p');
+
+async function load(){
+  if(!id || !p){ document.getElementById('err').style.display='block'; return; }
+  let d;
+  try{ d = await fetch(API+'/api/donors/'+id+'/profile?p='+p).then(r=>r.json()); }catch(e){}
+  if(!d || !d.ok){ document.getElementById('err').style.display='block'; return; }
+  document.getElementById('main').style.display='block';
+  document.getElementById('bName').textContent = '🦸 ' + d.name + ' · ' + d.bloodType;
+  document.getElementById('bBadge').textContent = (d.badgeEmoji||'🌱') + ' ' + (d.badgeLabel||'Hero') + ' · ' + (d.points||0) + ' pts';
+  if(d.pincode) document.getElementById('pPin').value = d.pincode;
+  if(d.landmark) document.getElementById('pLandmark').value = d.landmark;
+  if(d.nightOk) document.getElementById('tNight').classList.add('on');
+  if(d.hasVehicle) document.getElementById('tVehicle').classList.add('on');
+  if(d.maxTravelKm) document.getElementById('pMax').value = String(d.maxTravelKm);
+  if(d.hasGps){ const g=document.getElementById('pGps'); g.classList.add('done'); g.textContent='✅ GPS location on file — tap to update'; }
+}
+function captureGps(){
+  const btn=document.getElementById('pGps');
+  if(!navigator.geolocation){ btn.textContent='❌ GPS not available on this device'; return; }
+  btn.textContent='⏳ Locating…';
+  navigator.geolocation.getCurrentPosition(function(pos){
+    document.getElementById('pLat').value = pos.coords.latitude.toFixed(6);
+    document.getElementById('pLng').value = pos.coords.longitude.toFixed(6);
+    btn.classList.add('done');
+    btn.textContent='✅ Location captured (±'+Math.round(pos.coords.accuracy)+' m)';
+  }, function(){ btn.textContent='📍 Share my exact GPS location'; }, {timeout:9000, enableHighAccuracy:true});
+}
+async function save(){
+  const body = { p,
+    pincode: document.getElementById('pPin').value,
+    landmark: document.getElementById('pLandmark').value,
+    nightOk: document.getElementById('tNight').classList.contains('on'),
+    hasVehicle: document.getElementById('tVehicle').classList.contains('on'),
+    maxTravelKm: Number(document.getElementById('pMax').value),
+  };
+  const la = document.getElementById('pLat').value, ln = document.getElementById('pLng').value;
+  if(la && ln){ body.lat = Number(la); body.lng = Number(ln); }
+  const r = await fetch(API+'/api/donors/'+id+'/profile', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)}).then(x=>x.json()).catch(()=>({}));
+  const t = document.getElementById('toast');
+  t.textContent = r.ok ? '✅ Profile saved — you\'re a 5-star hero!' : '⚠️ Could not save — try again';
+  t.style.background = r.ok ? '#16A34A' : '#DC2626';
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none', 3000);
+}
+load();
+</script>
+</body>
+</html>

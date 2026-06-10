@@ -240,7 +240,10 @@ function sortByProximity(donors, hospitalName) {
   const hCoords = getHospitalCoords(hospitalName);
   return donors
     .map(d => {
-      const dCoords = getAreaCoords(d.area);
+      // Precision chain: exact GPS (if donor shared it) → area centroid
+      const dCoords = (d.lat != null && d.lng != null)
+        ? { lat: Number(d.lat), lon: Number(d.lng) }
+        : getAreaCoords(d.area);
       const km = distanceKm(dCoords.lat, dCoords.lon, hCoords.lat, hCoords.lon);
       return { ...d, distanceKm: Math.round(km * 10) / 10 };
     })
