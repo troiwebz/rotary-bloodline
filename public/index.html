@@ -165,6 +165,40 @@ p.sub{font-size:16px;color:var(--muted);line-height:1.85;font-weight:400}
 .ll-card p{font-size:13.5px;color:rgba(255,255,255,.5);line-height:1.75}
 .ll-card .ll-icon{font-size:30px;margin-bottom:14px;display:block}
 .ll-ai-bar{display:flex;align-items:center;justify-content:center;gap:12px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:16px;padding:16px 24px;color:#93C5FD;font-size:13.5px;font-weight:600;line-height:1.6;text-align:center}
+/* Layer card key points */
+.ll-points{list-style:none;margin:0;padding:0}
+.ll-points li{position:relative;padding:7px 0 7px 26px;font-size:13.5px;color:rgba(255,255,255,.55);line-height:1.5;border-bottom:1px solid rgba(255,255,255,.05);transition:color .2s,transform .2s}
+.ll-points li:last-child{border-bottom:none}
+.ll-points li::before{content:'✓';position:absolute;left:0;top:7px;width:17px;height:17px;border-radius:50%;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.ll-card.l1 .ll-points li::before{background:rgba(220,38,38,.18);color:#F87171}
+.ll-card.l2 .ll-points li::before{background:rgba(217,119,6,.18);color:#FBBF24}
+.ll-card.l3 .ll-points li::before{background:rgba(124,58,237,.2);color:#C4B5FD}
+.ll-card:hover .ll-points li{color:rgba(255,255,255,.78)}
+.ll-points li:hover{transform:translateX(4px)}
+
+/* AI Mission Control terminal */
+.ll-ai-terminal{position:relative;background:linear-gradient(135deg,rgba(13,25,48,.9),rgba(15,30,60,.9));border:1px solid rgba(59,130,246,.3);border-radius:18px;padding:20px 26px;overflow:hidden;transition:all .3s}
+.ll-ai-terminal::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(105deg,transparent,rgba(59,130,246,.12),transparent);transform:skewX(-20deg);animation:termShine 5s ease infinite}
+@keyframes termShine{0%,55%{left:-100%}100%{left:160%}}
+.ll-ai-terminal:hover{border-color:rgba(96,165,250,.55);box-shadow:0 12px 40px rgba(59,130,246,.18);transform:translateY(-2px)}
+.ll-ai-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ll-ai-ico{font-size:18px}
+.ll-ai-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:900;letter-spacing:.14em;color:#93C5FD}
+.ll-ai-cursor{display:inline-block;width:8px;height:16px;background:#60A5FA;animation:curBlink 1s steps(1) infinite}
+@keyframes curBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.ll-ai-live{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(22,163,74,.14);border:1px solid rgba(74,222,128,.3);color:#4ADE80;font-size:10px;font-weight:900;letter-spacing:.12em;padding:4px 12px;border-radius:14px}
+.ll-ai-live-dot{width:6px;height:6px;border-radius:50%;background:#4ADE80;animation:hintPulse 1.6s ease infinite}
+.ll-ai-chips{display:flex;gap:10px;flex-wrap:wrap}
+.ll-ai-chip{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 16px;font-size:12.5px;font-weight:700;color:rgba(255,255,255,.7);font-family:'Plus Jakarta Sans',sans-serif;transition:all .22s;cursor:default}
+.ll-ai-chip:hover{background:rgba(255,255,255,.1);border-color:rgba(96,165,250,.4);transform:translateY(-2px);color:#fff}
+.chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.chip-dot.green{background:#4ADE80;box-shadow:0 0 8px rgba(74,222,128,.6);animation:hintPulse 1.6s ease infinite}
+.chip-dot.gold{background:#FBBF24;box-shadow:0 0 8px rgba(251,191,36,.6);animation:hintPulse 1.6s ease infinite .5s}
+.chip-dot.red{background:#F87171;box-shadow:0 0 8px rgba(248,113,113,.6);animation:hintPulse 1.6s ease infinite 1s}
+@media(max-width:820px){
+  .ll-ai-chips{flex-direction:column}
+  .ll-ai-chip{width:100%;justify-content:flex-start}
+}
 .ll-promise{margin-top:28px;text-align:center;color:rgba(255,255,255,.35);font-size:13px;line-height:1.7}
 @media(max-width:820px){
   .lifeline-sec{padding:64px 20px}
@@ -1829,29 +1863,50 @@ html,body{overflow-x:hidden;max-width:100%}
         <span class="ll-icon">⚡</span>
         <div class="ll-time">Layer 1 · 0–10 min</div>
         <h3>Registered Donor Network</h3>
-        <p>The instant a request arrives, AI matches every verified donor near the hospital by blood type, distance and 90-day eligibility — and alerts them on WhatsApp within 60 seconds. First to respond saves the life.</p>
+        <ul class="ll-points">
+          <li>AI matches type + distance + eligibility</li>
+          <li>WhatsApp alerts fire in 60 seconds</li>
+          <li>Nearest donors reached first</li>
+        </ul>
       </div>
       <div class="ll-card l2 fade-in d2">
         <div class="ll-num">2</div>
         <span class="ll-icon">🤝</span>
         <div class="ll-time">Layer 2 · 10–20 min</div>
         <h3>Partner Network</h3>
-        <p>No response yet? The system automatically widens the circle — donors across the wider district, partner blood banks, NGOs and sister Rotary clubs are activated to circulate the need through their own trusted networks.</p>
+        <ul class="ll-points">
+          <li>Circle widens across the district</li>
+          <li>Blood banks + NGOs activated</li>
+          <li>Sister Rotary clubs circulate</li>
+        </ul>
       </div>
       <div class="ll-card l3 fade-in d3">
         <div class="ll-num">3</div>
         <span class="ll-icon">🎖️</span>
         <div class="ll-time">Layer 3 · 20–30 min</div>
         <h3>Expert Response</h3>
-        <p>For the hardest cases, Rotary zone coordinators are paged personally — experienced members who call blood banks directly, activate personal contacts and stay on the case until blood reaches the patient.</p>
+        <ul class="ll-points">
+          <li>Zone coordinators paged personally</li>
+          <li>Direct calls to blood banks</li>
+          <li>On the case until blood arrives</li>
+        </ul>
       </div>
     </div>
 
-    <div class="ll-ai-bar fade-in">
-      <span>🤖</span>
-      <span><b>AI Mission Control:</b> every request is tracked live — the system watches response times and escalates between layers automatically. No human has to remember. No request falls through.</span>
+    <div class="ll-ai-terminal fade-in">
+      <div class="ll-ai-head">
+        <span class="ll-ai-ico">🤖</span>
+        <span class="ll-ai-title">AI MISSION CONTROL</span>
+        <span class="ll-ai-cursor"></span>
+        <span class="ll-ai-live"><span class="ll-ai-live-dot"></span>LIVE</span>
+      </div>
+      <div class="ll-ai-chips">
+        <div class="ll-ai-chip"><span class="chip-dot green"></span>Tracks every request live</div>
+        <div class="ll-ai-chip"><span class="chip-dot gold"></span>Auto-escalates between layers</div>
+        <div class="ll-ai-chip"><span class="chip-dot red"></span>Zero requests dropped</div>
+      </div>
     </div>
-    <div class="ll-promise">The 30-minute target is our mission standard across Tamil Nadu · Rotary Club of Legacy · RI District 2981</div>
+    <div class="ll-promise">⏱ 30-minute standard · Tamil Nadu · Rotary Club of Legacy · RI District 2981</div>
   </div>
 </section>
 
