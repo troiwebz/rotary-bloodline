@@ -60,7 +60,6 @@ function initSession(id) {
         '--disable-dev-shm-usage',
         '--disable-gpu',
         '--disable-extensions',
-        '--single-process',
       ]
     }
   });
