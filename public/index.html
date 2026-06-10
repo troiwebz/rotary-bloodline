@@ -910,6 +910,10 @@ footer{background:#070B14;padding:72px 52px 44px}
 /* Blinking title cursor */
 .t-cursor{display:inline-block;width:.14em;height:.78em;background:currentColor;margin-left:.12em;vertical-align:baseline;animation:curBlink 1.05s steps(1) infinite;opacity:.85;border-radius:2px}
 
+/* Shining text — animated gradient sweep across letters */
+.shine-text{background:linear-gradient(110deg,#fff 38%,#34D399 48%,#60A5FA 52%,#fff 62%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:shineSweep 3s linear infinite}
+@keyframes shineSweep{0%{background-position:120% 0}100%{background-position:-120% 0}}
+
 /* Shine sweep on primary CTAs site-wide */
 .vid-btn-red,.radar-loc-btn,.loc-cta-btn,.nav-cta,.mission-badge{position:relative;overflow:hidden}
 .vid-btn-red::after,.radar-loc-btn::after,.loc-cta-btn::after,.nav-cta::after,.mission-badge::after{content:'';position:absolute;top:0;left:-90%;width:50%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.32),transparent);transform:skewX(-20deg);animation:ctaShine 4s ease infinite;pointer-events:none}
@@ -1133,6 +1137,26 @@ footer{background:#070B14;padding:72px 52px 44px}
 .radar-sec .label-green{background:rgba(16,163,74,.15);color:#34D399;border:1px solid rgba(16,163,74,.25)}
 .radar-title{color:#fff!important}
 .radar-sub{font-size:15px;color:rgba(255,255,255,.45);line-height:1.85;margin-top:14px;max-width:440px}
+/* Radar stepper */
+.radar-stepper{display:flex;align-items:center;gap:10px;margin:24px 0 8px}
+.rstep{display:flex;align-items:center;gap:9px;opacity:.38;transition:opacity .4s}
+.rstep-n{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:rgba(255,255,255,.6);font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;transition:all .4s}
+.rstep-t{font-size:10.5px;font-weight:700;color:rgba(255,255,255,.5);line-height:1.25;text-transform:uppercase;letter-spacing:.05em}
+.rstep.active{opacity:1}
+.rstep.active .rstep-n{background:#34D399;border-color:#34D399;color:#04110B;box-shadow:0 0 18px rgba(52,211,153,.55);animation:hintPulse 1.6s ease infinite}
+.rstep.done{opacity:1}
+.rstep.done .rstep-n{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.5);color:#34D399}
+.rstep-line{flex:1;height:2px;background:rgba(255,255,255,.12);min-width:18px;transition:background .5s}
+.rstep-line.done{background:linear-gradient(90deg,#34D399,rgba(52,211,153,.3))}
+/* Staggered stat reveal */
+#radarStats.reveal .radar-stat{animation:statIn .55s cubic-bezier(.22,1,.36,1) both}
+#radarStats.reveal .radar-stat:nth-child(1){animation-delay:.05s}
+#radarStats.reveal .radar-stat:nth-child(2){animation-delay:.2s}
+#radarStats.reveal .radar-stat:nth-child(3){animation-delay:.35s}
+@keyframes statIn{from{opacity:0;transform:translateY(16px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+.rr-badge{transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.rr-badge.pop{animation:badgePop .55s cubic-bezier(.34,1.56,.64,1)}
+@keyframes badgePop{0%{transform:translateX(-50%) scale(.6);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}
 .radar-stat-row{display:flex;gap:12px;margin:28px 0 16px}
 .radar-stat{text-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 12px;flex:1;transition:all .25s}
 .radar-stat:hover{background:rgba(255,255,255,.07);border-color:rgba(52,211,153,.25)}
@@ -2178,7 +2202,16 @@ html,body{overflow-x:hidden;max-width:100%}
     <div class="radar-left fade-in">
       <div class="label label-green">🛰 Live Radar</div>
       <h2 class="title radar-title">Who's Near You<br>Right Now<span class="t-cursor"></span></h2>
-      <p class="radar-sub">The radar scans your surroundings and shows how many eligible donors are within reach — completely anonymous. No names. No numbers. Just blips.</p>
+      <p class="radar-sub">Anonymous scan of your surroundings — no names, no numbers, just blips.</p>
+
+      <!-- Step-by-step flow -->
+      <div class="radar-stepper" id="radarStepper">
+        <div class="rstep active" id="rstep1"><span class="rstep-n">1</span><span class="rstep-t">Enable<br>location</span></div>
+        <div class="rstep-line" id="rline1"></div>
+        <div class="rstep" id="rstep2"><span class="rstep-n">2</span><span class="rstep-t">Radar<br>scans</span></div>
+        <div class="rstep-line" id="rline2"></div>
+        <div class="rstep" id="rstep3"><span class="rstep-n">3</span><span class="rstep-t">Live<br>results</span></div>
+      </div>
 
       <!-- Stats (hidden until location granted) -->
       <div id="radarStats" style="display:none">
@@ -3071,6 +3104,17 @@ async function checkServerStatus(){
     }, delay);
   }
 
+  function setRadarStep(n){
+    for(var i=1;i<=3;i++){
+      var st=document.getElementById('rstep'+i);
+      if(st){st.classList.remove('active','done');
+        if(i<n)st.classList.add('done'); else if(i===n)st.classList.add('active');}
+    }
+    var l1=document.getElementById('rline1'), l2=document.getElementById('rline2');
+    if(l1)l1.classList.toggle('done',n>=2);
+    if(l2)l2.classList.toggle('done',n>=3);
+  }
+
   window.initRadar = function() {
     var permDiv   = document.getElementById('radarPerm');
     var loadDiv   = document.getElementById('radarLoading');
@@ -3087,6 +3131,7 @@ async function checkServerStatus(){
     if (permDiv) permDiv.style.display='none';
     if (loadDiv) loadDiv.style.display='flex';
     if (errDiv)  errDiv.style.display='none';
+    setRadarStep(2);
 
     // Start idle sweep immediately (no blips yet)
     if (canvas) {
@@ -3100,7 +3145,8 @@ async function checkServerStatus(){
         var url = (window.API_BASE||API_BASE||'') + '/api/radar?lat='+lat+'&lng='+lng+'&radius=50';
         fetch(url).then(function(r){return r.json();}).then(function(data){
           if (loadDiv) loadDiv.style.display='none';
-          if (statsDiv) statsDiv.style.display='block';
+          if (statsDiv){ statsDiv.style.display='block'; statsDiv.classList.add('reveal'); }
+          setRadarStep(3);
 
           animCount(document.getElementById('rStat10'), data.within10||0, 700);
           animCount(document.getElementById('rStat25'), data.within25||0, 900);
@@ -3111,6 +3157,7 @@ async function checkServerStatus(){
 
           if (badge) {
             badge.style.display = 'block';
+            badge.classList.add('pop');
             var num = document.getElementById('rrCount');
             if (num) animCount(num, data.total||0, 800);
           }
@@ -4292,11 +4339,33 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeWizard(
 
   // ── Reveal the location card with radar data ──────────────────────────────
   // User is far outside the Puducherry/Tamil Nadu service area
-  function revealOutOfArea(distKm){
+  function revealOutOfArea(distKm, lat, lng){
     var btn=document.querySelector('.loc-cta-btn');
-    document.getElementById('locRevArea').textContent = 'Outside Service Area';
-    document.getElementById('locRevZone').textContent = 'Nearest coverage: ~' + Math.round(distKm) + ' km away';
-    document.getElementById('locPillText').textContent = '🌏 You are outside our service area';
+    var areaEl = document.getElementById('locRevArea');
+    areaEl.textContent = 'Locating you…';
+    areaEl.classList.add('shine-text');
+    document.getElementById('locRevZone').textContent = 'Outside service area · nearest coverage ~' + Math.round(distKm) + ' km';
+    document.getElementById('locPillText').textContent = '🌏 Finding your location…';
+
+    // Reverse-geocode the user's REAL location (works worldwide, no key needed)
+    if(lat != null && lng != null){
+      fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+lat+'&longitude='+lng+'&localityLanguage=en')
+        .then(function(r){ return r.json(); })
+        .then(function(g){
+          var city = g.city || g.locality || g.principalSubdivision || '';
+          var country = g.countryName || '';
+          var place = city && country ? city + ', ' + country : (country || 'Your Location');
+          areaEl.textContent = '📍 ' + place;
+          document.getElementById('locPillText').textContent = '🌏 You are in ' + place + ' — outside our service area';
+        })
+        .catch(function(){
+          areaEl.textContent = 'Outside Service Area';
+          document.getElementById('locPillText').textContent = '🌏 You are outside our service area';
+        });
+    } else {
+      areaEl.textContent = 'Outside Service Area';
+      document.getElementById('locPillText').textContent = '🌏 You are outside our service area';
+    }
     document.getElementById('locPillWrap').style.display = 'block';
     document.getElementById('locRevCount').textContent = '—';
     document.getElementById('locDonorsMsg').textContent =
@@ -4312,7 +4381,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeWizard(
     var btn=document.querySelector('.loc-cta-btn');
     var area = areaName || 'Puducherry';
 
-    document.getElementById('locRevArea').textContent = area;
+    var areaEl2 = document.getElementById('locRevArea');
+    areaEl2.textContent = '📍 ' + area;
+    areaEl2.classList.add('shine-text');
     document.getElementById('locRevZone').textContent = '';
     document.getElementById('locPillText').textContent = '📍 You are in ' + area;
     document.getElementById('locPillWrap').style.display = 'block';
@@ -4396,7 +4467,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeWizard(
           .then(function(r){ return r.ok ? r.json() : {area:'Puducherry'}; })
           .then(function(d){
             // If the nearest service area is >100 km away, the user is outside coverage
-            if(d.distanceKm != null && d.distanceKm > 100){ revealOutOfArea(d.distanceKm); return; }
+            if(d.distanceKm != null && d.distanceKm > 100){ revealOutOfArea(d.distanceKm, lat, lng); return; }
             revealLocCard(lat, lng, d.area || d.nearest || 'Puducherry');
           })
           .catch(function(){
