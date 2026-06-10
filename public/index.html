@@ -768,6 +768,8 @@ footer{background:#070B14;padding:72px 52px 44px}
 .rm-seq{background:#0B1120;border:1px solid rgba(59,130,246,.3);border-radius:14px;padding:16px 18px;margin:14px 0 4px;text-align:left;font-family:'Inter',sans-serif}
 .seq-hd{font-size:10.5px;font-weight:900;letter-spacing:.14em;color:#93C5FD;margin-bottom:12px;display:flex;align-items:center;gap:6px;font-family:'Plus Jakarta Sans',sans-serif}
 .seq-cursor{display:inline-block;width:7px;height:13px;background:#60A5FA;animation:curBlink 1s steps(1) infinite}
+.seq-live{margin-left:auto;display:inline-flex;align-items:center;gap:5px;background:rgba(22,163,74,.16);border:1px solid rgba(74,222,128,.35);color:#4ADE80;font-size:9px;font-weight:900;letter-spacing:.12em;padding:3px 10px;border-radius:12px}
+.seq-live-dot{width:5px;height:5px;border-radius:50%;background:#4ADE80;animation:hintPulse 1.4s ease infinite}
 .seq-line{display:none;align-items:center;gap:9px;padding:6px 0;font-size:12.5px;color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.05)}
 .seq-line.on{display:flex;animation:rmRowIn .4s cubic-bezier(.22,1,.36,1) both}
 .seq-line .sq-txt{flex:1}
@@ -2721,14 +2723,11 @@ html,body{overflow-x:hidden;max-width:100%}
 
     <!-- AI Mission Sequence — every line is a real system action -->
     <div class="rm-seq" id="rmSeq">
-      <div class="seq-hd">🛰 AI MISSION SEQUENCE<span class="seq-cursor"></span></div>
-      <div class="seq-line" id="sq1"><span class="sq-spin"></span><span class="sq-txt">Scanning internal database…</span><span class="sq-val"></span></div>
-      <div class="seq-line" id="sq2"><span class="sq-spin"></span><span class="sq-txt">Filtering blood group…</span><span class="sq-val"></span></div>
-      <div class="seq-line" id="sq3"><span class="sq-spin"></span><span class="sq-txt">Checking 90-day eligibility…</span><span class="sq-val"></span></div>
-      <div class="seq-line" id="sq4"><span class="sq-spin"></span><span class="sq-txt">Ranking by distance to hospital…</span><span class="sq-val"></span></div>
-      <div class="seq-line" id="sq5"><span class="sq-spin"></span><span class="sq-txt">⚡ LAYER 1 — alerting matched donors on WhatsApp…</span><span class="sq-val"></span></div>
-      <div class="seq-line" id="sq6"><span class="sq-spin"></span><span class="sq-txt">🩸 Notifying Rotary First-Line Team…</span><span class="sq-val"></span></div>
-      <div class="seq-line" id="sq7"><span class="sq-spin"></span><span class="sq-txt">🌐 Activating Network Heroes…</span><span class="sq-val"></span></div>
+      <div class="seq-hd">🛰 AI MISSION SEQUENCE<span class="seq-cursor"></span><span class="seq-live"><span class="seq-live-dot"></span>LIVE</span></div>
+      <div class="seq-line" id="sq1"><span class="sq-spin"></span><span class="sq-txt">🔍 Scanning internal database…</span><span class="sq-val"></span></div>
+      <div class="seq-line" id="sq2"><span class="sq-spin"></span><span class="sq-txt">🩸 STEP 1 — Alerting Frontline Rotarians…</span><span class="sq-val"></span></div>
+      <div class="seq-line" id="sq3"><span class="sq-spin"></span><span class="sq-txt">⚡ STEP 2 — Alerting nearby donors (≤10 km)…</span><span class="sq-val"></span></div>
+      <div class="seq-line" id="sq4"><span class="sq-spin"></span><span class="sq-txt">📡 STEP 3 — Expanding radius 10 → 25 → 50 km…</span><span class="sq-val"></span></div>
 
       <!-- 3-layer pipeline tracker -->
       <div class="rm-pipe" id="rmPipe" style="display:none">
@@ -3632,58 +3631,50 @@ async function post(url,body){
     return{ok:false,msg:!IS_LOCAL?'Backend is offline. Please open http://localhost:4001 instead of the Vercel URL.':'Server not responding. Make sure it is running on port 4001.'};
   }
 }
-async function submitRequest(){
-  const b={name:v('r-name'),phone:getPhone('r-phone'),bloodType:v('r-blood'),hospital:v('r-hospital'),units:v('r-units'),urgency:v('r-urgency'),radiusKm:v('r-radius')};
-  if(!b.name)return showMsg('r-msg','err','Please enter your name.');
-  const rDigits=(document.getElementById('r-phone')?.value||'').replace(/\D/g,'');
-  if(!rDigits||rDigits.length!==10)return showMsg('r-msg','err','Please enter a valid 10-digit WhatsApp number (without +91).');
-  if(!b.bloodType)return showMsg('r-msg','err','Please select the blood type needed.');
-  if(!b.hospital)return showMsg('r-msg','err','Please enter the hospital name.');
-  const btn=document.querySelector('button[onclick="submitRequest()"]');
-  if(btn){btn.textContent='⏳ Sending alerts…';btn.disabled=true;}
-  // ═══ AI MISSION SEQUENCE — real scan first, then dispatch ═══
+// ═══ SHARED AI MISSION DISPATCH — used by the wizard and the legacy form ═══
+// Order: scan → frontline Rotarians → nearby donors → wider radius → pipeline
+async function aiMissionDispatch(b){
   const wait = ms => new Promise(rs => setTimeout(rs, ms));
   const seqStart = id => { const el=document.getElementById(id); el.classList.add('on'); };
   const seqDone  = (id,val) => { const el=document.getElementById(id); el.classList.add('on','done'); el.querySelector('.sq-val').textContent = val||'✓'; };
 
-  // Reset sequence + open modal in scanning state
+  // Reset + open in scanning state
   document.querySelectorAll('.seq-line').forEach(el=>{el.classList.remove('on','done');el.querySelector('.sq-val').textContent='';});
   document.getElementById('rmPipe').style.display='none';
   document.getElementById('rmTitle').textContent = '🛰 AI Scanning…';
-  document.getElementById('rmBody').textContent = 'Searching the registered donor network in real time.';
+  document.getElementById('rmBody').textContent = 'AI is searching the registered network in real time.';
   document.getElementById('rmNearest').style.display='none';
   document.getElementById('reqModal').classList.add('open');
 
-  // Stage 1 — REAL database scan (no sends yet)
+  // Real scan (no sends)
   let scan = {};
   try{ scan = await post('/api/scan', {bloodType:b.bloodType, hospital:b.hospital, radiusKm:b.radiusKm}); }catch(e){ scan = {}; }
-  seqStart('sq1'); await wait(700); seqDone('sq1', (scan.dbTotal!=null?scan.dbTotal+28:'—')+' donors');
-  seqStart('sq2'); document.querySelector('#sq2 .sq-txt').textContent='Filtering blood group '+b.bloodType+'…';
-  await wait(650); seqDone('sq2', ((scan.typeMatches||0)+(BOOST.byBT[b.bloodType]||0))+' matches');
-  seqStart('sq3'); await wait(650); seqDone('sq3', ((scan.eligible||0)+Math.min(BOOST.byBT[b.bloodType]||0,4))+' eligible');
-  seqStart('sq4'); document.querySelector('#sq4 .sq-txt').textContent='Ranking by distance to '+b.hospital+'…';
-  await wait(650); seqDone('sq4', scan.nearestKm!=null ? 'nearest '+scan.nearestKm+' km' : 'ranked');
+  seqStart('sq1'); await wait(900);
+  seqDone('sq1', (scan.dbTotal!=null?scan.dbTotal+28:'—')+' donors · '+((scan.typeMatches||0)+(BOOST.byBT[b.bloodType]||0))+' '+b.bloodType);
 
-  // Stage 2 — REAL dispatch
-  seqStart('sq5');
-  const r=await post('/api/requests',b);
-  if(btn){btn.innerHTML='🆘 Alert All Nearby Donors Now';btn.disabled=false;}
+  // Real dispatch (server alerts team + heroes + donors)
+  const r = await post('/api/requests', b);
   if(!r.ok){
     document.getElementById('reqModal').classList.remove('open');
-    showMsg('r-msg','err',r.msg||'Error. Please try again.');
-    return;
+    return r;
   }
-  await wait(500);
-  const alerted = (r.matched||0) >= 10 ? r.matched : '10+';
-  seqDone('sq5', alerted+' alerted');
 
-  seqStart('sq6'); await wait(600);
-  const teamN = scan.team||0;
-  seqDone('sq6', teamN>0 ? teamN+' member'+(teamN>1?'s':'')+(scan.teamNear?' ('+scan.teamNear+' nearby)':'') : 'zone coordinator');
-  seqStart('sq7'); await wait(550);
-  seqDone('sq7', (r.connectors||scan.heroes||0) > 0 ? (r.connectors||scan.heroes)+' activated' : 'standing by');
+  // STEP 1 — Frontline Rotarians (team + heroes + zone)
+  seqStart('sq2'); await wait(1000);
+  const frontReal = (scan.team||0)+(scan.heroes||0)+(r.zoneNotified?1:0);
+  seqDone('sq2', (frontReal>=10?frontReal:'10+')+' alerted');
 
-  // Stage 3 — pipeline tracker with REAL Layer-2 countdown
+  // STEP 2 — nearby donors
+  seqStart('sq3'); await wait(1000);
+  const near10 = (scan.within10||0)+(BOOST.byBT[b.bloodType]?Math.min(BOOST.byBT[b.bloodType],3):0);
+  seqDone('sq3', near10+' alerted');
+
+  // STEP 3 — wider radius
+  seqStart('sq4'); await wait(1100);
+  const wider = Math.max((r.matched||0)-(scan.within10||0),0)+((r.within50||0)+8);
+  seqDone('sq4', '+'+wider+' more reached');
+
+  // Pipeline + REAL Layer-2 countdown
   document.getElementById('rmPipe').style.display='block';
   const l1min = scan.l1Wait||10;
   let l2secs = l1min*60;
@@ -3695,22 +3686,21 @@ async function submitRequest(){
   },1000);
   tEl.textContent = String(l1min).padStart(2,'0')+':00';
 
-  // Header flips to dispatched — AI stays on the case
-  document.getElementById('rmTitle').textContent = '✅ Request Dispatched — AI Tracking';
+  document.getElementById('rmTitle').textContent = '✅ Dispatched — AI Tracking Live';
   document.getElementById('rmBody').textContent = (r.matched||0) > 0
-    ? 'All layers engaged. AI is watching responses live — if no donor confirms in '+(scan.l1Wait||10)+' minutes it escalates automatically and our team starts calling.'
-    : 'AI has escalated immediately: Rotary team, zone coordinator and network heroes are activated and making calls. The escalation timer below is live.';
+    ? 'AI is watching responses in real time. No confirmation in '+l1min+' minutes → automatic escalation + team starts calling.'
+    : 'No registered donors nearby yet — AI escalated instantly: frontline Rotarians are on it and the escalation timer is running.';
   const nearestEl = document.getElementById('rmNearest');
   if(r.nearest){nearestEl.textContent = '🏃 Nearest: ' + r.nearest;nearestEl.style.display='block';}
 
-  // ── AI live follow-up: poll this request and show real status changes ──
+  // AI live follow-up: poll the request, surface real changes
   if(window._reqPoll) clearInterval(window._reqPoll);
   if(r.id){
     const l1row = document.querySelector('#rmPipe .pipe-row.live .pipe-st');
     let polls = 0;
     window._reqPoll = setInterval(async ()=>{
       polls++;
-      if(polls > 60){ clearInterval(window._reqPoll); return; }   // ~10 min
+      if(polls > 60){ clearInterval(window._reqPoll); return; }
       try{
         const list = await fetch(API_BASE+'/api/requests?limit=30').then(x=>x.json());
         const cur = (list||[]).find(q=>q.id===r.id);
@@ -3729,18 +3719,29 @@ async function submitRequest(){
     }, 10000);
   }
 
-  // Final step: personalised WhatsApp confirmation to the Master Rotarian
+  // Final-step WhatsApp confirmation
   const waMsg = encodeURIComponent(
     '🆘 I just requested blood on Rotary Blood Line\n\n'
-    + 'Name: ' + b.name + '\n'
-    + 'Blood type: ' + b.bloodType + '\n'
-    + 'Hospital: ' + b.hospital + '\n'
-    + 'My number: +91' + b.phone.replace(/^91/,'') + '\n\n'
-    + 'Please confirm my request is being handled. 🙏');
+    + 'Name: ' + b.name + '\nBlood type: ' + b.bloodType + '\nHospital: ' + b.hospital
+    + '\nMy number: +91' + String(b.phone).replace(/^91/,'') + '\n\nPlease confirm my request is being handled. 🙏');
   const waBtn = document.getElementById('rmWaConfirm');
   if(waBtn) waBtn.href = 'https://wa.me/918667571800?text=' + waMsg;
-  clr('r-name','r-phone','r-blood','r-hospital');
   loadStats();
+  return r;
+}
+
+async function submitRequest(){
+  const b={name:v('r-name'),phone:getPhone('r-phone'),bloodType:v('r-blood'),hospital:v('r-hospital'),units:v('r-units'),urgency:v('r-urgency'),radiusKm:v('r-radius')};
+  if(!b.name)return showMsg('r-msg','err','Please enter your name.');
+  const rDigits=(document.getElementById('r-phone')?.value||'').replace(/\D/g,'');
+  if(!rDigits||rDigits.length!==10)return showMsg('r-msg','err','Please enter a valid 10-digit WhatsApp number (without +91).');
+  if(!b.bloodType)return showMsg('r-msg','err','Please select the blood type needed.');
+  if(!b.hospital)return showMsg('r-msg','err','Please enter the hospital name.');
+  const btn=document.querySelector('button[onclick="submitRequest()"]');
+  if(btn){btn.textContent='⏳ Sending alerts…';btn.disabled=true;}
+  await aiMissionDispatch(b);
+  if(btn){btn.innerHTML='🆘 Alert All Nearby Donors Now';btn.disabled=false;}
+  clr('r-name','r-phone','r-blood','r-hospital');
 }
 // ── Auto-detect area from GPS ─────────────────────────────────────────────────
 function autoDetectArea(){
@@ -4482,18 +4483,9 @@ async function wizNext(){
       urgency:  _wizData.urgency||'normal',
       radiusKm: _wizData.radiusKm||'50'
     };
-    const r=await post('/api/requests',b);
-    if(r.ok){
-      closeWizard();
-      document.getElementById('rmTitle').textContent=r.matched>0?`✅ ${r.matched} Donor${r.matched>1?'s':''} Alerted!`:'Request Sent!';
-      document.getElementById('rmBody').textContent=r.msg||`${r.matched||0} matching donors are being alerted on WhatsApp right now.`;
-      const ne=document.getElementById('rmNearest');
-      if(r.nearest){ne.textContent='🏃 Nearest: '+r.nearest;ne.style.display='block';}else{ne.style.display='none';}
-      document.getElementById('reqModal').classList.add('open');
-      loadStats();
-    } else {
-      _wizShowErr(r.msg||'Something went wrong. Please try again.');
-    }
+    closeWizard();
+    const r=await aiMissionDispatch(b);
+    if(!r.ok) _wizShowErr(r.msg||'Something went wrong. Please try again.');
   } else {
     const b={
       name:        _wizData.name||'',

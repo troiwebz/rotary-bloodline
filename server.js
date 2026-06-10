@@ -614,6 +614,7 @@ app.post('/api/scan', (req, res) => {
     typeMatches: typeMatch.length,
     eligible:   eligible.length,
     inRange:    inRange.length,
+    within10:   sorted.filter(d => d.distanceKm <= 10).length,
     nearestKm:  sorted[0]?.distanceKm ?? null,
     team:       teamHit.length,
     teamNear:   teamHit.filter(m => m.scope === 'radius').length,
