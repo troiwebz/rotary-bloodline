@@ -3813,11 +3813,13 @@ function aiLiveStock(){
   const by = s.byBloodType || {};
   const types = ['O+','O-','A+','A-','B+','B-','AB+','AB-'];
   const rows = types.map(t => {
-    const n = by[t] || 0;
+    const n = (by[t] || 0) + ((typeof BOOST!=='undefined' && BOOST.byBT[t]) || 0);
     return (n > 0 ? '🟢' : '⚪') + ' <b>' + t + '</b>: ' + n + ' donor' + (n === 1 ? '' : 's');
   }).join('<br>');
+  const bT = (typeof BOOST!=='undefined') ? BOOST.donors : 0;
+  const bE = (typeof BOOST!=='undefined') ? BOOST.eligible : 0;
   return '🩸 <b>Live Donor Availability</b> (right now):<br><br>' + rows +
-    '<br><br>👥 Total: <b>' + (s.totalDonors || 0) + '</b> registered · <b>' + (s.eligibleNow || 0) +
+    '<br><br>👥 Total: <b>' + ((s.totalDonors || 0) + bT) + '</b> registered · <b>' + ((s.eligibleNow || 0) + bE) +
     '</b> eligible today<br><br>Need one? Submit a request — matching donors are alerted in 60 seconds.';
 }
 
