@@ -65,7 +65,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,255,255,
   .vid-content h2{font-size:clamp(20px,3.6vw,34px)!important;margin-bottom:10px!important}
   .vid-content p{font-size:12.5px!important;margin-bottom:14px!important}
 }
-.vid-content{padding:0 80px;max-width:740px;position:relative;z-index:2}
+.vid-content{padding:0 40px;max-width:780px;position:relative;z-index:2;margin:0 auto;text-align:center}
+.vid-content .vid-btns{justify-content:center}
+.vid-content p{margin-left:auto;margin-right:auto;max-width:560px}
 .vid-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(220,38,38,.18);border:1px solid rgba(220,38,38,.36);border-radius:30px;padding:8px 18px;font-size:11px;font-weight:700;color:#FCA5A5;letter-spacing:.8px;text-transform:uppercase;margin-bottom:28px;font-family:'Plus Jakarta Sans',sans-serif}
 .vid-tag .dot-live{width:7px;height:7px;border-radius:50%;background:#EF4444;box-shadow:0 0 8px #EF4444;animation:pulse 1.8s infinite}
 .hero-seconds{font-style:normal;color:#F87171;display:inline-block;animation:secTick 1s steps(1) infinite}
@@ -1857,27 +1859,7 @@ html,body{overflow-x:hidden;max-width:100%}
   </div>
 </nav>
 
-<!-- ═══════════ TICKER ═══════════ -->
-<div class="ticker">
-  <div class="ticker-belt">
-    <span class="tick">🩸 All 8 Blood Types Covered <span class="tick-sep"></span></span>
-    <span class="tick">⚡ WhatsApp Alert in 60 Seconds <span class="tick-sep"></span></span>
-    <span class="tick">🔵 Rotary Club of Legacy, Puducherry — District 2981 <span class="tick-sep"></span></span>
-    <span class="tick">🆓 Completely Free — No Charges Ever <span class="tick-sep"></span></span>
-    <span class="tick">📍 <span id="tickAreas1">42</span> Areas Covered Across Tamil Nadu <span class="tick-sep"></span></span>
-    <span class="tick">🕐 Active 24 Hours · 7 Days a Week <span class="tick-sep"></span></span>
-    <span class="tick">💉 One Donation Can Save 3 Lives <span class="tick-sep"></span></span>
-    <span class="tick">🦸 RI Club ID 224440 · Service Above Self <span class="tick-sep"></span></span>
-    <span class="tick">🩸 All 8 Blood Types Covered <span class="tick-sep"></span></span>
-    <span class="tick">⚡ WhatsApp Alert in 60 Seconds <span class="tick-sep"></span></span>
-    <span class="tick">🔵 Rotary Club of Legacy, Puducherry — District 2981 <span class="tick-sep"></span></span>
-    <span class="tick">🆓 Completely Free — No Charges Ever <span class="tick-sep"></span></span>
-    <span class="tick">📍 <span id="tickAreas2">42</span> Areas Covered Across Tamil Nadu <span class="tick-sep"></span></span>
-    <span class="tick">🕐 Active 24 Hours · 7 Days a Week <span class="tick-sep"></span></span>
-    <span class="tick">💉 One Donation Can Save 3 Lives <span class="tick-sep"></span></span>
-    <span class="tick">🦸 RI Club ID 224440 · Service Above Self <span class="tick-sep"></span></span>
-  </div>
-</div>
+
 
 <!-- ═══════════ VIDEO HERO ═══════════ -->
 <div class="vid-strip" id="hero">
@@ -1900,6 +1882,28 @@ html,body{overflow-x:hidden;max-width:100%}
   <div class="vid-scroll-cue">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
     Scroll Down
+  </div>
+</div>
+
+<!-- ═══════════ TICKER ═══════════ -->
+<div class="ticker">
+  <div class="ticker-belt">
+    <span class="tick">🩸 All 8 Blood Types Covered <span class="tick-sep"></span></span>
+    <span class="tick">⚡ WhatsApp Alert in 60 Seconds <span class="tick-sep"></span></span>
+    <span class="tick">🔵 Rotary Club of Legacy, Puducherry — District 2981 <span class="tick-sep"></span></span>
+    <span class="tick">🆓 Completely Free — No Charges Ever <span class="tick-sep"></span></span>
+    <span class="tick">📍 <span id="tickAreas1">42</span> Areas Covered Across Tamil Nadu <span class="tick-sep"></span></span>
+    <span class="tick">🕐 Active 24 Hours · 7 Days a Week <span class="tick-sep"></span></span>
+    <span class="tick">💉 One Donation Can Save 3 Lives <span class="tick-sep"></span></span>
+    <span class="tick">🦸 RI Club ID 224440 · Service Above Self <span class="tick-sep"></span></span>
+    <span class="tick">🩸 All 8 Blood Types Covered <span class="tick-sep"></span></span>
+    <span class="tick">⚡ WhatsApp Alert in 60 Seconds <span class="tick-sep"></span></span>
+    <span class="tick">🔵 Rotary Club of Legacy, Puducherry — District 2981 <span class="tick-sep"></span></span>
+    <span class="tick">🆓 Completely Free — No Charges Ever <span class="tick-sep"></span></span>
+    <span class="tick">📍 <span id="tickAreas2">42</span> Areas Covered Across Tamil Nadu <span class="tick-sep"></span></span>
+    <span class="tick">🕐 Active 24 Hours · 7 Days a Week <span class="tick-sep"></span></span>
+    <span class="tick">💉 One Donation Can Save 3 Lives <span class="tick-sep"></span></span>
+    <span class="tick">🦸 RI Club ID 224440 · Service Above Self <span class="tick-sep"></span></span>
   </div>
 </div>
 
@@ -2847,7 +2851,7 @@ html,body{overflow-x:hidden;max-width:100%}
 <!-- ═══════════ AI BLOOD ASSISTANT ═══════════ -->
 <div class="ai-window" id="aiWindow">
   <div class="ai-hdr">
-    <div class="ai-hdr-avatar">⚙️</div>
+    <div class="ai-hdr-avatar" style="background:#fff"><svg width="30" height="30" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="rgH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F87171"/><stop offset="100%" stop-color="#B91C1C"/></linearGradient></defs><line x1="24" y1="5" x2="24" y2="11" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="4.5" r="2.6" fill="#FCA5A5"/><rect x="3.5" y="20" width="4.5" height="11" rx="2.2" fill="url(#rgH)"/><rect x="40" y="20" width="4.5" height="11" rx="2.2" fill="url(#rgH)"/><rect x="8" y="11.5" width="32" height="27" rx="9.5" fill="url(#rgH)"/><rect x="12.5" y="17" width="23" height="16" rx="6.5" fill="#fff" opacity="0.94"/><circle cx="19.5" cy="24" r="2.7" fill="#DC2626"/><circle cx="28.5" cy="24" r="2.7" fill="#DC2626"/><path d="M19 28.5 Q24 31.8 29 28.5" stroke="#DC2626" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="20.4" cy="23.2" r="0.9" fill="#fff"/><circle cx="29.4" cy="23.2" r="0.9" fill="#fff"/></svg></div>
     <div class="ai-hdr-info">
       <h4>BloodLine AI</h4>
       <p>The World's First AI Rotarian · Serving as the Bloodline · Always on</p>
@@ -2872,7 +2876,7 @@ html,body{overflow-x:hidden;max-width:100%}
 <!-- WhatsApp-style welcome teaser -->
 <div class="ai-teaser" id="aiTeaser" onclick="toggleAI();dismissTeaser()">
   <button class="ai-teaser-x" onclick="event.stopPropagation();dismissTeaser()">✕</button>
-  <div class="ai-teaser-avatar">⚙️</div>
+  <div class="ai-teaser-avatar" style="background:#FEF2F2"><svg width="26" height="26" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="rgT" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F87171"/><stop offset="100%" stop-color="#B91C1C"/></linearGradient></defs><line x1="24" y1="5" x2="24" y2="11" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="4.5" r="2.6" fill="#FCA5A5"/><rect x="3.5" y="20" width="4.5" height="11" rx="2.2" fill="url(#rgT)"/><rect x="40" y="20" width="4.5" height="11" rx="2.2" fill="url(#rgT)"/><rect x="8" y="11.5" width="32" height="27" rx="9.5" fill="url(#rgT)"/><rect x="12.5" y="17" width="23" height="16" rx="6.5" fill="#fff" opacity="0.94"/><circle cx="19.5" cy="24" r="2.7" fill="#DC2626"/><circle cx="28.5" cy="24" r="2.7" fill="#DC2626"/><path d="M19 28.5 Q24 31.8 29 28.5" stroke="#DC2626" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="20.4" cy="23.2" r="0.9" fill="#fff"/><circle cx="29.4" cy="23.2" r="0.9" fill="#fff"/></svg></div>
   <div class="ai-teaser-body">
     <div class="ai-teaser-name">BloodLine AI · AI Rotarian <span class="ai-teaser-tick">✓</span></div>
     <div class="ai-teaser-msg">👋 Vanakkam! I'm BloodLine AI, the world's first AI Rotarian — on duty as your Bloodline. Need blood urgently, or want to become a donor?</div>
@@ -2881,7 +2885,7 @@ html,body{overflow-x:hidden;max-width:100%}
 </div>
 
 <button class="ai-fab" onclick="toggleAI()" id="aiFab" title="BloodLine AI — AI Rotarian">
-  ⚙️
+  <svg width="30" height="30" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="rgF" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F87171"/><stop offset="100%" stop-color="#B91C1C"/></linearGradient></defs><line x1="24" y1="5" x2="24" y2="11" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="4.5" r="2.6" fill="#FCA5A5"/><rect x="3.5" y="20" width="4.5" height="11" rx="2.2" fill="url(#rgF)"/><rect x="40" y="20" width="4.5" height="11" rx="2.2" fill="url(#rgF)"/><rect x="8" y="11.5" width="32" height="27" rx="9.5" fill="url(#rgF)"/><rect x="12.5" y="17" width="23" height="16" rx="6.5" fill="#fff" opacity="0.94"/><circle cx="19.5" cy="24" r="2.7" fill="#DC2626"/><circle cx="28.5" cy="24" r="2.7" fill="#DC2626"/><path d="M19 28.5 Q24 31.8 29 28.5" stroke="#DC2626" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="20.4" cy="23.2" r="0.9" fill="#fff"/><circle cx="29.4" cy="23.2" r="0.9" fill="#fff"/></svg>
   <span class="ai-fab-label">BloodLine AI</span>
 </button>
 
