@@ -1052,6 +1052,79 @@ app.get('/api/verify/status', (req, res) => {
 
 // Incoming VERIFY-code (or any message from a pending phone) → confirm + reply
 // Requester connects on WhatsApp after submitting → instant live status reply
+// ── Claude-powered conversation (unmatched messages only) ─────────────────────
+const CLAUDE_KEY   = process.env.ANTHROPIC_API_KEY || '';
+const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001';
+const _convo   = new Map();   // phone → { msgs, last }
+const _aiQuota = new Map();   // phone → { count, hourStart }
+
+function aiSystemPrompt(donor, openReq) {
+  let ctx = 'The person messaging is not yet registered.';
+  if (donor) ctx = `The person messaging IS a registered donor: ${donor.name}, blood type ${donor.bloodType}, area ${donor.area || 'Puducherry'}, WhatsApp ${donor.waVerified ? 'verified' : 'not yet verified'}, hero points ${donor.points || 50}.`;
+  if (openReq) ctx += ` They also have an ACTIVE blood request: ${openReq.bloodType} at ${openReq.hospital || 'hospital'}, status ${openReq.status}, ${(openReq.matchedDonors || []).length} donors alerted. Tracking: https://rotary-bloodline.vercel.app/track.html?id=${openReq.id}`;
+  return `You are ${aiName()}, the world's first AI Rotarian — a warm, efficient WhatsApp assistant run by Rotary Club of Legacy, Puducherry (RI District 2981, Club ID 224440; President Rtn. Raghuvaran V, Secretary Rtn. Hemachandiran K). You coordinate urgent blood donation through the Rotary Blood Line: mission "blood at your side within 30 minutes" via a 3-Layer Lifeline (registered donors → partner network → Rotary experts). The service is completely free, covers Tamil Nadu & Puducherry.
+
+Key facts you may share:
+- Register as donor or request blood at https://rotary-bloodline.vercel.app (2 minutes)
+- Donor eligibility basics: age 18–60, weight 50kg+, healthy, 90+ days since last donation. For medical specifics (diabetes, BP, medication, pregnancy) say a doctor at the blood bank makes the final call.
+- One donation can save up to 3 lives. Donors earn hero points and certificates.
+- When blood is needed near a donor, you message them here; replying YES commits them, NO politely declines.
+- Emergencies: submit on the website for fastest dispatch — it alerts everyone in seconds.
+
+CONTEXT: ${ctx}
+
+Style rules:
+- WhatsApp style: SHORT (2–4 sentences), warm, occasional emoji (🩸🙏), never walls of text
+- Reply in the language the person writes (Tamil → Tamil, English → English, Tanglish → Tanglish)
+- Never invent medical advice, donor data, or request statuses beyond the CONTEXT above
+- Never share other people's phone numbers or personal data
+- If they want to register/request, send the website link rather than collecting details in chat
+- Sign off as ${aiName()} only when it feels natural, not every message`;
+}
+
+async function aiChatReply(from, body) {
+  if (!CLAUDE_KEY) return false;
+  const clean = String(from).replace(/\D/g, '').replace(/^91/, '');
+  const q = _aiQuota.get(clean) || { count: 0, hourStart: Date.now() };
+  if (Date.now() - q.hourStart > 3600000) { q.count = 0; q.hourStart = Date.now(); }
+  if (q.count >= 10) return false;                    // 10 AI replies/hour/person
+  q.count++; _aiQuota.set(clean, q);
+
+  const donor = db.getAllDonors().find(d => d.phone === clean || '91' + d.phone === String(from).replace(/\D/g, ''));
+  const openReq = db.getRequests(200).find(r =>
+    String(r.phone).replace(/\D/g, '').replace(/^91/, '') === clean &&
+    !['fulfilled', 'cancelled'].includes(r.status) && Date.now() - r.createdAt < 48 * 3600000);
+
+  const c = _convo.get(clean) || { msgs: [], last: 0 };
+  if (Date.now() - c.last > 30 * 60000) c.msgs = [];  // fresh topic after 30 min
+  c.msgs.push({ role: 'user', content: String(body || '').slice(0, 600) });
+  c.msgs = c.msgs.slice(-8);
+  c.last = Date.now();
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': CLAUDE_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({ model: CLAUDE_MODEL, max_tokens: 350, system: aiSystemPrompt(donor, openReq), messages: c.msgs }),
+      signal: AbortSignal.timeout(25000)
+    });
+    if (!resp.ok) throw new Error('Claude API ' + resp.status);
+    const data = await resp.json();
+    const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim();
+    if (!text) return false;
+    c.msgs.push({ role: 'assistant', content: text });
+    _convo.set(clean, c);
+    await new Promise(r => setTimeout(r, 1800 + Math.floor((c.msgs.length * 997) % 2200)));  // human-like pause
+    await wa.sendMessage(from, text);
+    audit('ai_chat', 'phone:' + clean.slice(-4), { q: String(body).slice(0, 80) });
+    return true;
+  } catch (e) {
+    console.warn('[AI-CHAT]', e.message);
+    c.msgs.pop();
+    return false;
+  }
+}
+
 async function tryRequesterHello(from) {
   const clean = String(from).replace(/\D/g, '').replace(/^91/, '');
   const reqs = db.getRequests(500)
@@ -1144,6 +1217,14 @@ async function processDonorReply(from, body, requestId) {
   let type   = 'responded';
   if (['no','2','busy','cant','cannot','not available','decline'].some(w => msg.includes(w))) type = 'declined';
   else if (['yes','1','coming','on way','ok','call','going','ready'].some(w => msg.includes(w))) type = 'responding';
+
+  // Not a clear YES/NO → let BloodLine AI genuinely converse (Claude)
+  if (type === 'responded') {
+    if (await aiChatReply(from, body)) return { type: 'ai_chat' };
+    await wa.sendMessage(from,
+`🤖 ${aiName()} here! For urgent blood, request at https://rotary-bloodline.vercel.app — I dispatch donors in seconds. To join as a donor, register there too. 🩸`).catch(() => {});
+    return { type: 'pointer' };
+  }
 
   // Auto-resolve the request when the listener doesn't know it:
   // newest open request (last 48h) whose alerted-donor list includes this phone.
