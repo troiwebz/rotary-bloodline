@@ -27,6 +27,16 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(248,113,1
 .btn-main{width:100%;background:linear-gradient(135deg,#DC2626,#B91C1C);color:#fff;padding:13px;border-radius:12px;font-weight:800;font-size:14.5px;margin-top:8px;transition:all .2s}
 .btn-main:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(220,38,38,.4)}
 .login-err{color:#FCA5A5;font-size:13px;margin-top:12px;text-align:center;display:none}
+.ql-box{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+.ql-title{font-size:11.5px;font-weight:800;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;cursor:pointer;text-align:center;transition:color .2s}
+.ql-title:hover{color:var(--tx2)}
+.ql-list{display:none;margin-top:12px}
+.ql-list.open{display:block}
+.ql-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);margin-bottom:7px;cursor:pointer;transition:all .18s}
+.ql-row:hover{border-color:rgba(248,113,113,.4);transform:translateX(3px)}
+.ql-role{font-size:11px;font-weight:800;white-space:nowrap;color:var(--tx2);min-width:86px}
+.ql-row code{flex:1;font-size:10.5px;color:var(--tx3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ql-go{font-size:11px;font-weight:800;color:#4ADE80;white-space:nowrap}
 
 /* ── Shell ── */
 #shell{display:none;min-height:100vh}
@@ -109,6 +119,19 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
     <button class="btn-main" onclick="doLogin()">Sign In →</button>
     <div class="login-err" id="loginErr"></div>
+
+    <!-- Quick access for the team -->
+    <div class="ql-box">
+      <div class="ql-title" onclick="document.getElementById('qlList').classList.toggle('open')">🔑 Team quick login — tap to show</div>
+      <div class="ql-list" id="qlList">
+        <div class="ql-row" onclick="qlMaster()"><span class="ql-role">👑 Master</span><code>RBL-master-60b46c5ca05a28c5</code><span class="ql-go">Use →</span></div>
+        <div class="ql-row" onclick="qlZone('zone_puducherry','rbl@pondy2024')"><span class="ql-role">📍 Puducherry</span><code>zone_puducherry / rbl@pondy2024</code><span class="ql-go">Use →</span></div>
+        <div class="ql-row" onclick="qlZone('zone_chennai','rbl@chn2024')"><span class="ql-role">📍 Chennai</span><code>zone_chennai / rbl@chn2024</code><span class="ql-go">Use →</span></div>
+        <div class="ql-row" onclick="qlZone('zone_trichy','rbl@try2024')"><span class="ql-role">📍 Trichy</span><code>zone_trichy / rbl@try2024</code><span class="ql-go">Use →</span></div>
+        <div class="ql-row" onclick="qlZone('zone_coimbatore','rbl@cbe2024')"><span class="ql-role">📍 Coimbatore</span><code>zone_coimbatore / rbl@cbe2024</code><span class="ql-go">Use →</span></div>
+        <div class="ql-row" onclick="qlZone('zone_madurai','rbl@mdu2024')"><span class="ql-role">📍 Madurai</span><code>zone_madurai / rbl@mdu2024</code><span class="ql-go">Use →</span></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -292,6 +315,18 @@ const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>
 const ago = ts => {const m=Math.round((Date.now()-ts)/60000); if(m<1)return 'now'; if(m<60)return m+'m ago'; const h=Math.round(m/60); if(h<24)return h+'h ago'; return Math.round(h/24)+'d ago';};
 
 /* ── Login ── */
+function qlMaster(){
+  setRole('master');
+  document.getElementById('masterKey').value='RBL-master-60b46c5ca05a28c5';
+  doLogin();
+}
+function qlZone(u,p){
+  setRole('zone');
+  document.getElementById('zUser').value=u;
+  document.getElementById('zPass').value=p;
+  doLogin();
+}
+
 let loginRole='master';
 function setRole(r){loginRole=r;
   document.getElementById('tabMaster').classList.toggle('on',r==='master');
