@@ -123,6 +123,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <button class="nav-item" data-pg="donors" onclick="go('donors')">🦸 Donors</button>
     <button class="nav-item master-only" data-pg="zones" onclick="go('zones')">📍 Zones &amp; Managers</button>
     <button class="nav-item master-only" data-pg="partners" onclick="go('partners')">🤝 Partners</button>
+    <button class="nav-item master-only" data-pg="connectors" onclick="go('connectors')">🌐 Network Heroes</button>
     <button class="nav-item master-only" data-pg="broadcast" onclick="go('broadcast')">📢 Broadcast</button>
     <button class="nav-item master-only" data-pg="settings" onclick="go('settings')">⚙️ Lifeline Settings</button>
     <button class="nav-item master-only" data-pg="audit" onclick="go('audit')">🛡️ Audit Log</button>
@@ -193,6 +194,15 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </table><div class="empty" id="partnerEmpty" style="display:none">No partners yet. Add blood banks, NGOs and sister Rotary clubs to power Layer 2.</div></div>
     </div>
 
+    <!-- NETWORK HEROES -->
+    <div class="page" id="pg-connectors">
+      <div class="page-h"><div><h2>Network Heroes</h2><p>Super-connectors with big networks &amp; blood-organisation contacts — alerted on EVERY request, any blood group</p></div><button class="btn-add" onclick="openConnModal()">+ Add Network Hero</button></div>
+      <div class="panel" style="overflow-x:auto"><table>
+        <thead><tr><th>Name</th><th>Phone</th><th>Network / Organisation</th><th>Area</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="connRows"></tbody>
+      </table><div class="empty" id="connEmpty" style="display:none">No network heroes yet. Add well-connected Rotarians and blood-bank contacts — they get every request by default.</div></div>
+    </div>
+
     <!-- BROADCAST -->
     <div class="page" id="pg-broadcast">
       <div class="page-h"><div><h2>Broadcast</h2><p>WhatsApp message to donors — use sparingly to protect trust</p></div></div>
@@ -241,6 +251,16 @@ tr:hover td{background:rgba(255,255,255,.02)}
   <div class="fld"><label>Zone</label><select id="mZone"></select></div>
   <div class="fld"><label>Phone (for Layer 3 alerts)</label><input id="mPhone" placeholder="98765 43210"></div>
   <div style="display:flex;gap:10px"><button class="btn-main" onclick="saveMgr()">Add Manager</button><button class="act can" style="padding:13px 20px" onclick="closeModals()">Cancel</button></div>
+</div></div>
+
+<!-- Network Hero modal -->
+<div class="modal-bg" id="connModal"><div class="modal">
+  <h3>Add Network Hero</h3>
+  <div class="fld"><label>Full name</label><input id="cName" placeholder="Rtn. Name"></div>
+  <div class="fld"><label>WhatsApp number</label><input id="cPhone" placeholder="98765 43210"></div>
+  <div class="fld"><label>Network / Organisation</label><input id="cNetwork" placeholder="e.g. Red Cross volunteer, JIPMER contacts"></div>
+  <div class="fld"><label>Area</label><input id="cArea" placeholder="Puducherry"></div>
+  <div style="display:flex;gap:10px"><button class="btn-main" onclick="saveConn()">Add Hero</button><button class="act can" style="padding:13px 20px" onclick="closeModals()">Cancel</button></div>
 </div></div>
 
 <!-- Partner modal -->
@@ -304,7 +324,7 @@ function enter(who){
   document.querySelectorAll('.master-only').forEach(el=>el.style.display = ROLE==='master'?'flex':'none');
   if(ROLE==='zone'){document.getElementById('ovSub').textContent='Zone view — '+(ZONE?.name||'');document.getElementById('donorScope').textContent='Donors in '+(ZONE?.name||'your zone')+' · phones masked, reveals are audited';}
   loadOverview(); loadRequests(); loadDonors();
-  if(ROLE==='master'){loadZonesMgrs();loadPartners();loadSettings();loadAudit();}
+  if(ROLE==='master'){loadZonesMgrs();loadPartners();loadConnectors();loadSettings();loadAudit();}
   setInterval(loadRequests, 30000); setInterval(loadOverview, 60000);
 }
 async function boot(){
@@ -452,6 +472,28 @@ async function savePartner(){
 }
 async function togglePartner(id,en){await J('/api/admin/partners/'+id,{method:'POST',body:JSON.stringify({active:en})});loadPartners();}
 async function delPartner(id){if(!confirm('Remove this partner?'))return;await J('/api/admin/partners/'+id,{method:'DELETE'});toast('Partner removed');loadPartners();}
+
+/* ── Network Heroes ── */
+async function loadConnectors(){
+  const r=await J('/api/admin/connectors'); if(r.code!==200)return;
+  const rows=r.d||[];
+  document.getElementById('connEmpty').style.display=rows.length?'none':'block';
+  document.getElementById('connRows').innerHTML=rows.map(c=>`<tr>
+    <td><b>🌐 ${esc(c.name)}</b></td><td>${esc(c.phone)}</td><td style="color:var(--tx2)">${esc(c.network||'—')}</td><td>${esc(c.area||'—')}</td>
+    <td>${c.active!==false?'<span class="pill ok">Active</span>':'<span class="pill off">Paused</span>'}</td>
+    <td style="white-space:nowrap">
+      <button class="act can" onclick="toggleConn(${c.id},${c.active===false})">${c.active===false?'Activate':'Pause'}</button>
+      <button class="act del" onclick="delConn(${c.id})">🗑</button></td></tr>`).join('');
+}
+function openConnModal(){document.getElementById('connModal').style.display='flex';}
+async function saveConn(){
+  const body={name:cName.value.trim(),phone:cPhone.value.trim(),network:cNetwork.value.trim(),area:cArea.value.trim()};
+  if(!body.name||!body.phone)return toast('Name + phone required',true);
+  const r=await J('/api/admin/connectors',{method:'POST',body:JSON.stringify(body)});
+  if(r.d.ok){toast('Network Hero added 🌐');closeModals();loadConnectors();}else toast(r.d.msg||'Failed',true);
+}
+async function toggleConn(id,en){await J('/api/admin/connectors/'+id,{method:'POST',body:JSON.stringify({active:en})});loadConnectors();}
+async function delConn(id){if(!confirm('Remove this network hero?'))return;await J('/api/admin/connectors/'+id,{method:'DELETE'});toast('Removed');loadConnectors();}
 
 /* ── Broadcast ── */
 async function sendBlast(){

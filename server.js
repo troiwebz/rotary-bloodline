@@ -97,6 +97,34 @@ const PARTNERS_FILE = path.join(DATA_ROOT, 'partners.json');
 function loadPartners()  { try { return JSON.parse(fs.readFileSync(PARTNERS_FILE, 'utf8')); } catch { return []; } }
 function savePartners(p) { fs.writeFileSync(PARTNERS_FILE, JSON.stringify(p, null, 2)); }
 
+// ── Network Heroes — super-connectors alerted on EVERY request by default ─────
+// People with big networks / blood-organisation contacts who can source any group
+const CONNECTORS_FILE = path.join(DATA_ROOT, 'connectors.json');
+function loadConnectors()  { try { return JSON.parse(fs.readFileSync(CONNECTORS_FILE, 'utf8')); } catch { return []; } }
+function saveConnectors(c) { fs.writeFileSync(CONNECTORS_FILE, JSON.stringify(c, null, 2)); }
+
+async function alertConnectors(request) {
+  const list = loadConnectors().filter(c => c.active !== false && c.phone);
+  for (const c of list) {
+    wa.sendMessage(c.phone,
+`🌐 *NETWORK HERO ALERT — Rotary Blood Line*
+
+Hi *${c.name}*, a blood request just came in. Your network can make the difference.
+
+Blood Type: *${request.bloodType}* · Units: ${request.units || 1}
+Hospital: *${request.hospital}*
+Urgency: ${(request.urgency || 'normal').toUpperCase()}
+Patient contact: ${request.phone}
+
+Please activate your blood-bank / organisation contacts. Anyone who can help should head to the hospital blood bank and mention Rotary Blood Line. 🙏
+
+— Rotary Club of Legacy, Puducherry`).catch(() => {});
+    await new Promise(r => setTimeout(r, 700));
+  }
+  if (list.length) console.log(`[NH] ${list.length} network heroes alerted for request #${request.id}`);
+  return list.length;
+}
+
 function donorInZone(d, zone) {
   return zone.areas.some(a =>
     (d.area || '').toLowerCase() === a.toLowerCase() ||
@@ -573,6 +601,7 @@ app.post('/api/requests', async (req, res) => {
     within50: inRange.length,
     dbTotal:  donors.length,
     partners: partnersCt,
+    connectors: loadConnectors().filter(c => c.active !== false).length,
     zoneNotified: !!getZoneForArea(hospital),
     radius,
     whatsapp: waLive,
@@ -581,6 +610,9 @@ app.post('/api/requests', async (req, res) => {
       ? `✅ Alerting ${capped.length} ${bloodType} donors near ${hospital}. WhatsApp messages are being sent now. Nearest donor: ${nearest?.name} (${nearest?.distanceKm} km away).`
       : `✅ ${capped.length} ${bloodType} donors matched near ${hospital}. WhatsApp is reconnecting — the Rotary coordinator has been notified and donors will be alerted shortly. Nearest donor: ${nearest?.name} (${nearest?.distanceKm} km away).`
   });
+
+  // Network heroes get EVERY request by default — they source through big networks
+  alertConnectors(request).catch(() => {});
 
   // Fire WhatsApp alerts in background (non-blocking)
   wa.alertDonors(capped, request).then(sent => {
@@ -769,6 +801,35 @@ app.post('/api/admin/partners/:id', requireMaster, (req, res) => {
 app.delete('/api/admin/partners/:id', requireMaster, (req, res) => {
   savePartners(loadPartners().filter(x => x.id !== Number(req.params.id)));
   audit('partner_delete', req.auth.actor, { partnerId: Number(req.params.id) });
+  res.json({ ok: true });
+});
+
+// ── Admin: Network Heroes (super-connectors) — master only ───────────────────
+app.get('/api/admin/connectors', requireMaster, (req, res) => res.json(loadConnectors()));
+
+app.post('/api/admin/connectors', requireMaster, (req, res) => {
+  const { name, phone, network, area } = req.body || {};
+  if (!name || !phone) return res.status(400).json({ ok: false, msg: 'Name and phone required' });
+  const list = loadConnectors();
+  const c = { id: (list[0]?.id || 0) + 1, name, phone: String(phone).replace(/\D/g, ''), network: network || '', area: area || '', active: true, createdAt: Date.now() };
+  list.unshift(c);
+  saveConnectors(list);
+  audit('connector_add', req.auth.actor, { name });
+  res.json({ ok: true, connector: c });
+});
+
+app.post('/api/admin/connectors/:id', requireMaster, (req, res) => {
+  const list = loadConnectors();
+  const c = list.find(x => x.id === Number(req.params.id));
+  if (!c) return res.status(404).json({ ok: false });
+  ['name', 'phone', 'network', 'area', 'active'].forEach(k => { if (req.body[k] !== undefined) c[k] = req.body[k]; });
+  saveConnectors(list);
+  res.json({ ok: true, connector: c });
+});
+
+app.delete('/api/admin/connectors/:id', requireMaster, (req, res) => {
+  saveConnectors(loadConnectors().filter(x => x.id !== Number(req.params.id)));
+  audit('connector_delete', req.auth.actor, { connectorId: Number(req.params.id) });
   res.json({ ok: true });
 });
 

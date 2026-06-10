@@ -773,6 +773,11 @@ footer{background:#070B14;padding:72px 52px 44px}
 .rm-st-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:hintPulse 1.6s ease infinite}
 .rm-st-dot.g{background:#16A34A}.rm-st-dot.b{background:#2563EB}.rm-st-dot.o{background:#D97706}
 .rm-st-live{margin-left:auto;background:rgba(22,163,74,.12);color:#16A34A;font-size:9px;font-weight:900;letter-spacing:.1em;padding:3px 9px;border-radius:10px}
+.rm-final-step{background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:1.5px solid #6EE7B7;border-radius:14px;padding:14px 16px;margin:12px 0 10px;text-align:center}
+.rm-fs-label{font-size:10.5px;font-weight:900;letter-spacing:.1em;color:#047857;margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif}
+.rm-wa-final{animation:waPulse 1.8s ease infinite}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 14px rgba(37,211,102,.35)}50%{box-shadow:0 4px 28px rgba(37,211,102,.7)}}
+.rm-fs-note{font-size:11px;color:#065F46;margin-top:9px;line-height:1.5}
 .rm-call{display:flex;align-items:center;justify-content:center;gap:10px;background:#DC2626;color:#fff;padding:13px 20px;border-radius:11px;text-decoration:none;font-weight:700;font-size:14px;margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .22s}
 .rm-call:hover{background:#B91C1C;transform:translateY(-1px)}
 .rm-wa{display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;padding:13px 20px;border-radius:11px;text-decoration:none;font-weight:700;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .22s}
@@ -2699,10 +2704,14 @@ html,body{overflow-x:hidden;max-width:100%}
       <div class="rm-st-row"><span class="rm-st-dot b"></span><span id="rmStDb">Donors in database within 50 km</span></div>
       <div class="rm-st-row"><span class="rm-st-dot o"></span><span id="rmStOrg">Rotary network notified</span></div>
     </div>
+    <div class="rm-final-step">
+      <div class="rm-fs-label">⬇ FINAL STEP — don't skip this</div>
+      <a class="rm-wa rm-wa-final" id="rmWaConfirm" href="https://wa.me/918667571800?text=I+just+requested+blood+on+Rotary+Blood+Line" target="_blank">💬 Confirm to Master Rotarian on WhatsApp</a>
+      <div class="rm-fs-note">One tap sends your request details to our Master Rotarian — your case gets personal eyes on it immediately.</div>
+    </div>
     <div class="rm-emergency">
-      <span class="rm-emergency-title">🆘 Still urgent? Contact Blood Line team directly:</span>
+      <span class="rm-emergency-title">🆘 Still urgent? Call directly:</span>
       <a class="rm-call" href="tel:+918667571800">📞 Call Blood Line: +91 86675 71800</a>
-      <a class="rm-wa" href="https://wa.me/918667571800?text=URGENT+blood+request+submitted+on+Rotary+Blood+Line" target="_blank">💬 WhatsApp Blood Line Now</a>
     </div>
     <button class="rm-close" onclick="closeReqModal()">✓ Close &amp; Continue</button>
   </div>
@@ -3614,9 +3623,23 @@ async function submitRequest(){
     const near50 = (r.within50||0) + 16;
     document.getElementById('rmStDb').innerHTML = '<b>'+near50+' donors</b> in our database within 50 km';
     const orgEl = document.getElementById('rmStOrg');
-    if(r.partners > 0) orgEl.innerHTML = '<b>'+r.partners+' partner organisation'+(r.partners>1?'s':'')+'</b> notified (blood banks &amp; NGOs)';
+    const heroes = r.connectors||0;
+    if(heroes > 0 && r.partners > 0) orgEl.innerHTML = '<b>'+heroes+' Network Hero'+(heroes>1?'es':'')+'</b> + <b>'+r.partners+' organisation'+(r.partners>1?'s':'')+'</b> activated';
+    else if(heroes > 0) orgEl.innerHTML = '<b>'+heroes+' Network Hero'+(heroes>1?'es':'')+'</b> with blood-organisation contacts activated 🌐';
+    else if(r.partners > 0) orgEl.innerHTML = '<b>'+r.partners+' partner organisation'+(r.partners>1?'s':'')+'</b> notified (blood banks &amp; NGOs)';
     else if(r.zoneNotified) orgEl.innerHTML = '<b>Rotary zone coordinator</b> personally notified 🚨';
     else orgEl.innerHTML = '<b>Rotary Mission Control</b> tracking this request live';
+
+    // Final step: personalised WhatsApp confirmation to the Master Rotarian
+    const waMsg = encodeURIComponent(
+      '🆘 I just requested blood on Rotary Blood Line\n\n'
+      + 'Name: ' + b.name + '\n'
+      + 'Blood type: ' + b.bloodType + '\n'
+      + 'Hospital: ' + b.hospital + '\n'
+      + 'My number: +91' + b.phone.replace(/^91/,'') + '\n\n'
+      + 'Please confirm my request is being handled. 🙏');
+    const waBtn = document.getElementById('rmWaConfirm');
+    if(waBtn) waBtn.href = 'https://wa.me/918667571800?text=' + waMsg;
     document.getElementById('reqModal').classList.add('open');
     clr('r-name','r-phone','r-blood','r-hospital');
     loadStats();
