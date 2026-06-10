@@ -161,6 +161,7 @@ const DEFAULT_SETTINGS = {
   autoEscalate:        true,
   layer1WaitMin:       10,   // minutes before Layer 1 → 2
   layer2WaitMin:       10,   // minutes before Layer 2 → 3
+  teamFollowUpMin:     15,   // minutes of silence before team CALL alert
   expertPhones:        '',   // comma-separated coordinator numbers for Layer 3
   updatedAt:           null,
 };

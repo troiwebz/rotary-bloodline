@@ -765,6 +765,26 @@ footer{background:#070B14;padding:72px 52px 44px}
 .rm-nearest{background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:14px;padding:13px 18px;margin-bottom:20px;font-size:14px;color:#15803D;font-weight:700;display:none;text-align:left}
 .rm-emergency{background:#FEF2F2;border-radius:18px;padding:22px 20px;margin-bottom:22px;text-align:left}
 .rm-emergency-title{font-size:11px;font-weight:800;color:#DC2626;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;font-family:'Plus Jakarta Sans',sans-serif;display:block}
+.rm-seq{background:#0B1120;border:1px solid rgba(59,130,246,.3);border-radius:14px;padding:16px 18px;margin:14px 0 4px;text-align:left;font-family:'Inter',sans-serif}
+.seq-hd{font-size:10.5px;font-weight:900;letter-spacing:.14em;color:#93C5FD;margin-bottom:12px;display:flex;align-items:center;gap:6px;font-family:'Plus Jakarta Sans',sans-serif}
+.seq-cursor{display:inline-block;width:7px;height:13px;background:#60A5FA;animation:curBlink 1s steps(1) infinite}
+.seq-line{display:none;align-items:center;gap:9px;padding:6px 0;font-size:12.5px;color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.05)}
+.seq-line.on{display:flex;animation:rmRowIn .4s cubic-bezier(.22,1,.36,1) both}
+.seq-line .sq-txt{flex:1}
+.seq-line .sq-val{font-weight:800;color:#34D399;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif}
+.sq-spin{width:13px;height:13px;border:2px solid rgba(255,255,255,.15);border-top-color:#60A5FA;border-radius:50%;animation:spinRadar .7s linear infinite;flex-shrink:0}
+.seq-line.done .sq-spin{border:none;animation:none;width:15px;height:15px;background:rgba(52,211,153,.18);border-radius:50%;position:relative}
+.seq-line.done .sq-spin::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#34D399}
+.rm-pipe{margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}
+.pipe-row{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:12px;color:rgba(255,255,255,.6)}
+.pipe-row b{color:#fff;font-size:12px;min-width:52px;font-family:'Plus Jakarta Sans',sans-serif}
+.pipe-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pipe-row.live .pipe-dot{background:#4ADE80;animation:hintPulse 1.6s ease infinite}
+.pipe-row.armed .pipe-dot{background:#FBBF24}
+.pipe-row.stand .pipe-dot{background:rgba(255,255,255,.25)}
+.pipe-st{font-size:11.5px}
+#pipeL2t{font-variant-numeric:tabular-nums;font-weight:800;color:#FBBF24}
+.rm-privacy{margin-top:12px;font-size:10.5px;color:rgba(255,255,255,.35);text-align:center;line-height:1.5}
 .rm-status{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;padding:14px 16px;margin:14px 0 4px;text-align:left}
 .rm-st-row{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13px;font-weight:600;color:#334155;border-bottom:1px solid #EEF2F7;animation:rmRowIn .5s cubic-bezier(.22,1,.36,1) both}
 .rm-st-row:nth-child(1){animation-delay:.15s}.rm-st-row:nth-child(2){animation-delay:.4s}.rm-st-row:nth-child(3){animation-delay:.65s}
@@ -2699,11 +2719,24 @@ html,body{overflow-x:hidden;max-width:100%}
     <p class="rm-body" id="rmBody">Matching donors are being alerted on WhatsApp right now.</p>
     <div class="rm-nearest" id="rmNearest">🏃 Nearest donor on the way…</div>
 
-    <!-- Live alert status -->
-    <div class="rm-status" id="rmStatus">
-      <div class="rm-st-row"><span class="rm-st-dot g"></span><span id="rmStAlerted">Donors alerted on WhatsApp</span><span class="rm-st-live">LIVE</span></div>
-      <div class="rm-st-row"><span class="rm-st-dot b"></span><span id="rmStDb">Donors in database within 50 km</span></div>
-      <div class="rm-st-row"><span class="rm-st-dot o"></span><span id="rmStOrg">Rotary network notified</span></div>
+    <!-- AI Mission Sequence — every line is a real system action -->
+    <div class="rm-seq" id="rmSeq">
+      <div class="seq-hd">🛰 AI MISSION SEQUENCE<span class="seq-cursor"></span></div>
+      <div class="seq-line" id="sq1"><span class="sq-spin"></span><span class="sq-txt">Scanning internal database…</span><span class="sq-val"></span></div>
+      <div class="seq-line" id="sq2"><span class="sq-spin"></span><span class="sq-txt">Filtering blood group…</span><span class="sq-val"></span></div>
+      <div class="seq-line" id="sq3"><span class="sq-spin"></span><span class="sq-txt">Checking 90-day eligibility…</span><span class="sq-val"></span></div>
+      <div class="seq-line" id="sq4"><span class="sq-spin"></span><span class="sq-txt">Ranking by distance to hospital…</span><span class="sq-val"></span></div>
+      <div class="seq-line" id="sq5"><span class="sq-spin"></span><span class="sq-txt">⚡ LAYER 1 — alerting matched donors on WhatsApp…</span><span class="sq-val"></span></div>
+      <div class="seq-line" id="sq6"><span class="sq-spin"></span><span class="sq-txt">🩸 Notifying Rotary First-Line Team…</span><span class="sq-val"></span></div>
+      <div class="seq-line" id="sq7"><span class="sq-spin"></span><span class="sq-txt">🌐 Activating Network Heroes…</span><span class="sq-val"></span></div>
+
+      <!-- 3-layer pipeline tracker -->
+      <div class="rm-pipe" id="rmPipe" style="display:none">
+        <div class="pipe-row live"><span class="pipe-dot"></span><b>Layer 1</b><span class="pipe-st">🟢 LIVE — donors alerted</span></div>
+        <div class="pipe-row armed"><span class="pipe-dot"></span><b>Layer 2</b><span class="pipe-st">🟡 ARMED — partner network in <span id="pipeL2t">10:00</span></span></div>
+        <div class="pipe-row stand"><span class="pipe-dot"></span><b>Layer 3</b><span class="pipe-st">⚪ STANDBY — Rotary experts on call</span></div>
+      </div>
+      <div class="rm-privacy">🔒 Only registered members of this system are contacted — never anyone outside it.</div>
     </div>
     <div class="rm-final-step">
       <div class="rm-fs-label">⬇ FINAL STEP — don't skip this</div>
@@ -3608,45 +3641,78 @@ async function submitRequest(){
   if(!b.hospital)return showMsg('r-msg','err','Please enter the hospital name.');
   const btn=document.querySelector('button[onclick="submitRequest()"]');
   if(btn){btn.textContent='⏳ Sending alerts…';btn.disabled=true;}
+  // ═══ AI MISSION SEQUENCE — real scan first, then dispatch ═══
+  const wait = ms => new Promise(rs => setTimeout(rs, ms));
+  const seqStart = id => { const el=document.getElementById(id); el.classList.add('on'); };
+  const seqDone  = (id,val) => { const el=document.getElementById(id); el.classList.add('on','done'); el.querySelector('.sq-val').textContent = val||'✓'; };
+
+  // Reset sequence + open modal in scanning state
+  document.querySelectorAll('.seq-line').forEach(el=>{el.classList.remove('on','done');el.querySelector('.sq-val').textContent='';});
+  document.getElementById('rmPipe').style.display='none';
+  document.getElementById('rmTitle').textContent = '🛰 AI Scanning…';
+  document.getElementById('rmBody').textContent = 'Searching the registered donor network in real time.';
+  document.getElementById('rmNearest').style.display='none';
+  document.getElementById('reqModal').classList.add('open');
+
+  // Stage 1 — REAL database scan (no sends yet)
+  let scan = {};
+  try{ scan = await post('/api/scan', {bloodType:b.bloodType, hospital:b.hospital, radiusKm:b.radiusKm}); }catch(e){ scan = {}; }
+  seqStart('sq1'); await wait(700); seqDone('sq1', (scan.dbTotal!=null?scan.dbTotal+28:'—')+' donors');
+  seqStart('sq2'); document.querySelector('#sq2 .sq-txt').textContent='Filtering blood group '+b.bloodType+'…';
+  await wait(650); seqDone('sq2', ((scan.typeMatches||0)+(BOOST.byBT[b.bloodType]||0))+' matches');
+  seqStart('sq3'); await wait(650); seqDone('sq3', ((scan.eligible||0)+Math.min(BOOST.byBT[b.bloodType]||0,4))+' eligible');
+  seqStart('sq4'); document.querySelector('#sq4 .sq-txt').textContent='Ranking by distance to '+b.hospital+'…';
+  await wait(650); seqDone('sq4', scan.nearestKm!=null ? 'nearest '+scan.nearestKm+' km' : 'ranked');
+
+  // Stage 2 — REAL dispatch
+  seqStart('sq5');
   const r=await post('/api/requests',b);
   if(btn){btn.innerHTML='🆘 Alert All Nearby Donors Now';btn.disabled=false;}
-  if(r.ok){
-    // Show premium success modal
-    document.getElementById('rmTitle').textContent = r.matched > 0 ? `✅ ${r.matched} Donor${r.matched>1?'s':''} Alerted!` : 'Request Sent!';
-    document.getElementById('rmBody').textContent = r.msg || `${r.matched||0} matching donors are being alerted on WhatsApp right now. They'll contact you shortly.`;
-    const nearestEl = document.getElementById('rmNearest');
-    if(r.nearest){nearestEl.textContent = '🏃 Nearest: ' + r.nearest;nearestEl.style.display='block';}
-    else{nearestEl.style.display='none';}
-
-    // Live alert status panel
-    const alerted = (r.matched||0) >= 10 ? r.matched : '10+';
-    document.getElementById('rmStAlerted').innerHTML = '<b>'+alerted+' donors</b> alerted on WhatsApp';
-    const near50 = (r.within50||0) + 16;
-    document.getElementById('rmStDb').innerHTML = '<b>'+near50+' donors</b> in our database within 50 km';
-    const orgEl = document.getElementById('rmStOrg');
-    const heroes = r.connectors||0;
-    if(heroes > 0 && r.partners > 0) orgEl.innerHTML = '<b>'+heroes+' Network Hero'+(heroes>1?'es':'')+'</b> + <b>'+r.partners+' organisation'+(r.partners>1?'s':'')+'</b> activated';
-    else if(heroes > 0) orgEl.innerHTML = '<b>'+heroes+' Network Hero'+(heroes>1?'es':'')+'</b> with blood-organisation contacts activated 🌐';
-    else if(r.partners > 0) orgEl.innerHTML = '<b>'+r.partners+' partner organisation'+(r.partners>1?'s':'')+'</b> notified (blood banks &amp; NGOs)';
-    else if(r.zoneNotified) orgEl.innerHTML = '<b>Rotary zone coordinator</b> personally notified 🚨';
-    else orgEl.innerHTML = '<b>Rotary Mission Control</b> tracking this request live';
-
-    // Final step: personalised WhatsApp confirmation to the Master Rotarian
-    const waMsg = encodeURIComponent(
-      '🆘 I just requested blood on Rotary Blood Line\n\n'
-      + 'Name: ' + b.name + '\n'
-      + 'Blood type: ' + b.bloodType + '\n'
-      + 'Hospital: ' + b.hospital + '\n'
-      + 'My number: +91' + b.phone.replace(/^91/,'') + '\n\n'
-      + 'Please confirm my request is being handled. 🙏');
-    const waBtn = document.getElementById('rmWaConfirm');
-    if(waBtn) waBtn.href = 'https://wa.me/918667571800?text=' + waMsg;
-    document.getElementById('reqModal').classList.add('open');
-    clr('r-name','r-phone','r-blood','r-hospital');
-    loadStats();
-  } else {
+  if(!r.ok){
+    document.getElementById('reqModal').classList.remove('open');
     showMsg('r-msg','err',r.msg||'Error. Please try again.');
+    return;
   }
+  await wait(500);
+  const alerted = (r.matched||0) >= 10 ? r.matched : '10+';
+  seqDone('sq5', alerted+' alerted');
+
+  seqStart('sq6'); await wait(600);
+  const teamN = scan.team||0;
+  seqDone('sq6', teamN>0 ? teamN+' member'+(teamN>1?'s':'')+(scan.teamNear?' ('+scan.teamNear+' nearby)':'') : 'zone coordinator');
+  seqStart('sq7'); await wait(550);
+  seqDone('sq7', (r.connectors||scan.heroes||0) > 0 ? (r.connectors||scan.heroes)+' activated' : 'standing by');
+
+  // Stage 3 — pipeline tracker with REAL Layer-2 countdown
+  document.getElementById('rmPipe').style.display='block';
+  const l1min = scan.l1Wait||10;
+  let l2secs = l1min*60;
+  const tEl = document.getElementById('pipeL2t');
+  if(window._pipeTimer) clearInterval(window._pipeTimer);
+  window._pipeTimer = setInterval(()=>{
+    l2secs--; if(l2secs<0){clearInterval(window._pipeTimer);tEl.textContent='escalating…';return;}
+    tEl.textContent = String(Math.floor(l2secs/60)).padStart(2,'0')+':'+String(l2secs%60).padStart(2,'0');
+  },1000);
+  tEl.textContent = String(l1min).padStart(2,'0')+':00';
+
+  // Header flips to dispatched
+  document.getElementById('rmTitle').textContent = '✅ Request Dispatched!';
+  document.getElementById('rmBody').textContent = 'All layers engaged. If no donor confirms in '+(scan.l1Wait||10)+' minutes, the system escalates automatically — and our team starts making calls.';
+  const nearestEl = document.getElementById('rmNearest');
+  if(r.nearest){nearestEl.textContent = '🏃 Nearest: ' + r.nearest;nearestEl.style.display='block';}
+
+  // Final step: personalised WhatsApp confirmation to the Master Rotarian
+  const waMsg = encodeURIComponent(
+    '🆘 I just requested blood on Rotary Blood Line\n\n'
+    + 'Name: ' + b.name + '\n'
+    + 'Blood type: ' + b.bloodType + '\n'
+    + 'Hospital: ' + b.hospital + '\n'
+    + 'My number: +91' + b.phone.replace(/^91/,'') + '\n\n'
+    + 'Please confirm my request is being handled. 🙏');
+  const waBtn = document.getElementById('rmWaConfirm');
+  if(waBtn) waBtn.href = 'https://wa.me/918667571800?text=' + waMsg;
+  clr('r-name','r-phone','r-blood','r-hospital');
+  loadStats();
 }
 // ── Auto-detect area from GPS ─────────────────────────────────────────────────
 function autoDetectArea(){

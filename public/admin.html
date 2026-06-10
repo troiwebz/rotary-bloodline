@@ -255,6 +255,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="grid2">
           <div class="fld"><label>Layer 1 → 2 after (minutes)</label><input type="number" id="sL1" min="2" max="60"></div>
           <div class="fld"><label>Layer 2 → 3 after (further minutes)</label><input type="number" id="sL2" min="2" max="60"></div>
+          <div class="fld"><label>Team "start calling" alert after (minutes of silence)</label><input type="number" id="sFU" min="5" max="60"></div>
           <div class="fld"><label>Max donors per alert wave</label><input type="number" id="sMax" min="5" max="50"></div>
           <div class="fld"><label>Default search radius (km)</label><input type="number" id="sRad" min="5" max="100"></div>
         </div>
@@ -613,7 +614,7 @@ async function sendBlast(){
 /* ── Settings ── */
 async function loadSettings(){
   const r=await J('/api/admin/settings'); if(r.code!==200)return;
-  document.getElementById('sL1').value=r.d.layer1WaitMin??10;
+  document.getElementById('sL1').value=r.d.layer1WaitMin??10;document.getElementById('sFU').value=r.d.teamFollowUpMin??15;
   document.getElementById('sL2').value=r.d.layer2WaitMin??10;
   document.getElementById('sMax').value=r.d.maxDonorsPerAlert??20;
   document.getElementById('sRad').value=r.d.defaultRadius??50;
@@ -621,7 +622,7 @@ async function loadSettings(){
   document.getElementById('sExperts').value=r.d.expertPhones||'';
 }
 async function saveSettings(){
-  const body={layer1WaitMin:Number(document.getElementById('sL1').value),layer2WaitMin:Number(document.getElementById('sL2').value),maxDonorsPerAlert:Number(document.getElementById('sMax').value),defaultRadius:Number(document.getElementById('sRad').value),autoEscalate:document.getElementById('sAuto').value==='true',expertPhones:document.getElementById('sExperts').value};
+  const body={layer1WaitMin:Number(document.getElementById('sL1').value),teamFollowUpMin:Number(document.getElementById('sFU').value)||15,layer2WaitMin:Number(document.getElementById('sL2').value),maxDonorsPerAlert:Number(document.getElementById('sMax').value),defaultRadius:Number(document.getElementById('sRad').value),autoEscalate:document.getElementById('sAuto').value==='true',expertPhones:document.getElementById('sExperts').value};
   const r=await J('/api/admin/settings',{method:'POST',body:JSON.stringify(body)});
   toast(r.d.ok?'Settings saved':'Failed',!r.d.ok);
 }

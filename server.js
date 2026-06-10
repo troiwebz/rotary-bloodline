@@ -590,6 +590,40 @@ app.post('/api/donors/:id/donated', (req, res) => {
 });
 
 // ── Blood Requests ────────────────────────────────────────────────────────────
+// ── AI Scan — real database search for the mission sequence (NO sends) ───────
+app.post('/api/scan', (req, res) => {
+  const { bloodType, hospital, radiusKm } = req.body || {};
+  if (!bloodType || !hospital) return res.status(400).json({ ok: false });
+
+  const all       = db.getAllDonors();
+  const typeMatch = all.filter(d => d.bloodType === bloodType);
+  const eligible  = db.getEligibleDonors(bloodType);
+  const sorted    = geo.sortByProximity(eligible, hospital);
+  const radius    = Number(radiusKm) || 50;
+  const inRange   = sorted.filter(d => d.distanceKm <= radius);
+
+  // Team members who would be alerted (scope-aware)
+  const team      = loadTeam().filter(m => m.active !== false);
+  const teamDist  = geo.sortByProximity(team, hospital);
+  const teamHit   = teamDist.filter(m => m.scope !== 'radius' || m.distanceKm <= (Number(m.radiusKm) || 10));
+
+  const st = db.getSettings();
+  res.json({
+    ok: true,
+    dbTotal:    all.length,
+    typeMatches: typeMatch.length,
+    eligible:   eligible.length,
+    inRange:    inRange.length,
+    nearestKm:  sorted[0]?.distanceKm ?? null,
+    team:       teamHit.length,
+    teamNear:   teamHit.filter(m => m.scope === 'radius').length,
+    heroes:     loadConnectors().filter(c => c.active !== false).length,
+    partners:   loadPartners().filter(p => p.active !== false).length,
+    l1Wait:     Number(st.layer1WaitMin) || 10,
+    l2Wait:     Number(st.layer2WaitMin) || 10,
+  });
+});
+
 app.get('/api/requests', (req, res) => {
   res.json(db.getRequests(Number(req.query.limit) || 50));
 });
@@ -1141,6 +1175,34 @@ Please call the hospital blood bank, activate personal contacts, and coordinate 
   return true;
 }
 
+// Team follow-up: if NOBODY responded after teamFollowUpMin, tell the
+// front-line team to start CALLING — includes the nearest donors' numbers.
+async function teamFollowUp(r) {
+  const members = loadTeam().filter(m => m.active !== false && m.phone);
+  if (!members.length) return;
+  const nearest = geo.sortByProximity(db.getEligibleDonors(r.bloodType), r.hospital).slice(0, 5);
+  const donorLines = nearest.length
+    ? nearest.map((d, i) => `${i + 1}. ${d.name} (${d.bloodType}) · ${d.area} · ${d.distanceKm} km · 📞 +91${d.phone}`).join('\n')
+    : 'No eligible donors in database — activate personal networks.';
+  for (const m of members) {
+    wa.sendMessage(m.phone,
+`🚨 *NO RESPONSE YET — CALLS NEEDED*
+
+Hi *${m.name}*, ${Math.round((Date.now() - r.createdAt) / 60000)} minutes have passed and *no donor has confirmed* for this request:
+
+Blood Type: *${r.bloodType}* · Hospital: *${r.hospital}*
+Patient contact: ${r.phone}
+
+📞 *Please start calling now — nearest eligible donors:*
+${donorLines}
+
+A personal call works when a message doesn't. This patient is counting on us. 🙏
+— Rotary Blood Line Mission Control`).catch(() => {});
+    await new Promise(rs => setTimeout(rs, 700));
+  }
+  console.log(`[TEAM] Follow-up (no response) sent to ${members.length} members for #${r.id}`);
+}
+
 // Auto-escalation: every 2 minutes, move stale unanswered requests up a layer
 cron.schedule('*/2 * * * *', async () => {
   const st = db.getSettings();
@@ -1150,11 +1212,18 @@ cron.schedule('*/2 * * * *', async () => {
   const open = db.getRequests(200).filter(r =>
     !['fulfilled', 'cancelled', 'no_donors_found'].includes(r.status) &&
     !(r.respondingDonors || []).length);
+  const fu = Number(st.teamFollowUpMin) || 15;
   for (const r of open) {
     const ageMin = (Date.now() - r.createdAt) / 60000;
     const layer  = r.layer || 1;
     if (layer === 1 && ageMin >= w1)            await escalateRequest(r, 2, 'auto');
     else if (layer === 2 && ageMin >= w1 + w2)  await escalateRequest(r, 3, 'auto');
+    // One-time team call-out when silence passes the follow-up window
+    if (!r.teamFollowUpSent && ageMin >= fu) {
+      db.patchRequest(r.id, { teamFollowUpSent: true });
+      await teamFollowUp(r);
+      audit('team_followup', 'auto', { requestId: r.id, ageMin: Math.round(ageMin) });
+    }
   }
 });
 
