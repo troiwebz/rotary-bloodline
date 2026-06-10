@@ -45,6 +45,7 @@ function initSession(id) {
         '--disable-dev-shm-usage',
         '--disable-gpu',
         '--disable-extensions',
+        '--single-process',
       ]
     }
   });
@@ -93,7 +94,12 @@ function initSession(id) {
   client.initialize().catch(err => {
     st.ready = false;
     st.retries++;
-    const wait = Math.min(60000, 10000 * st.retries);
+    if (st.retries > 6) {
+      console.error(`[WA:${id}] Giving up after ${st.retries} failed launches — re-enable from Mission Control to retry.`);
+      sessions.delete(id);
+      return;
+    }
+    const wait = Math.min(120000, 15000 * st.retries);
     console.error(`[WA:${id}] Init error (retry ${st.retries}, in ${wait / 1000}s):`, err.message);
     if (!st.stopping) setTimeout(() => { sessions.delete(id); initSession(id); }, wait);
   });

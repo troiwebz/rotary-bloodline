@@ -1154,6 +1154,20 @@ app.delete('/api/admin/managers/:username', requireMaster, (req, res) => {
   res.json({ ok: true });
 });
 
+// ── Admin: live WhatsApp send test — proves the pipe end-to-end ──────────────
+app.post('/api/admin/test-wa', requireMaster, async (req, res) => {
+  const phone = String(req.body?.phone || '').replace(/\D/g, '');
+  if (!phone) return res.status(400).json({ ok: false, msg: 'phone required' });
+  const sent = await wa.sendMessage(phone,
+`✅ *Rotary Blood Line — Test Message*
+
+If you are reading this, the WhatsApp engine is firing correctly.
+Sent: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
+— Mission Control`);
+  audit('test_wa', req.auth.actor, { phone, sent });
+  res.json({ ok: true, sent });
+});
+
 // ── Admin: audit log — master only ───────────────────────────────────────────
 app.get('/api/admin/audit', requireMaster, (req, res) => {
   let log = [];
