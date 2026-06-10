@@ -2966,6 +2966,9 @@ const TA = {
   "Please connect to Rtn. Uyir first — tap the green button.":"முதலில் Rtn. Uyir-உடன் இணையவும் — பச்சை பொத்தானைத் தட்டவும்.",
   "Tap below — WhatsApp opens with a code message to our AI Rotarian. Just hit send and come back.":"கீழே தட்டவும் — எங்கள் AI ரோட்டேரியனுக்கு குறியீட்டுடன் வாட்ஸ்அப் திறக்கும். அனுப்பிவிட்டு திரும்பவும்.",
   "Verify via WhatsApp":"வாட்ஸ்அப் மூலம் உறுதிசெய்",
+  "I've sent it — Check now":"அனுப்பிவிட்டேன் — இப்போது சரிபார்",
+  "Checking…":"சரிபார்க்கிறது…",
+  "Not received yet — send the message first":"இன்னும் வரவில்லை — முதலில் அனுப்பவும்",
   "Waiting for your Hi… send the message in WhatsApp":"உங்கள் Hi-க்காக காத்திருக்கிறோம்… வாட்ஸ்அப்பில் அனுப்பவும்",
   "Reopen WhatsApp":"வாட்ஸ்அப்பை மீண்டும் திற",
   "WhatsApp verified — continue!":"வாட்ஸ்அப் உறுதிசெய்யப்பட்டது — தொடரவும்!",
@@ -4405,6 +4408,7 @@ function _panelsReq(){
         <div id="vfyWait" style="display:none;text-align:center">
           <div class="radar-spinner" style="margin:0 auto 8px;border-top-color:#16A34A"></div>
           <div style="font-size:12px;color:#065F46;font-weight:700">${t('Waiting for your Hi… send the message in WhatsApp')}</div>
+          <button type="button" onclick="vfyRecheck(this)" style="margin-top:10px;width:100%;padding:11px;border:none;border-radius:10px;background:#16A34A;color:#fff;font-weight:800;font-size:12.5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">✅ ${t("I've sent it — Check now")}</button>
           <button type="button" onclick="vfyStart()" style="margin-top:8px;background:none;border:none;color:#047857;font-size:11px;text-decoration:underline;cursor:pointer">${t('Reopen WhatsApp')}</button>
         </div>
         <div id="vfyDone" style="display:none;text-align:center;font-size:14px;font-weight:900;color:#16A34A;font-family:'Plus Jakarta Sans',sans-serif">✅ ${t('Connected — Rtn. Uyir is with you. Continue!')}</div>
@@ -4781,6 +4785,18 @@ async function vfyStart(){
     }catch(e){}
   }, 3000);
 }
+async function vfyRecheck(btn){
+  if(!_vfy.phone) return;
+  const orig = btn.textContent;
+  btn.textContent = '⏳ ' + t('Checking…'); btn.disabled = true;
+  try{
+    const r = await post('/api/verify/recheck', { phone:_vfy.phone });
+    if(r.verified){ _vfy.verified = true; if(_vfy.timer) clearInterval(_vfy.timer); _vfyShow('done'); return; }
+  }catch(e){}
+  btn.textContent = '❌ ' + t('Not received yet — send the message first');
+  setTimeout(()=>{ btn.textContent = orig; btn.disabled = false; }, 2500);
+}
+
 function _vfyShow(state){
   const i=document.getElementById('vfyIdle'),w=document.getElementById('vfyWait'),d=document.getElementById('vfyDone');
   if(!i)return;

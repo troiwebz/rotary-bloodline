@@ -1021,6 +1021,27 @@ app.post('/api/verify/start', (req, res) => {
   res.json({ ok: true, code: entry.code });
 });
 
+// Manual recheck — reads the chat directly (covers self-chat & missed events)
+app.post('/api/verify/recheck', async (req, res) => {
+  const phone = String(req.body?.phone || '').replace(/\D/g, '');
+  const list = loadVerify();
+  const entry = list.find(v => v.phone === phone);
+  if (!entry) return res.json({ ok: true, verified: false });
+  if (entry.verified) return res.json({ ok: true, verified: true });
+  const msgs = await wa.fetchRecentFrom(phone, 6);
+  const fresh = msgs.some(m => Date.now() - m.ts < 30 * 60000);   // anything in last 30 min
+  if (fresh) {
+    entry.verified = true;
+    saveVerify(list);
+    wa.sendMessage(phone,
+`✅ *WhatsApp verified!* Vanakkam — Rtn. Uyir here. 🤝
+
+Go back to the website and tap *Continue*. I'll keep you updated right here. 🩸`).catch(() => {});
+    console.log(`[VERIFY] ${phone} verified via chat recheck`);
+  }
+  res.json({ ok: true, verified: !!entry.verified });
+});
+
 app.get('/api/verify/status', (req, res) => {
   const phone = String(req.query.phone || '').replace(/\D/g, '');
   const entry = loadVerify().find(v => v.phone === phone);
@@ -1033,9 +1054,7 @@ async function tryVerify(from, body) {
   const list = loadVerify();
   const entry = list.find(v => v.phone === clean && !v.verified);
   if (!entry) return false;
-  const codeMatch = new RegExp('\\b' + entry.code + '\\b').test(body || '');
-  const greeting  = /^(hi|hello|hai|vanakkam|வணக்கம்)/i.test((body || '').trim());
-  if (!codeMatch && !greeting) return false;
+  // ANY message from a pending phone proves reachability — that's all we need
   entry.verified = true;
   saveVerify(list);
   await wa.sendMessage(from,

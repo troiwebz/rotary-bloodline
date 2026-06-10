@@ -78,6 +78,20 @@ function initSession(id) {
     }
   });
 
+  // Self-chat (user messaging the paired number FROM the paired phone itself):
+  // 'message' never fires for fromMe — catch it via message_create
+  client.on('message_create', async msg => {
+    try {
+      if (!msg.fromMe) return;                       // normal incoming → handled above
+      if (!msg.to || !msg.to.endsWith('@c.us')) return;
+      const own = client.info?.wid?._serialized || (client.info?.wid?.user + '@c.us');
+      if (msg.to !== own) return;                    // ignore our outbound alerts to others
+      const phone = msg.to.replace('@c.us', '');
+      console.log(`[WA:${id}] Self-chat message from ${phone}: "${(msg.body || '').slice(0, 60)}"`);
+      if (onIncoming) await onIncoming(phone, msg.body || '');
+    } catch (e) {}
+  });
+
   client.on('auth_failure', msg => {
     st.ready = false;
     console.error(`[WA:${id}] Auth failed:`, msg, '— clearing session and retrying…');
@@ -236,8 +250,19 @@ You are a hero 🦸
   return sendMessage(donor.phone, msg, via);
 }
 
+// Read recent messages from a chat — used by verify-recheck for missed Hi's
+async function fetchRecentFrom(phone, limit = 6, via = 'master') {
+  const st = sessions.get(via);
+  if (!st?.ready) return [];
+  try {
+    const chat = await st.client.getChatById(formatPhone(phone));
+    const msgs = await chat.fetchMessages({ limit });
+    return msgs.map(m => ({ body: m.body || '', fromMe: m.fromMe, ts: (m.timestamp || 0) * 1000 }));
+  } catch (e) { return []; }
+}
+
 module.exports = {
-  initWhatsApp, initSession, destroySession, clearSessionData, sessionState,
+  initWhatsApp, initSession, destroySession, clearSessionData, sessionState, fetchRecentFrom,
   sendMessage, alertDonors, sendWelcome, confirmToRequester, sendReminderToDonor,
   isReady, getLastQR, setOnMessage
 };

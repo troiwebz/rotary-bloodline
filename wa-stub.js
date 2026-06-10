@@ -16,4 +16,5 @@ module.exports = {
   destroySession:     () => Promise.resolve(),
   clearSessionData:   () => {},
   sessionState:       () => ({ running: false, connected: false, hasQR: false }),
+  fetchRecentFrom:    () => Promise.resolve([]),
 };
