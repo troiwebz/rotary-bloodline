@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live Tracking — Rotary Blood Line</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:linear-gradient(160deg,#070B14 0%,#0B1120 60%,#101A33 100%);color:#E2E8F0;min-height:100vh;padding:24px 16px}
+.wrap{max-width:520px;margin:0 auto}
+.hd{text-align:center;margin-bottom:22px}
+.hd .drop{font-size:38px;display:block;margin-bottom:8px;animation:hb 2s ease-in-out infinite}
+@keyframes hb{0%,100%{transform:scale(1)}14%{transform:scale(1.12)}28%{transform:scale(1)}42%{transform:scale(1.12)}56%{transform:scale(1)}}
+h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;font-weight:900;letter-spacing:-.4px}
+.sub{color:rgba(255,255,255,.45);font-size:12.5px;margin-top:5px}
+.card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:22px;margin-bottom:14px}
+.req-row{display:flex;align-items:center;gap:14px}
+.bt{width:54px;height:54px;border-radius:15px;background:linear-gradient(135deg,#DC2626,#991B1B);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;flex-shrink:0}
+.req-h{font-size:16px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif}
+.req-m{font-size:12px;color:rgba(255,255,255,.45);margin-top:3px}
+.stbadge{margin-left:auto;font-size:10.5px;font-weight:900;letter-spacing:.08em;padding:6px 13px;border-radius:14px;white-space:nowrap}
+.st-live{background:rgba(22,163,74,.16);color:#4ADE80;border:1px solid rgba(74,222,128,.3);animation:pulse 1.6s ease infinite}
+.st-done{background:rgba(22,163,74,.25);color:#4ADE80}
+.st-off{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.3)}50%{box-shadow:0 0 0 6px rgba(74,222,128,0)}}
+.pipe{margin-top:6px}
+.prow{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.prow:last-child{border-bottom:none}
+.pdot{width:13px;height:13px;border-radius:50%;margin-top:3px;flex-shrink:0}
+.prow.live .pdot{background:#4ADE80;box-shadow:0 0 12px rgba(74,222,128,.7);animation:pulse 1.6s ease infinite}
+.prow.armed .pdot{background:#FBBF24}
+.prow.stand .pdot{background:rgba(255,255,255,.2)}
+.prow b{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;display:block;margin-bottom:2px}
+.prow p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.55}
+.cd{font-variant-numeric:tabular-nums;font-weight:900;color:#FBBF24}
+.big-cd{text-align:center;padding:6px 0 2px}
+.big-cd .t{font-size:44px;font-weight:900;font-family:'Plus Jakarta Sans',sans-serif;color:#F87171;font-variant-numeric:tabular-nums;letter-spacing:-1px;text-shadow:0 0 30px rgba(248,113,113,.4)}
+.big-cd .l{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
+.hero-banner{display:none;text-align:center;background:rgba(22,163,74,.13);border:1px solid rgba(74,222,128,.35);border-radius:18px;padding:22px;margin-bottom:14px}
+.hero-banner .e{font-size:36px}
+.hero-banner b{display:block;font-size:17px;font-family:'Plus Jakarta Sans',sans-serif;color:#4ADE80;margin-top:8px}
+.share{display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:14px;padding:15px;width:100%;font-size:14.5px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;text-decoration:none;transition:transform .2s}
+.share:hover{transform:translateY(-2px)}
+.note{text-align:center;font-size:10.5px;color:rgba(255,255,255,.3);margin-top:14px;line-height:1.6}
+.err{text-align:center;padding:60px 20px;color:rgba(255,255,255,.5)}
+a.home{color:#F87171;text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd">
+    <span class="drop">🩸</span>
+    <h1>Rotary Blood Line — Live Tracking</h1>
+    <div class="sub">AI Mission Control is on this case · updates every 10 seconds</div>
+  </div>
+
+  <div id="content" style="display:none">
+    <div class="hero-banner" id="heroBanner">
+      <span class="e">🎉</span>
+      <b id="heroText">A donor has CONFIRMED — on the way!</b>
+    </div>
+
+    <div class="card">
+      <div class="req-row">
+        <div class="bt" id="tBt">—</div>
+        <div>
+          <div class="req-h" id="tHosp">—</div>
+          <div class="req-m" id="tMeta">—</div>
+        </div>
+        <span class="stbadge st-live" id="tStatus">LIVE</span>
+      </div>
+    </div>
+
+    <div class="card big-cd" id="cdCard">
+      <div class="t" id="bigTimer">--:--</div>
+      <div class="l" id="bigLabel">until next escalation</div>
+    </div>
+
+    <div class="card pipe">
+      <div class="prow live" id="p1"><span class="pdot"></span><div><b>Layer 1 — Registered Donors</b><p id="p1t">Matched donors alerted on WhatsApp, nearest first.</p></div></div>
+      <div class="prow armed" id="p2"><span class="pdot"></span><div><b>Layer 2 — Partner Network</b><p id="p2t">Wider-radius donors + blood banks + sister clubs.</p></div></div>
+      <div class="prow stand" id="p3"><span class="pdot"></span><div><b>Layer 3 — Expert Response</b><p id="p3t">Rotary coordinators step in personally.</p></div></div>
+    </div>
+
+    <a class="share" id="shareBtn" target="_blank">💬 Share this live tracker on WhatsApp</a>
+    <div class="note">🔒 This tracker shows status only — no personal details are exposed.<br>Rotary Club of Legacy, Puducherry · RI District 2981 · <a class="home" href="/">rotary-bloodline.vercel.app</a></div>
+  </div>
+
+  <div class="err" id="err" style="display:none">Request not found.<br><br><a class="home" href="/">← Go to Rotary Blood Line</a></div>
+</div>
+
+<script>
+const IS_LOCAL = ['localhost','127.0.0.1'].includes(location.hostname);
+const API = IS_LOCAL ? '' : 'https://rotary-bloodline-production-d586.up.railway.app';
+const id = new URLSearchParams(location.search).get('id');
+const ago = ts => { const m = Math.round((Date.now()-ts)/60000); return m < 1 ? 'just now' : m < 60 ? m+' min ago' : Math.round(m/60)+'h ago'; };
+
+let timerIv = null;
+async function load(){
+  if(!id){ document.getElementById('err').style.display='block'; return; }
+  let d;
+  try{ d = await fetch(API+'/api/track/'+id).then(r=>r.json()); }catch(e){ return; }
+  if(!d.ok){ document.getElementById('err').style.display='block'; return; }
+  document.getElementById('content').style.display='block';
+
+  document.getElementById('tBt').textContent = d.bloodType;
+  document.getElementById('tHosp').textContent = d.hospital;
+  document.getElementById('tMeta').textContent = (d.urgency||'normal').toUpperCase()+' · requested '+ago(d.createdAt)+' · '+( (d.alertedCount||0)>=10 ? d.alertedCount : '10+')+' donors alerted';
+
+  const stEl = document.getElementById('tStatus');
+  const done = d.status==='fulfilled', cancelled = d.status==='cancelled';
+  const responding = d.responding>0;
+
+  // Layer rows
+  const rows=[document.getElementById('p1'),document.getElementById('p2'),document.getElementById('p3')];
+  rows.forEach((el,i)=>{ el.className='prow '+((d.layer||1)>i ? 'live' : (d.layer||1)===i ? 'armed':'stand'); });
+  if(responding) document.getElementById('p1t').innerHTML='<b style="color:#4ADE80">'+d.responding+' donor'+(d.responding>1?'s':'')+' confirmed and on the way!</b>';
+  if((d.layer||1)>=2) document.getElementById('p2t').textContent='Partner network ACTIVATED — circle widened.';
+  if((d.layer||1)>=3) document.getElementById('p3t').textContent='Experts personally engaged on this case.';
+
+  // Status + hero banner + countdown
+  if(timerIv){clearInterval(timerIv);timerIv=null;}
+  const cdCard=document.getElementById('cdCard'), banner=document.getElementById('heroBanner');
+  if(done){ stEl.className='stbadge st-done'; stEl.textContent='✓ FULFILLED'; cdCard.style.display='none'; banner.style.display='block'; document.getElementById('heroText').textContent='Blood arranged — request fulfilled. 🙏'; }
+  else if(cancelled){ stEl.className='stbadge st-off'; stEl.textContent='CLOSED'; cdCard.style.display='none'; }
+  else if(responding){ stEl.className='stbadge st-done'; stEl.textContent='🏃 DONOR COMING'; banner.style.display='block'; cdCard.style.display='none'; }
+  else {
+    stEl.className='stbadge st-live'; stEl.textContent='● LIVE'; banner.style.display='none'; cdCard.style.display='block';
+    // Real countdown to next escalation
+    const layer = d.layer||1;
+    const target = d.createdAt + (layer===1 ? d.l1Wait : d.l1Wait + d.l2Wait) * 60000;
+    const label = layer===1 ? 'until partner network activates' : layer===2 ? 'until experts are paged' : 'experts engaged';
+    document.getElementById('bigLabel').textContent = label;
+    if(layer>=3){ document.getElementById('bigTimer').textContent='ACTIVE'; }
+    else timerIv = setInterval(()=>{
+      const s = Math.max(0, Math.floor((target-Date.now())/1000));
+      document.getElementById('bigTimer').textContent = String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+      if(s<=0){clearInterval(timerIv);load();}
+    },1000);
+  }
+
+  document.getElementById('shareBtn').href='https://wa.me/?text='+encodeURIComponent('🩸 URGENT: '+d.bloodType+' blood needed at '+d.hospital+'. Track the live search here: https://rotary-bloodline.vercel.app/track.html?id='+id+' — or register as a donor: https://rotary-bloodline.vercel.app');
+}
+load();
+setInterval(load, 10000);
+</script>
+</body>
+</html>

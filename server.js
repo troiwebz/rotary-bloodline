@@ -579,11 +579,12 @@ app.delete('/api/admin/donor/:id', requireMaster, (req, res) => {
 });
 
 app.post('/api/donors/register', async (req, res) => {
-  const { name, phone, bloodType, area, lastDonation } = req.body;
+  req.body = req.body || {};
+  const { name, phone, bloodType, area, lastDonation, camp } = req.body;
   if (!name || !phone || !bloodType || !area)
     return res.status(400).json({ ok: false, msg: 'All fields required' });
 
-  const result = db.registerDonor(name, phone, bloodType, area, lastDonation);
+  const result = db.registerDonor(name, phone, bloodType, area, lastDonation, camp);
   if (!result.ok) return res.status(409).json(result);
 
   // Welcome WhatsApp
@@ -651,6 +652,27 @@ app.post('/api/scan', (req, res) => {
     partners:   loadPartners().filter(p => p.active !== false).length,
     l1Wait:     Number(st.layer1WaitMin) || 10,
     l2Wait:     Number(st.layer2WaitMin) || 10,
+  });
+});
+
+// ── Public live tracking — sanitized, shareable (no patient phone) ────────────
+app.get('/api/track/:id', (req, res) => {
+  const r = db.getRequests(500).find(x => x.id === Number(req.params.id));
+  if (!r) return res.status(404).json({ ok: false });
+  const st = db.getSettings();
+  res.json({
+    ok: true,
+    id: r.id,
+    bloodType: r.bloodType,
+    hospital: r.hospital,
+    urgency: r.urgency || 'normal',
+    status: r.status,
+    layer: r.layer || 1,
+    createdAt: r.createdAt,
+    alertedCount: r.alertedCount || 0,
+    responding: (r.respondingDonors || []).length,
+    l1Wait: Number(st.layer1WaitMin) || 10,
+    l2Wait: Number(st.layer2WaitMin) || 10,
   });
 });
 
@@ -771,6 +793,43 @@ app.post('/api/requests/:id/fulfill', async (req, res) => {
   res.json({ ok: true, msg: 'Request fulfilled. Donor and patient notified.' });
 });
 
+// ── Hero moment — celebrate the donor who saved a life ────────────────────────
+async function heroMoment(requestId, donorId) {
+  const reqs = db.getRequests(500);
+  const r = reqs.find(x => x.id === Number(requestId));
+  if (!r) return;
+  // Resolve the hero: explicit donorId, else first responding donor's phone
+  let donor = donorId ? db.getAllDonors().find(d => d.id === Number(donorId)) : null;
+  if (!donor && (r.respondingDonors || []).length) {
+    const ph = r.respondingDonors[0].phone;
+    donor = db.getAllDonors().find(d =>
+      d.phone === ph || '91' + d.phone === ph || d.phone === '91' + ph);
+  }
+  if (!donor) return;
+
+  db.markDonated(donor.id);   // +250 points, badge recalc, 90-day clock starts
+  const certUrl = 'https://rotary-bloodline.vercel.app/certificate.html?name='
+    + encodeURIComponent(donor.name) + '&bt=' + encodeURIComponent(donor.bloodType)
+    + '&d=' + new Date().toISOString().split('T')[0] + '&n=' + (donor.donationCount + 1);
+
+  await wa.sendMessage(donor.phone,
+`🏆 *YOU SAVED A LIFE TODAY*
+
+*${donor.name}*, your ${r.bloodType} donation at ${r.hospital} just gave a family their tomorrow back.
+
+🎖️ +250 Hero Points awarded
+📜 Your certificate: ${certUrl}
+
+Know friends with ${r.bloodType} blood? Forward them this — every registration is another life we can save:
+https://rotary-bloodline.vercel.app
+
+You are what Rotary means. 🙏
+— Rotary Club of Legacy, Puducherry`, viaForHospital(r.hospital));
+
+  audit('hero_moment', 'system', { requestId: r.id, donorId: donor.id, donorName: donor.name });
+  broadcastSSE('donation_completed', { donorName: donor.name, bloodType: donor.bloodType });
+}
+
 // ── Donor reply processing (shared by WhatsApp listener + webhook) ────────────
 // Classifies YES/NO, finds which request the donor is answering, records it,
 // pushes SSE to the site, and sends a follow-up WhatsApp confirmation.
@@ -885,6 +944,7 @@ app.post('/api/admin/requests/:id/fulfill', requireAuth, requirePerm('requests')
   db.updateRequestStatus(Number(req.params.id), 'fulfilled');
   audit('request_fulfill', req.auth.actor, { requestId: Number(req.params.id) });
   broadcastSSE('request_fulfilled', { requestId: Number(req.params.id) });
+  heroMoment(Number(req.params.id), req.body?.donorId).catch(e => console.error('[HERO]', e.message));
   res.json({ ok: true });
 });
 
@@ -1351,6 +1411,33 @@ cron.schedule('*/2 * * * *', async () => {
       await teamFollowUp(r);
       audit('team_followup', 'auto', { requestId: r.id, ageMin: Math.round(ageMin) });
     }
+  }
+});
+
+// ── CRON: monthly impact digest (1st of month, 10am) ──────────────────────────
+cron.schedule('0 10 1 * *', async () => {
+  const st = db.getSettings();
+  if (st.digestEnabled === false) return;
+  const stats = db.getStats();
+  const reqs  = db.getRequests(500).filter(r => Date.now() - r.createdAt < 31 * 86400000);
+  const fulfilled = reqs.filter(r => r.status === 'fulfilled').length;
+  const msg =
+`🩸 *ROTARY BLOOD LINE — MONTHLY IMPACT*
+
+This month our network handled *${reqs.length} blood request${reqs.length === 1 ? '' : 's'}* — *${fulfilled} fulfilled*.
+
+👥 You are one of *${stats.totalDonors} registered heroes* across ${stats.areas} areas.
+
+Every alert you answer keeps the 30-minute promise alive. Know someone who should join? Forward this:
+https://rotary-bloodline.vercel.app
+
+Thank you for being there. 🙏
+— Rotary Club of Legacy, Puducherry`;
+  const everyone = [...db.getAllDonors().filter(d => d.available !== false), ...loadTeam().filter(m => m.active !== false)];
+  console.log(`[DIGEST] Sending monthly impact to ${everyone.length} people`);
+  for (const p of everyone) {
+    await wa.sendMessage(p.phone, msg);
+    await new Promise(r => setTimeout(r, 900));
   }
 });
 

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hero Certificate — Rotary Blood Line</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:linear-gradient(160deg,#070B14,#101A33);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 14px;color:#E2E8F0}
+.cert{background:linear-gradient(150deg,#FFFDF7 0%,#FFF8E7 100%);color:#1A1A2E;border-radius:22px;max-width:480px;width:100%;padding:38px 30px;text-align:center;position:relative;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.cert::before{content:'';position:absolute;inset:10px;border:2px solid rgba(180,83,9,.35);border-radius:16px;pointer-events:none}
+.cert::after{content:'🩸';position:absolute;font-size:200px;opacity:.05;top:50%;left:50%;transform:translate(-50%,-50%)}
+.c-org{font-size:10px;font-weight:800;letter-spacing:.2em;color:#B45309;text-transform:uppercase}
+.c-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:900;color:#7F1D1D;margin:12px 0 4px;letter-spacing:-.5px}
+.c-sub{font-size:11px;color:#926B1E;letter-spacing:.08em;text-transform:uppercase;margin-bottom:22px}
+.c-medal{font-size:52px;margin-bottom:12px}
+.c-pres{font-size:12px;color:#6B7280}
+.c-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:30px;font-weight:900;color:#0F172A;margin:8px 0;letter-spacing:-.5px}
+.c-line{width:160px;height:2px;background:linear-gradient(90deg,transparent,#B45309,transparent);margin:0 auto 16px}
+.c-body{font-size:13.5px;color:#374151;line-height:1.8;max-width:360px;margin:0 auto 20px}
+.c-body b{color:#7F1D1D}
+.c-meta{display:flex;justify-content:center;gap:26px;margin-bottom:20px}
+.c-meta div{text-align:center}
+.c-meta .v{font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:900;color:#7F1D1D}
+.c-meta .l{font-size:9px;color:#926B1E;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.c-foot{font-size:10.5px;color:#6B7280;line-height:1.7;border-top:1px solid rgba(180,83,9,.2);padding-top:14px}
+.actions{margin-top:22px;display:flex;gap:10px;width:100%;max-width:480px}
+.act{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:13px;padding:14px;font-size:13.5px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;text-decoration:none;transition:transform .2s}
+.act:hover{transform:translateY(-2px)}
+.act.wa{background:#25D366;color:#fff}
+.act.dl{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.note{font-size:10.5px;color:rgba(255,255,255,.35);margin-top:14px;text-align:center}
+</style>
+</head>
+<body>
+<div class="cert" id="cert">
+  <div class="c-org">⚙️ Rotary Club of Legacy · Puducherry · RI District 2981</div>
+  <div class="c-title">Certificate of Life</div>
+  <div class="c-sub">Rotary Blood Line · Hero Recognition</div>
+  <div class="c-medal">🏅</div>
+  <div class="c-pres">This is proudly presented to</div>
+  <div class="c-name" id="cName">A Hero</div>
+  <div class="c-line"></div>
+  <p class="c-body">who answered the call when minutes decided a life, and donated <b id="cBt">—</b> blood through the <b>Rotary Blood Line 3-Layer Lifeline</b> — turning one ordinary day into somebody's second chance.</p>
+  <div class="c-meta">
+    <div><div class="v" id="cDate">—</div><div class="l">Date of donation</div></div>
+    <div><div class="v" id="cCount">1</div><div class="l">Lifetime donations</div></div>
+    <div><div class="v">3</div><div class="l">Lives touched</div></div>
+  </div>
+  <div class="c-foot">One donation can save up to three lives.<br><b>“Every drop, a promise kept.”</b> — Dedicated by the Rotarians of RI District 2981</div>
+</div>
+
+<div class="actions">
+  <a class="act wa" id="shareWa" target="_blank">💬 Share my certificate</a>
+  <button class="act dl" onclick="window.print()">🖨 Save / Print</button>
+</div>
+<div class="note">Screenshot this to share on status & social media · rotary-bloodline.vercel.app</div>
+
+<script>
+const q = new URLSearchParams(location.search);
+const name = q.get('name') || 'A Hero';
+const bt   = q.get('bt') || '—';
+const date = q.get('d') || new Date().toISOString().split('T')[0];
+const n    = q.get('n') || '1';
+document.getElementById('cName').textContent = name;
+document.getElementById('cBt').textContent = bt;
+document.getElementById('cDate').textContent = date;
+document.getElementById('cCount').textContent = n;
+document.getElementById('shareWa').href = 'https://wa.me/?text=' + encodeURIComponent('🏅 I donated ' + bt + ' blood and saved a life through Rotary Blood Line! See my certificate: ' + location.href + '\n\nYou can be a hero too — register in 2 minutes: https://rotary-bloodline.vercel.app');
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QR Generator — Rotary Blood Line</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0B1120;color:#E2E8F0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:32px 16px}
+h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:900;margin-bottom:4px}
+.sub{color:rgba(255,255,255,.45);font-size:12.5px;margin-bottom:22px;text-align:center}
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:22px;max-width:480px}
+select,input{background:#111A30;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:11px 14px;font-size:13.5px;font-family:inherit}
+input{min-width:200px}
+button{background:linear-gradient(135deg,#DC2626,#B91C1C);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;font-size:13.5px}
+.poster{background:#fff;color:#0F172A;border-radius:22px;padding:30px 26px;text-align:center;max-width:380px;width:100%}
+.p-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;font-weight:900;color:#B91C1C;letter-spacing:-.4px}
+.p-sub{font-size:12px;color:#64748B;margin:6px 0 18px;line-height:1.6}
+canvas{border-radius:12px}
+.p-url{font-size:11px;color:#94A3B8;margin-top:14px;word-break:break-all}
+.p-org{font-size:10px;color:#B45309;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-top:12px}
+.hint{font-size:11px;color:rgba(255,255,255,.35);margin-top:18px;text-align:center;line-height:1.7}
+@media print{body{background:#fff}.controls,.hint,h1,.sub{display:none}.poster{box-shadow:none}}
+</style>
+</head>
+<body>
+<h1>📱 One-Scan QR Generator</h1>
+<div class="sub">Print this poster — one scan opens the form directly. Camp registrations are tagged in the dashboard.</div>
+
+<div class="controls">
+  <select id="mode" onchange="gen()">
+    <option value="register">🦸 Become a Donor (opens donor form)</option>
+    <option value="request">🆘 Request Blood (opens request form)</option>
+    <option value="home">🩸 Website home</option>
+  </select>
+  <input id="camp" placeholder="Camp name (optional) e.g. jipmer-camp" oninput="gen()">
+  <button onclick="window.print()">🖨 Print poster</button>
+</div>
+
+<div class="poster">
+  <div class="p-title" id="pTitle">Become a Blood Hero</div>
+  <div class="p-sub" id="pSub">Scan → register in 2 minutes → we WhatsApp you only when YOUR blood type is needed nearby.</div>
+  <canvas id="qr"></canvas>
+  <div class="p-url" id="pUrl"></div>
+  <div class="p-org">⚙️ Rotary Club of Legacy · Puducherry · RI District 2981</div>
+</div>
+
+<div class="hint">Tip: set a camp name before printing — every donor who scans at that camp<br>shows up tagged in Mission Control, so you can measure each event.</div>
+
+<script>
+function gen(){
+  const mode = document.getElementById('mode').value;
+  const camp = document.getElementById('camp').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'-');
+  let url = 'https://rotary-bloodline.vercel.app/';
+  if(mode==='register') url += '?register=1' + (camp ? '&camp='+camp : '');
+  if(mode==='request')  url += '?request=1';
+  const titles = {register:['Become a Blood Hero','Scan → register in 2 minutes → we WhatsApp you only when YOUR blood type is needed nearby.'],
+                  request:['Need Blood Urgently?','Scan → one form → every matching donor nearby is alerted on WhatsApp within 60 seconds.'],
+                  home:['Rotary Blood Line','Blood at your side within 30 minutes — Tamil Nadu\'s first AI-powered blood network.']};
+  document.getElementById('pTitle').textContent = titles[mode][0];
+  document.getElementById('pSub').textContent = titles[mode][1];
+  document.getElementById('pUrl').textContent = url;
+  QRCode.toCanvas(document.getElementById('qr'), url, {width:240, margin:1});
+}
+gen();
+</script>
+</body>
+</html>

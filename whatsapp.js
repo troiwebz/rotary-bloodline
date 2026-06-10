@@ -168,6 +168,8 @@ To confirm you are coming — reply *YES*
 To decline — reply *NO*
 
 Thank you for being a community hero 🦸
+
+🇮🇳 *தமிழ்:* ${request.hospital} மருத்துவமனையில் *${request.bloodType}* ரத்தம் அவசரத் தேவை. வர முடிந்தால் *YES*, முடியாவிட்டால் *NO* என பதிலளிக்கவும். 🙏
 — Rotary Club of Legacy, Puducherry`;
 
     const ok = await sendMessage(donor.phone, msg, via);

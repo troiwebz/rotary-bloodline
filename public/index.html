@@ -1810,6 +1810,7 @@ html,body{overflow-x:hidden;max-width:100%}
 
 <!-- ═══════════ NAV ═══════════ -->
 <nav>
+  <button id="langToggle" onclick="toggleLang()" style="position:fixed;bottom:24px;left:24px;z-index:1500;background:rgba(15,23,42,.92);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:24px;padding:9px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.35)">தமிழ்</button>
   <a href="#" class="nav-logo">
     <div class="nav-bloodline-logo">
       <span class="nbl-drop">🩸</span>
@@ -2801,6 +2802,7 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="pipe-row stand"><span class="pipe-dot"></span><b>Layer 3</b><span class="pipe-st">⚪ STANDBY — Rotary experts on call</span></div>
       </div>
       <div class="rm-privacy">🔒 Only registered members of this system are contacted — never anyone outside it.</div>
+      <a id="rmTrackLink" href="#" target="_blank" style="display:none;margin-top:12px;background:rgba(59,130,246,.14);border:1px solid rgba(96,165,250,.4);color:#93C5FD;border-radius:12px;padding:12px;font-size:13px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:none;text-align:center">📍 Open Live Tracking page — shareable with family</a>
     </div>
     <div class="rm-final-step">
       <div class="rm-fs-label">⬇ FINAL STEP — don't skip this</div>
@@ -2918,6 +2920,71 @@ const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hos
 // On Vercel → point to Railway backend. Locally → same server.
 const RAILWAY_URL = 'https://rotary-bloodline-production-d586.up.railway.app';
 const API_BASE = IS_LOCAL ? '' : RAILWAY_URL;
+
+// ═══ BILINGUAL ENGINE — English / தமிழ் ═══════════════════════════════════════
+let LANG = (function(){ try{ return localStorage.getItem('rb_lang')||'en'; }catch(e){ return 'en'; } })();
+const TA = {
+  // Wizard — request
+  "Step 1 of 4":"படி 1 / 4","Step 2 of 4":"படி 2 / 4","Step 3 of 4":"படி 3 / 4","Step 4 of 4":"படி 4 / 4",
+  "Who's requesting blood?":"யாருக்கு ரத்தம் தேவை?","Full Name":"முழு பெயர்","Your full name":"உங்கள் முழு பெயர்",
+  "WhatsApp Number":"வாட்ஸ்அப் எண்","10-digit number":"10 இலக்க எண்",
+  "What blood type is needed?":"எந்த ரத்த வகை தேவை?","Select Blood Type":"ரத்த வகையைத் தேர்ந்தெடுக்கவும்",
+  "Urgency Level":"அவசர நிலை","📋 Normal":"📋 சாதாரணம்","⚡ Urgent":"⚡ அவசரம்","🚨 Critical":"🚨 மிக அவசரம்",
+  "Hospital & search range":"மருத்துவமனை & தேடல் தூரம்","Hospital Name":"மருத்துவமனை பெயர்",
+  "Units Needed":"தேவையான யூனிட்கள்","Search Radius":"தேடல் தூரம்","All of TN":"முழு தமிழ்நாடு",
+  "Confirm & alert donors":"உறுதிசெய்து எச்சரிக்கவும்","What happens next?":"அடுத்து என்ன நடக்கும்?",
+  "Every matching donor within your chosen radius gets a personal WhatsApp immediately. They'll call you or arrive at the hospital directly.":"நீங்கள் தேர்ந்த தூரத்தில் உள்ள ஒவ்வொரு பொருந்தும் தானம் செய்பவருக்கும் உடனடியாக வாட்ஸ்அப் செல்லும். அவர்கள் உங்களை அழைப்பார்கள் அல்லது நேரடியாக மருத்துவமனைக்கு வருவார்கள்.",
+  // Wizard — donor
+  "Tell us about yourself":"உங்களைப் பற்றி சொல்லுங்கள்","(only for urgent matches)":"(அவசர தேவைக்கு மட்டும்)",
+  "What's your blood type?":"உங்கள் ரத்த வகை என்ன?","Select your blood type":"உங்கள் ரத்த வகையைத் தேர்ந்தெடுக்கவும்",
+  "Don't know your blood type?":"ரத்த வகை தெரியவில்லையா?",
+  "Visit any blood bank or clinic — they can test for free in under 5 minutes.":"எந்த ரத்த வங்கி அல்லது கிளினிக்கிலும் 5 நிமிடத்தில் இலவசமாக அறியலாம்.",
+  "Where are you located?":"நீங்கள் எங்கு இருக்கிறீர்கள்?","Your Area":"உங்கள் பகுதி","Select your area":"பகுதியைத் தேர்ந்தெடுக்கவும்",
+  "Last Donation Date":"கடைசி ரத்ததான தேதி","(optional)":"(விருப்பம்)",
+  "Final check & register":"இறுதி சரிபார்ப்பு & பதிவு","After registering:":"பதிவு செய்த பின்:",
+  "You'll get a WhatsApp welcome from Rotary Blood Line. We only reach you when your blood type is urgently needed near your area. You can decline any request — no obligation ever.":"ரோட்டரி பிளட் லைனிலிருந்து வரவேற்பு வாட்ஸ்அப் வரும். உங்கள் பகுதியில் உங்கள் ரத்த வகை அவசரமாக தேவைப்படும்போது மட்டுமே தொடர்பு கொள்வோம். எப்போது வேண்டுமானாலும் மறுக்கலாம்.",
+  // Buttons / chrome
+  "Next →":"அடுத்து →","← Back":"← பின்செல்","🆘 Alert Donors Now":"🆘 இப்போதே எச்சரி","🩸 Register as Donor":"🩸 பதிவு செய்",
+  "🆘 Request Blood Now":"🆘 ரத்தம் கேட்க","🩸 Become a Donor":"🩸 தானம் செய்ய",
+  // Mission sequence
+  "🛰 AI Scanning…":"🛰 AI தேடுகிறது…","AI is searching the registered network in real time.":"AI பதிவு செய்யப்பட்ட நெட்வொர்க்கில் நேரடியாகத் தேடுகிறது.",
+  "✅ Dispatched — AI Tracking Live":"✅ அனுப்பப்பட்டது — AI நேரடி கண்காணிப்பு",
+  "🔍 Scanning internal database…":"🔍 உள் தரவுத்தளம் தேடப்படுகிறது…",
+  "🩸 STEP 1 — Alerting Frontline Rotarians…":"🩸 படி 1 — முன்னணி ரோட்டேரியன்களுக்கு எச்சரிக்கை…",
+  "⚡ STEP 2 — Alerting nearby donors (≤10 km)…":"⚡ படி 2 — அருகிலுள்ள தானம் செய்பவர்களுக்கு (≤10 கி.மீ)…",
+  "🎁 BONUS — Expanding radius 10 → 25 → 50 km…":"🎁 போனஸ் — தூரம் விரிவாக்கம் 10 → 25 → 50 கி.மீ…",
+};
+function t(str){ return LANG === 'ta' ? (TA[str] || str) : str; }
+function toggleLang(){
+  LANG = LANG === 'en' ? 'ta' : 'en';
+  try{ localStorage.setItem('rb_lang', LANG); }catch(e){}
+  applyLang();
+  if(typeof _wizRender === 'function' && document.getElementById('fwizOverlay')?.classList.contains('open')) _wizRender();
+}
+function applyLang(){
+  const btn = document.getElementById('langToggle');
+  if(btn) btn.textContent = LANG === 'en' ? 'தமிழ்' : 'EN';
+  // Static funnel chrome
+  const map = [
+    ['#sq1 .sq-txt', '🔍 Scanning internal database…'],
+    ['#sq2 .sq-txt', '🩸 STEP 1 — Alerting Frontline Rotarians…'],
+    ['#sq3 .sq-txt', '⚡ STEP 2 — Alerting nearby donors (≤10 km)…'],
+    ['#sq4 .sq-txt', '🎁 BONUS — Expanding radius 10 → 25 → 50 km…'],
+  ];
+  map.forEach(([sel, en]) => { const el = document.querySelector(sel); if(el) el.textContent = t(en); });
+  document.querySelectorAll('.vid-btn-red').forEach(el => { if(el.textContent.includes('Request') || el.textContent.includes('ரத்தம்')) el.textContent = t('🆘 Request Blood Now'); });
+}
+document.addEventListener('DOMContentLoaded', applyLang);
+
+// One-scan QR entry: ?register=1&camp=x opens donor wizard, ?request=1 opens request
+window._campTag = null;
+document.addEventListener('DOMContentLoaded', function(){
+  const q = new URLSearchParams(location.search);
+  if(q.get('camp')) window._campTag = q.get('camp');
+  if(q.get('register')) setTimeout(()=>{ try{ openWizard('donor'); }catch(e){} }, 600);
+  else if(q.get('request')) setTimeout(()=>{ try{ openWizard('request'); }catch(e){} }, 600);
+});
+// ═══════════════════════════════════════════════════════════════════════════
 
 // ── Server status banner ───────────────────────────────────────────────────
 async function checkServerStatus(){
@@ -3692,8 +3759,8 @@ async function aiMissionDispatch(b){
   // Reset + open in scanning state
   document.querySelectorAll('.seq-line').forEach(el=>{el.classList.remove('on','done');el.querySelector('.sq-val').textContent='';});
   document.getElementById('rmPipe').style.display='none';
-  document.getElementById('rmTitle').textContent = '🛰 AI Scanning…';
-  document.getElementById('rmBody').textContent = 'AI is searching the registered network in real time.';
+  document.getElementById('rmTitle').textContent = t('🛰 AI Scanning…');
+  document.getElementById('rmBody').textContent = t('AI is searching the registered network in real time.');
   document.getElementById('rmNearest').style.display='none';
   document.getElementById('reqModal').classList.add('open');
 
@@ -3737,7 +3804,7 @@ async function aiMissionDispatch(b){
   },1000);
   tEl.textContent = String(l1min).padStart(2,'0')+':00';
 
-  document.getElementById('rmTitle').textContent = '✅ Dispatched — AI Tracking Live';
+  document.getElementById('rmTitle').textContent = t('✅ Dispatched — AI Tracking Live');
   document.getElementById('rmBody').textContent = (r.matched||0) > 0
     ? 'AI is watching responses in real time. No confirmation in '+l1min+' minutes → automatic escalation + team starts calling.'
     : 'No registered donors nearby yet — AI escalated instantly: frontline Rotarians are on it and the escalation timer is running.';
@@ -3769,6 +3836,10 @@ async function aiMissionDispatch(b){
       }catch(e){}
     }, 10000);
   }
+
+  // Live tracking link (shareable)
+  const trackEl = document.getElementById('rmTrackLink');
+  if(trackEl && r.id){ trackEl.href = '/track.html?id=' + r.id; trackEl.style.display = 'block'; }
 
   // Final-step WhatsApp confirmation
   const waMsg = encodeURIComponent(
@@ -4149,54 +4220,55 @@ document.addEventListener('click',function(e){
 const BT_DESCS={'O+':'Donor · common','O-':'Universal donor','A+':'Common','A-':'Rare','B+':'Common','B-':'Rare','AB+':'Universal recip.','AB-':'Rare'};
 let _wizType='', _wizStep=1, _wizData={};
 
-const WSTEP_LABELS={
-  request:['Who?','Blood','Hospital','Confirm'],
-  donor:['You','Blood','Area','Confirm']
+const WSTEP_LABELS_ALL={
+  en:{ request:['Who?','Blood','Hospital','Confirm'], donor:['You','Blood','Area','Confirm'] },
+  ta:{ request:['யார்?','ரத்தம்','மருத்துவமனை','உறுதி'], donor:['நீங்கள்','ரத்தம்','பகுதி','உறுதி'] }
 };
+const WSTEP_LABELS = new Proxy({}, { get:(_,k)=> (WSTEP_LABELS_ALL[LANG]||WSTEP_LABELS_ALL.en)[k] });
 
 function _panelsReq(){
   return [
     /* Step 1 */
     `<div class="fwiz-panel">
-      <div class="fwiz-step-label">Step 1 of 4</div>
-      <div class="fwiz-step-title">Who's requesting blood?</div>
+      <div class="fwiz-step-label">${t('Step 1 of 4')}</div>
+      <div class="fwiz-step-title">${t("Who's requesting blood?")}</div>
       <div class="fwiz-group">
-        <label class="fwiz-label">Full Name</label>
-        <input class="fwiz-inp" id="r-name" placeholder="Your full name" autocomplete="name">
+        <label class="fwiz-label">${t('Full Name')}</label>
+        <input class="fwiz-inp" id="r-name" placeholder="${t('Your full name')}" autocomplete="name">
       </div>
       <div class="fwiz-group">
-        <label class="fwiz-label">WhatsApp Number</label>
+        <label class="fwiz-label">${t('WhatsApp Number')}</label>
         <div class="fwiz-phone-wrap">
           <div class="fwiz-pfx"><img src="https://flagcdn.com/w20/in.png" alt="" style="width:18px"> +91</div>
-          <input id="r-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="10-digit number" onkeydown="if(event.key==='Enter')wizNext()">
+          <input id="r-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="${t('10-digit number')}" onkeydown="if(event.key==='Enter')wizNext()">
         </div>
       </div>
     </div>`,
     /* Step 2 */
     `<div class="fwiz-panel">
-      <div class="fwiz-step-label">Step 2 of 4</div>
-      <div class="fwiz-step-title">What blood type is needed?</div>
+      <div class="fwiz-step-label">${t('Step 2 of 4')}</div>
+      <div class="fwiz-step-title">${t('What blood type is needed?')}</div>
       <div class="fwiz-group">
-        <label class="fwiz-label">Select Blood Type</label>
+        <label class="fwiz-label">${t('Select Blood Type')}</label>
         <div class="fwiz-bt-grid" id="reqBtGrid"></div>
         <input type="hidden" id="r-blood" value="">
       </div>
       <div class="fwiz-group" style="margin-top:16px">
-        <label class="fwiz-label">Urgency Level</label>
+        <label class="fwiz-label">${t('Urgency Level')}</label>
         <div class="fwiz-urg-grid" id="reqUrgGrid">
-          <button type="button" class="fwiz-urg-btn sel" data-val="normal" onclick="fwizPickUrg(this,'reqUrgGrid','r-urgency')">📋 Normal</button>
-          <button type="button" class="fwiz-urg-btn" data-val="urgent" onclick="fwizPickUrg(this,'reqUrgGrid','r-urgency')">⚡ Urgent</button>
-          <button type="button" class="fwiz-urg-btn" data-val="critical" onclick="fwizPickUrg(this,'reqUrgGrid','r-urgency')">🚨 Critical</button>
+          <button type="button" class="fwiz-urg-btn sel" data-val="normal" onclick="fwizPickUrg(this,'reqUrgGrid','r-urgency')">${t('📋 Normal')}</button>
+          <button type="button" class="fwiz-urg-btn" data-val="urgent" onclick="fwizPickUrg(this,'reqUrgGrid','r-urgency')">${t('⚡ Urgent')}</button>
+          <button type="button" class="fwiz-urg-btn" data-val="critical" onclick="fwizPickUrg(this,'reqUrgGrid','r-urgency')">${t('🚨 Critical')}</button>
         </div>
         <select id="r-urgency" style="display:none"><option value="normal" selected>Normal</option><option value="urgent">Urgent</option><option value="critical">Critical</option></select>
       </div>
     </div>`,
     /* Step 3 */
     `<div class="fwiz-panel">
-      <div class="fwiz-step-label">Step 3 of 4</div>
-      <div class="fwiz-step-title">Hospital &amp; search range</div>
+      <div class="fwiz-step-label">${t('Step 3 of 4')}</div>
+      <div class="fwiz-step-title">${t('Hospital & search range')}</div>
       <div class="fwiz-group">
-        <label class="fwiz-label">Hospital Name</label>
+        <label class="fwiz-label">${t('Hospital Name')}</label>
         <div style="position:relative">
           <input class="fwiz-inp" id="r-hospital" placeholder="e.g. JIPMER, PIMS, General Hospital" autocomplete="off" oninput="filterHospitals(this.value)" onfocus="filterHospitals(this.value)" onblur="setTimeout(closeHospitalList,200)">
           <div id="hosp-dd" class="hosp-dd"></div>
@@ -4204,28 +4276,28 @@ function _panelsReq(){
       </div>
       <div class="fwiz-row">
         <div class="fwiz-group">
-          <label class="fwiz-label">Units Needed</label>
+          <label class="fwiz-label">${t('Units Needed')}</label>
           <select class="fwiz-inp" id="r-units">
             <option value="1">1 unit</option><option value="2">2 units</option><option value="3">3 units</option>
           </select>
         </div>
         <div class="fwiz-group">
-          <label class="fwiz-label">Search Radius</label>
+          <label class="fwiz-label">${t('Search Radius')}</label>
           <select class="fwiz-inp" id="r-radius">
             <option value="10">10 km</option><option value="25">25 km</option>
-            <option value="50" selected>50 km</option><option value="100">All of TN</option>
+            <option value="50" selected>50 km</option><option value="100">${t('All of TN')}</option>
           </select>
         </div>
       </div>
     </div>`,
     /* Step 4 */
     `<div class="fwiz-panel">
-      <div class="fwiz-step-label">Step 4 of 4</div>
-      <div class="fwiz-step-title">Confirm &amp; alert donors</div>
+      <div class="fwiz-step-label">${t('Step 4 of 4')}</div>
+      <div class="fwiz-step-title">${t('Confirm & alert donors')}</div>
       <div class="fwiz-summary" id="reqSummary"></div>
       <div style="background:#FEF2F2;border-radius:10px;padding:12px 16px;font-size:12px;color:#991B1B;line-height:1.65;border:1px solid #FECACA">
-        <strong style="display:block;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">What happens next?</strong>
-        Every matching donor within your chosen radius gets a personal WhatsApp immediately. They'll call you or arrive at the hospital directly.
+        <strong style="display:block;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">${t('What happens next?')}</strong>
+        ${t("Every matching donor within your chosen radius gets a personal WhatsApp immediately. They'll call you or arrive at the hospital directly.")}
       </div>
     </div>`,
   ];
@@ -4236,57 +4308,57 @@ function _panelsDon(){
     /* Step 1 */
     `<div class="fwiz-panel">
       <div class="fwiz-step-label">Step 1 of 4</div>
-      <div class="fwiz-step-title">Tell us about yourself</div>
+      <div class="fwiz-step-title">${t('Tell us about yourself')}</div>
       <div class="fwiz-group">
-        <label class="fwiz-label">Full Name</label>
-        <input class="fwiz-inp don-focus" id="d-name" placeholder="Your full name" autocomplete="name">
+        <label class="fwiz-label">${t('Full Name')}</label>
+        <input class="fwiz-inp don-focus" id="d-name" placeholder="${t('Your full name')}" autocomplete="name">
       </div>
       <div class="fwiz-group">
-        <label class="fwiz-label">WhatsApp Number <span style="font-weight:400;color:var(--muted)">(only for urgent matches)</span></label>
+        <label class="fwiz-label">${t('WhatsApp Number')} <span style="font-weight:400;color:var(--muted)">${t('(only for urgent matches)')}</span></label>
         <div class="fwiz-phone-wrap don">
           <div class="fwiz-pfx"><img src="https://flagcdn.com/w20/in.png" alt="" style="width:18px"> +91</div>
-          <input id="d-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="10-digit number" onkeydown="if(event.key==='Enter')wizNext()">
+          <input id="d-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="${t('10-digit number')}" onkeydown="if(event.key==='Enter')wizNext()">
         </div>
       </div>
     </div>`,
     /* Step 2 */
     `<div class="fwiz-panel">
       <div class="fwiz-step-label">Step 2 of 4</div>
-      <div class="fwiz-step-title">What's your blood type?</div>
+      <div class="fwiz-step-title">${t("What's your blood type?")}</div>
       <div class="fwiz-group">
-        <label class="fwiz-label">Select your blood type</label>
+        <label class="fwiz-label">${t('Select your blood type')}</label>
         <div class="fwiz-bt-grid" id="donBtGrid"></div>
         <input type="hidden" id="d-blood" value="">
       </div>
       <div style="background:var(--nlight);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--navy);line-height:1.6;margin-top:14px;border:1px solid var(--nmid)">
-        <strong style="font-family:'Plus Jakarta Sans',sans-serif">Don't know your blood type?</strong> Visit any blood bank or clinic — they can test for free in under 5 minutes.
+        <strong style="font-family:'Plus Jakarta Sans',sans-serif">${t("Don't know your blood type?")}</strong> ${t('Visit any blood bank or clinic — they can test for free in under 5 minutes.')}
       </div>
     </div>`,
     /* Step 3 */
     `<div class="fwiz-panel">
       <div class="fwiz-step-label">Step 3 of 4</div>
-      <div class="fwiz-step-title">Where are you located?</div>
+      <div class="fwiz-step-title">${t('Where are you located?')}</div>
       <div class="fwiz-group">
-        <label class="fwiz-label">Your Area</label>
+        <label class="fwiz-label">${t('Your Area')}</label>
         <div style="position:relative">
-          <select class="fwiz-inp don-focus" id="d-area" style="padding-right:46px"><option value="">Select your area</option></select>
+          <select class="fwiz-inp don-focus" id="d-area" style="padding-right:46px"><option value="">${t('Select your area')}</option></select>
           <button type="button" id="locBtn" onclick="autoDetectArea()" title="Auto-detect" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--nlight);border:1.5px solid var(--nmid);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;color:var(--navy);font-weight:800;line-height:1;transition:all .2s">📍</button>
         </div>
         <div id="loc-status" style="display:none;font-size:11px;color:var(--navy);margin-top:8px;padding:6px 12px;background:var(--nlight);border-radius:7px;border-left:3px solid var(--navy)"></div>
       </div>
       <div class="fwiz-group">
-        <label class="fwiz-label">Last Donation Date <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+        <label class="fwiz-label">${t('Last Donation Date')} <span style="font-weight:400;color:var(--muted)">${t('(optional)')}</span></label>
         <input class="fwiz-inp don-focus" id="d-last-donated" type="date">
       </div>
     </div>`,
     /* Step 4 */
     `<div class="fwiz-panel">
       <div class="fwiz-step-label">Step 4 of 4</div>
-      <div class="fwiz-step-title">Final check &amp; register</div>
+      <div class="fwiz-step-title">${t('Final check & register')}</div>
       <div class="fwiz-summary" id="donSummary"></div>
       <div style="background:var(--nlight);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--navy);line-height:1.65;border:1px solid var(--nmid)">
-        <strong style="display:block;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">After registering:</strong>
-        You'll get a WhatsApp welcome from Rotary Blood Line. We only reach you when your blood type is urgently needed near your area. You can decline any request — no obligation ever.
+        <strong style="display:block;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">${t('After registering:')}</strong>
+        ${t("You'll get a WhatsApp welcome from Rotary Blood Line. We only reach you when your blood type is urgently needed near your area. You can decline any request — no obligation ever.")}
       </div>
     </div>`,
   ];
@@ -4379,7 +4451,7 @@ function _wizRender(){
   if(back) back.disabled=(_wizStep===1);
   const next=document.getElementById('fwizNext');
   if(next){
-    next.textContent=_wizStep===4?(_wizType==='request'?'🆘 Alert Donors Now':'🩸 Register as Donor'):'Next →';
+    next.textContent=_wizStep===4?(_wizType==='request'?t('🆘 Alert Donors Now'):t('🩸 Register as Donor')):t('Next →');
     next.classList.toggle('final-pulse',_wizStep===4);
   }
 
@@ -4555,7 +4627,8 @@ async function wizNext(){
       phone:       _wizData.phone||'',
       bloodType:   _wizData.bloodType||'',
       area:        _wizData.area||'',
-      lastDonation:_wizData.lastDonated?new Date(_wizData.lastDonated).getTime():null
+      lastDonation:_wizData.lastDonated?new Date(_wizData.lastDonated).getTime():null,
+      camp: window._campTag || undefined
     };
     const r=await post('/api/donors/register',b);
     if(r.ok){

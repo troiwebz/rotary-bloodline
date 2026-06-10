@@ -235,7 +235,7 @@ function calcPoints(donor) {
   return reg + donated + responded;
 }
 
-function registerDonor(name, phone, bloodType, area, lastDonationTs) {
+function registerDonor(name, phone, bloodType, area, lastDonationTs, camp) {
   const donors = read(DONORS_FILE);
   const clean  = phone.replace(/\D/g, '');
   if (donors.some(d => d.phone === clean))
@@ -254,7 +254,7 @@ function registerDonor(name, phone, bloodType, area, lastDonationTs) {
     lastDonation, donationCount,
     responseCount: 0, declineCount: 0,
     points, badgeLabel: badge.label, badgeEmoji: badge.emoji,
-    available: true, registered: 'app',
+    available: true, registered: camp ? 'camp' : 'app', camp: camp || null,
     lastSeen: Date.now(), createdAt: Date.now()
   };
   donors.push(donor);
