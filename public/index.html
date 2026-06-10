@@ -956,6 +956,18 @@ footer{background:#070B14;padding:72px 52px 44px}
 /* Blinking title cursor */
 .t-cursor{display:inline-block;width:.14em;height:.78em;background:currentColor;margin-left:.12em;vertical-align:baseline;animation:curBlink 1.05s steps(1) infinite;opacity:.85;border-radius:2px}
 
+/* AI chat welcome teaser — WhatsApp style */
+.ai-teaser{position:fixed;bottom:104px;right:24px;z-index:2400;display:flex;gap:10px;background:#fff;border-radius:16px 16px 4px 16px;padding:12px 14px;box-shadow:0 14px 44px rgba(0,0,0,.28);max-width:300px;cursor:pointer;transform:translateY(16px) scale(.94);opacity:0;visibility:hidden;transition:all .45s cubic-bezier(.22,1,.36,1)}
+.ai-teaser.show{transform:translateY(0) scale(1);opacity:1;visibility:visible}
+.ai-teaser:hover{box-shadow:0 18px 54px rgba(0,0,0,.35);transform:translateY(-2px)}
+.ai-teaser-x{position:absolute;top:-9px;left:-9px;width:22px;height:22px;border-radius:50%;background:#0F172A;color:#fff;border:2px solid #fff;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ai-teaser-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#DC2626,#991B1B);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ai-teaser-name{font-size:12.5px;font-weight:800;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:3px}
+.ai-teaser-tick{color:#25D366;font-size:11px}
+.ai-teaser-msg{font-size:12.5px;color:#475569;line-height:1.55}
+.ai-teaser-time{font-size:10px;color:#94A3B8;margin-top:5px;text-align:right}
+@media(max-width:600px){.ai-teaser{right:14px;bottom:96px;max-width:262px}}
+
 /* Recent-donor social-proof popup */
 .sp-pop{position:fixed;bottom:24px;left:24px;z-index:2500;display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,#111A30,#0D1526);border:1px solid rgba(248,113,113,.3);border-radius:18px;padding:14px 18px 14px 14px;box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04);max-width:330px;transform:translateX(-130%);opacity:0;visibility:hidden;transition:transform .55s cubic-bezier(.22,1,.36,1),opacity .4s,visibility .4s;pointer-events:none}
 .sp-pop.show{transform:translateX(0);opacity:1;visibility:visible}
@@ -1870,16 +1882,7 @@ html,body{overflow-x:hidden;max-width:100%}
   ❤️ Every drop, a promise kept &nbsp;—&nbsp; Dedicated by the <strong>Rotarians of RI District 2981</strong>
 </div>
 
-<!-- ═══════════ RECENT DONOR SOCIAL-PROOF POPUP ═══════════ -->
-<div class="sp-pop" id="spPop" aria-hidden="true">
-  <div class="sp-bt" id="spBt"></div>
-  <div class="sp-body">
-    <div class="sp-name" id="spName"></div>
-    <div class="sp-meta">📍 <span id="spArea"></span> · <span id="spTime"></span></div>
-    <div class="sp-tag">✓ Registered as a blood donor</div>
-  </div>
-  <div class="sp-drop">🩸</div>
-</div>
+
 
 <!-- ═══════════ FORMS (after hero) ═══════════ -->
 <section class="action-sec" id="action">
@@ -2838,6 +2841,17 @@ html,body{overflow-x:hidden;max-width:100%}
     <button class="ai-send-btn" onclick="aiSendInput()">➤</button>
   </div>
 </div>
+<!-- WhatsApp-style welcome teaser -->
+<div class="ai-teaser" id="aiTeaser" onclick="toggleAI();dismissTeaser()">
+  <button class="ai-teaser-x" onclick="event.stopPropagation();dismissTeaser()">✕</button>
+  <div class="ai-teaser-avatar">⚙️</div>
+  <div class="ai-teaser-body">
+    <div class="ai-teaser-name">Rotary Face AI <span class="ai-teaser-tick">✓</span></div>
+    <div class="ai-teaser-msg">👋 Vanakkam! A Rotarian is on board to help you — need blood urgently or want to become a donor?</div>
+    <div class="ai-teaser-time">just now</div>
+  </div>
+</div>
+
 <button class="ai-fab" onclick="toggleAI()" id="aiFab" title="Rotary Face AI">
   ⚙️
   <span class="ai-fab-label">Rotary Face AI</span>
@@ -3437,33 +3451,7 @@ async function loadStats(){
 }
 
 // Load most recent registered donor for the hero ticker
-let _spList=[], _spIdx=0, _spTimer=null;
-async function loadRecentDonors(){
-  try{
-    const data = await fetch(API_BASE+'/api/recent-donors?n=8').then(r=>r.json());
-    if(!data||!data.length) return;
-    _spList = data;
-    if(!_spTimer) startSocialProof();
-  }catch(e){}
-}
-function startSocialProof(){
-  const pop=document.getElementById('spPop');
-  if(!pop) return;
-  const btColors={'O+':'#E53935','O-':'#C62828','A+':'#1E88E5','A-':'#1565C0','B+':'#43A047','B-':'#2E7D32','AB+':'#FB8C00','AB-':'#E65100'};
-  function showOne(){
-    if(!_spList.length) return;
-    const d=_spList[_spIdx % _spList.length]; _spIdx++;
-    document.getElementById('spBt').textContent = d.bloodType||'🩸';
-    document.getElementById('spBt').style.background = btColors[d.bloodType]||'#E53935';
-    document.getElementById('spName').textContent = d.name||'A donor';
-    document.getElementById('spArea').textContent = d.area||'Tamil Nadu';
-    document.getElementById('spTime').textContent = timeAgoFeed(d.createdAt);
-    pop.classList.add('show');
-    setTimeout(()=>pop.classList.remove('show'), 6500);
-  }
-  setTimeout(showOne, 3500);                 // first appearance
-  _spTimer = setInterval(showOne, 15000);    // then every 15s
-}
+async function loadRecentDonors(){ /* social-proof popup removed by request */ }
 
 // SSE: refresh ticker when a new donor registers
 
@@ -4042,6 +4030,18 @@ function aiGetReply(msg){
   for(const k of AI_KB){if(k.p.test(lc))return{r:k.r==='__LIVE_STOCK__'?aiLiveStock():k.r,q:k.q};}
   return{r:"I'm not sure about that one, but try asking me:<br>• 🩸 \"Blood availability\" — live stock by group<br>• 👑 \"Who is the president?\" — club leadership<br>• 🗺️ \"Which areas do you cover?\"<br>• 🆘 \"I need blood urgently\"<br>• 🔬 \"O+ compatibility\"",q:AI_DEFAULT_QUICK};
 }
+
+function dismissTeaser(){
+  const t=document.getElementById('aiTeaser');
+  if(t) t.classList.remove('show');
+  try{ sessionStorage.setItem('rb_teaser_seen','1'); }catch(e){}
+}
+setTimeout(function(){
+  try{ if(sessionStorage.getItem('rb_teaser_seen')) return; }catch(e){}
+  if(_aiOpen) return;
+  const t=document.getElementById('aiTeaser');
+  if(t) t.classList.add('show');
+}, 5000);
 
 let _aiOpen=false;
 function toggleAI(){
