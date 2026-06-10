@@ -3695,11 +3695,39 @@ async function submitRequest(){
   },1000);
   tEl.textContent = String(l1min).padStart(2,'0')+':00';
 
-  // Header flips to dispatched
-  document.getElementById('rmTitle').textContent = '✅ Request Dispatched!';
-  document.getElementById('rmBody').textContent = 'All layers engaged. If no donor confirms in '+(scan.l1Wait||10)+' minutes, the system escalates automatically — and our team starts making calls.';
+  // Header flips to dispatched — AI stays on the case
+  document.getElementById('rmTitle').textContent = '✅ Request Dispatched — AI Tracking';
+  document.getElementById('rmBody').textContent = (r.matched||0) > 0
+    ? 'All layers engaged. AI is watching responses live — if no donor confirms in '+(scan.l1Wait||10)+' minutes it escalates automatically and our team starts calling.'
+    : 'AI has escalated immediately: Rotary team, zone coordinator and network heroes are activated and making calls. The escalation timer below is live.';
   const nearestEl = document.getElementById('rmNearest');
   if(r.nearest){nearestEl.textContent = '🏃 Nearest: ' + r.nearest;nearestEl.style.display='block';}
+
+  // ── AI live follow-up: poll this request and show real status changes ──
+  if(window._reqPoll) clearInterval(window._reqPoll);
+  if(r.id){
+    const l1row = document.querySelector('#rmPipe .pipe-row.live .pipe-st');
+    let polls = 0;
+    window._reqPoll = setInterval(async ()=>{
+      polls++;
+      if(polls > 60){ clearInterval(window._reqPoll); return; }   // ~10 min
+      try{
+        const list = await fetch(API_BASE+'/api/requests?limit=30').then(x=>x.json());
+        const cur = (list||[]).find(q=>q.id===r.id);
+        if(!cur) return;
+        const resp = (cur.respondingDonors||[]).length;
+        if(resp > 0){
+          l1row.innerHTML = '🎉 <b>'+resp+' donor'+(resp>1?'s':'')+' CONFIRMED — on the way!</b>';
+          document.getElementById('rmTitle').textContent = '🎉 Donor Responding!';
+          clearInterval(window._reqPoll); clearInterval(window._pipeTimer);
+          document.getElementById('pipeL2t').textContent = 'paused — donor found';
+        } else if((cur.layer||1) >= 2){
+          document.querySelector('#rmPipe .pipe-row.armed .pipe-st').innerHTML = '🟢 <b>LIVE</b> — partner network activated';
+          if((cur.layer||1) >= 3) document.querySelector('#rmPipe .pipe-row.stand .pipe-st').innerHTML = '🟢 <b>LIVE</b> — experts personally engaged';
+        }
+      }catch(e){}
+    }, 10000);
+  }
 
   // Final step: personalised WhatsApp confirmation to the Master Rotarian
   const waMsg = encodeURIComponent(

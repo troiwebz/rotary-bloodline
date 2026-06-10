@@ -646,12 +646,27 @@ app.post('/api/requests', async (req, res) => {
   const capped      = toAlert.slice(0, settings.maxDonorsPerAlert || 20);
 
   if (capped.length === 0) {
-    db.updateRequestStatus(request.id, 'no_donors_found');
+    // No registered donors yet — the human layers take over. Status stays
+    // 'alerted' so auto-escalation and the team follow-up cron keep working.
+    db.updateRequestStatus(request.id, 'alerted', []);
     broadcastSSE('request_no_donors', { bloodType, hospital, name });
+
+    alertConnectors(request).catch(() => {});
+    alertTeam(request, 0).catch(() => {});
+    try {
+      const zone = getZoneForArea(hospital) || getZoneForArea(req.body.area);
+      if (zone && zone.waNumber) {
+        wa.sendMessage(zone.waNumber, `🚨 *ZONE ALERT — ${zone.name}*\n\nBlood request with NO matching donors in database!\n*Patient:* ${name}\n*Blood Type:* ${bloodType}\n*Hospital:* ${hospital}\n\nPersonal network needed — please act now.`).catch(()=>{});
+      }
+    } catch (e) {}
+
     return res.json({
-      ok:      true,
-      matched: 0,
-      msg:     `No ${bloodType} donors found in Puducherry right now. Rotary coordinator has been notified.`
+      ok: true, id: request.id, matched: 0, within50: 0, dbTotal: donors.length,
+      partners: loadPartners().filter(p => p.active !== false).length,
+      connectors: loadConnectors().filter(c => c.active !== false).length,
+      zoneNotified: !!getZoneForArea(hospital),
+      whatsapp: wa.isReady(),
+      msg: `No registered ${bloodType} donors nearby yet — AI has escalated to the Rotary team, zone coordinator and network heroes. Calls are being made.`
     });
   }
 
@@ -664,6 +679,7 @@ app.post('/api/requests', async (req, res) => {
   const partnersCt = loadPartners().filter(p => p.active !== false).length;
   res.json({
     ok:       true,
+    id:       request.id,
     matched:  capped.length,
     alerted:  capped.length,
     within50: inRange.length,
