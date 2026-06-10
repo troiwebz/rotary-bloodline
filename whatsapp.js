@@ -11,8 +11,10 @@ let onIncoming = null; // server.js registers a handler for donor replies
 
 function setOnMessage(fn) { onIncoming = fn; }
 
-// ── Auth data always stored next to server.js, not CWD ───────────────────────
-const AUTH_DIR = path.join(__dirname, '.wwebjs_auth');
+// ── Auth data: Railway volume when PERSIST_DIR set, else next to server.js ───
+const AUTH_DIR = process.env.PERSIST_DIR
+  ? path.join(process.env.PERSIST_DIR, '.wwebjs_auth')
+  : path.join(__dirname, '.wwebjs_auth');
 
 // ── Remove stale SingletonLock before every init ──────────────────────────────
 function clearLock() {

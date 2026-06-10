@@ -7,8 +7,12 @@ const path = require('path');
 
 const BUNDLE_DATA_DIR = path.join(__dirname, 'data');
 // On Vercel the bundle dir is read-only — write to /tmp instead
+// On Railway, PERSIST_DIR points at a mounted volume so data survives redeploys
 const IS_VERCEL   = !!process.env.VERCEL;
-const DATA_DIR    = IS_VERCEL ? '/tmp/rotary-data' : BUNDLE_DATA_DIR;
+const PERSIST     = process.env.PERSIST_DIR || null;
+const DATA_DIR    = IS_VERCEL ? '/tmp/rotary-data'
+                  : PERSIST   ? path.join(PERSIST, 'data')
+                  : BUNDLE_DATA_DIR;
 
 const DONORS_FILE    = path.join(DATA_DIR, 'donors.json');
 const REQUESTS_FILE  = path.join(DATA_DIR, 'requests.json');
@@ -18,8 +22,8 @@ const SETTINGS_FILE  = path.join(DATA_DIR, 'settings.json');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-// On Vercel: copy bundled seed files to /tmp so reads get real data and writes work
-if (IS_VERCEL && fs.existsSync(BUNDLE_DATA_DIR)) {
+// On Vercel/Railway-volume: copy bundled seed files so first boot gets real data
+if ((IS_VERCEL || PERSIST) && fs.existsSync(BUNDLE_DATA_DIR)) {
   ['donors.json','requests.json','responses.json','activity.json','settings.json','zones.json','zone-managers.json'].forEach(f => {
     const dst = path.join(DATA_DIR, f);
     if (!fs.existsSync(dst)) {

@@ -16,7 +16,9 @@ if (IS_VERCEL) {
 }
 
 // ── Zone data helpers ─────────────────────────────────────────────────────────
-const DATA_ROOT     = IS_VERCEL ? '/tmp/rotary-data' : path.join(__dirname, 'data');
+const DATA_ROOT     = IS_VERCEL ? '/tmp/rotary-data'
+                    : process.env.PERSIST_DIR ? path.join(process.env.PERSIST_DIR, 'data')
+                    : path.join(__dirname, 'data');
 const ZONES_FILE    = path.join(DATA_ROOT, 'zones.json');
 const MANAGERS_FILE = path.join(DATA_ROOT, 'zone-managers.json');
 function loadZones()    { try { return JSON.parse(fs.readFileSync(ZONES_FILE,    'utf8')); } catch { return []; } }
