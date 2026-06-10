@@ -2647,12 +2647,11 @@ html,body{overflow-x:hidden;max-width:100%}
       </div>
       <div class="ft-col">
         <h4>Contact</h4>
-        <a href="#">President: Rtn. Palani R.</a>
-        <a href="mailto:palanidikshana@gmail.com">palanidikshana@gmail.com</a>
-        <a href="#">Secretary: Rtn. Raghuvaran V.</a>
-        <a href="mailto:v.raghuvaran@gmail.com">v.raghuvaran@gmail.com</a>
+        <a href="#">Rotary Club of Legacy, Puducherry</a>
+        <a href="#">President: Rtn. Raghuvaran V.</a>
+        <a href="#">Secretary: Rtn. Hemachandiran K.</a>
         <a href="#">Blood Bank Helpline: 104</a>
-        <a href="#">DG Office: 7010811203</a>
+        <a href="#">RI District 2981 · Club ID 224440</a>
       </div>
     </div>
     <div class="ft-bottom">
@@ -2686,31 +2685,31 @@ html,body{overflow-x:hidden;max-width:100%}
 <!-- ═══════════ AI BLOOD ASSISTANT ═══════════ -->
 <div class="ai-window" id="aiWindow">
   <div class="ai-hdr">
-    <div class="ai-hdr-avatar">🩸</div>
+    <div class="ai-hdr-avatar">⚙️</div>
     <div class="ai-hdr-info">
-      <h4>Blood AI Assistant</h4>
-      <p>Powered by Rotary Blood Line · Always on</p>
+      <h4>Rotary Face AI</h4>
+      <p>The face of Rotary Club of Legacy · Always on · No queues</p>
     </div>
     <button class="ai-close" onclick="toggleAI()">✕</button>
   </div>
   <div class="ai-msgs" id="aiMsgs">
-    <div class="ai-bubble bot">👋 Hi! I'm <b>Blood AI</b> — your intelligent blood support assistant.<br><br>I can help you <b>request blood urgently</b>, <b>register as a donor</b>, check <b>blood type compatibility</b>, or answer any blood-related question. What do you need?</div>
+    <div class="ai-bubble bot">👋 Vanakkam! I'm <b>Rotary Face AI</b> — the official AI of Rotary Club of Legacy, Puducherry.<br><br>Ask me anything: <b>blood availability</b>, <b>who runs the club</b>, <b>areas we cover</b>, how to <b>request blood</b> or <b>become a donor</b>. I answer instantly, day or night.</div>
     <div class="ai-typing" id="aiTyping"><span></span><span></span><span></span></div>
   </div>
   <div class="ai-quick-row" id="aiQuick">
     <button class="ai-qbtn" onclick="aiSend('I need blood urgently')">🆘 Request Blood</button>
-    <button class="ai-qbtn" onclick="aiSend('I want to become a donor')">🩸 Become Donor</button>
-    <button class="ai-qbtn" onclick="aiSend('blood type compatibility')">🔬 Blood Types</button>
-    <button class="ai-qbtn" onclick="aiSend('how does it work')">ℹ️ How It Works</button>
+    <button class="ai-qbtn" onclick="aiSend('blood availability')">🩸 Blood Stock</button>
+    <button class="ai-qbtn" onclick="aiSend('who is the president')">👑 Who Runs This?</button>
+    <button class="ai-qbtn" onclick="aiSend('which areas do you cover')">🗺️ Areas Covered</button>
   </div>
   <div class="ai-input-area">
     <input class="ai-inp" id="aiInput" placeholder="Ask anything about blood…" onkeydown="if(event.key==='Enter')aiSendInput()">
     <button class="ai-send-btn" onclick="aiSendInput()">➤</button>
   </div>
 </div>
-<button class="ai-fab" onclick="toggleAI()" id="aiFab" title="Blood AI Assistant">
-  🩸
-  <span class="ai-fab-label">Blood AI</span>
+<button class="ai-fab" onclick="toggleAI()" id="aiFab" title="Rotary Face AI">
+  ⚙️
+  <span class="ai-fab-label">Rotary Face AI</span>
 </button>
 
 <script>
@@ -3271,6 +3270,7 @@ function flashStatPlus(numEl, delta) {
 async function loadStats(){
   try{
     const s=await fetch(API_BASE+'/api/stats').then(r=>r.json());
+    window._LIVE_STATS = s;   // Rotary Face AI reads live data from here
     const hd=document.getElementById('hd');if(hd)hd.textContent=s.totalDonors||0;
 
     // Donor count — animate the number span
@@ -3714,9 +3714,38 @@ const BLOOD_COMPAT={
   'AB-':{donate:['AB-','AB+'],receive:['O-','A-','B-','AB-']},
   'AB+':{donate:['AB+'],receive:['O-','O+','A-','A+','B-','B+','AB-','AB+']}
 };
+const CLUB_INFO = {
+  name: 'Rotary Club of Legacy, Puducherry',
+  president: 'Rtn. Raghuvaran V.',
+  secretary: 'Rtn. Hemachandiran K.',
+  district: 'RI District 2981',
+  clubId: '224440',
+  dg: 'Rtn. J. Leone',
+  address: '432, M.G. Road, Puducherry',
+  helpline: '104'
+};
+
 const AI_KB=[
+  {p:/president|chairman|chair man|who runs|who is behind|head of|leader of (the )?club|in charge/i,
+   r:`👑 <b>Rotary Club of Legacy — Leadership</b><br><br>🎖️ President: <b>${CLUB_INFO.president}</b><br>📋 Secretary: <b>${CLUB_INFO.secretary}</b><br>🌐 District Governor: <b>${CLUB_INFO.dg}</b><br><br>📍 ${CLUB_INFO.district} · Club ID ${CLUB_INFO.clubId}<br>🏠 ${CLUB_INFO.address}`,
+   q:['Which areas do you cover?','Blood availability','How do I join Rotary?']},
+  {p:/secretary/i,
+   r:`📋 Our Club Secretary is <b>${CLUB_INFO.secretary}</b> of ${CLUB_INFO.name}.<br><br>The President is <b>${CLUB_INFO.president}</b>.`,
+   q:['Who is the president?','Areas covered','Blood availability']},
+  {p:/club detail|about (the )?club|legacy|which club|rotary club|club id|district/i,
+   r:`⚙️ <b>${CLUB_INFO.name}</b><br><br>🎖️ President: ${CLUB_INFO.president}<br>📋 Secretary: ${CLUB_INFO.secretary}<br>🌐 ${CLUB_INFO.district} · RI Club ID ${CLUB_INFO.clubId}<br>📍 ${CLUB_INFO.address}<br><br>We built and run Rotary Blood Line — Tamil Nadu's first AI-powered blood emergency network. 100% free, forever.`,
+   q:['Who is the president?','Blood availability','Request blood']},
+  {p:/avail|stock|how many donors|blood bank status|i want blood group|do you have|which blood/i,
+   r:'__LIVE_STOCK__',
+   q:['Request blood now','Become a donor','O+ compatibility']},
+  {p:/area|cover|location|place|village|where (do|are) you|zone/i,
+   r:`🗺️ <b>Rotary Blood Line — Coverage</b><br><br>Active across <b>Tamil Nadu</b> with zones in:<br>📍 Puducherry (HQ) · Chennai · Trichy · Coimbatore · Madurai<br><br>Including rural areas: Ariyankuppam, Villianur, Bahour, Nettapakkam, Odiyan & 40+ more. Donors anywhere in TN can register!`,
+   q:['Register as donor','Blood availability','Who runs this?']},
+  {p:/mission|30 min|lifeline|3 layer|three layer|goal/i,
+   r:`🎯 <b>Our Mission: blood at your side within 30 minutes.</b><br><br>The 3-Layer Lifeline:<br>⚡ <b>Layer 1</b> (0–10 min): registered donors alerted on WhatsApp<br>🤝 <b>Layer 2</b> (10–20 min): partner blood banks + sister clubs activated<br>🎖️ <b>Layer 3</b> (20–30 min): Rotary experts step in personally<br><br>AI tracks every request — nothing falls through.`,
+   q:['Request blood','Become a donor']},
   {p:/need blood|urgently|patient|hospital|accident|surgery/i,
-   r:"🆘 I'll help immediately. Please use our <b>Request Blood form</b> below — enter the blood type, hospital, and your number. Every matching donor in the area gets alerted on WhatsApp in under 60 seconds.<br><br>Or call us directly: <a href='tel:+917010811203' style='color:#DC2626;font-weight:700'>📞 +91 70108 11203</a>",
+   r:"🆘 I'll help immediately. Please use our <b>Request Blood form</b> below — enter the blood type, hospital, and your number. Every matching donor in the area gets alerted on WhatsApp in under 60 seconds.<br><br>Emergency? National Blood Helpline: <a href='tel:104' style='color:#DC2626;font-weight:700'>📞 104</a>",
    q:['Request Blood Now','Call Blood Line','How fast will I get help?']},
   {p:/donate|register|join|want to give|volunteer/i,
    r:"❤️ Thank you for saving lives! Use our <b>Become a Donor form</b> below. Takes 2 minutes. We only WhatsApp you when someone near you urgently needs your blood type.<br><br>Earn Rotary Hero points with every donation! 🏅",
@@ -3749,8 +3778,8 @@ const AI_KB=[
    r:"⚡ <b>How Rotary Blood Line works:</b><br><br>1️⃣ Patient submits blood type + hospital<br>2️⃣ Our system finds every matching donor<br>3️⃣ Individual WhatsApp alerts fired in 30 sec<br>4️⃣ Nearest donor responds<br>5️⃣ Life saved 🩸<br><br>No human coordinator needed. 24/7.",
    q:['Request Blood','Register as Donor','Is it really free?']},
   {p:/contact|call|phone|reach|helpline|team/i,
-   r:"📞 <b>Blood Line Emergency Contacts:</b><br><br>🩸 24/7 Helpline: <a href='tel:+917010811203' style='color:#DC2626;font-weight:700'>+91 70108 11203</a><br>💬 WhatsApp: <a href='https://wa.me/917010811203' target='_blank' style='color:#25D366;font-weight:700'>+91 70108 11203</a><br>📍 432 MG Road, Puducherry<br>📅 Meetings: Every Saturday 7:30 PM",
-   q:['Request Blood','Register as Donor']},
+   r:`📞 <b>Rotary Blood Line — Contacts</b><br><br>🚑 National Blood Helpline: <a href='tel:104' style='color:#DC2626;font-weight:700'>104</a><br>🎖️ President: ${CLUB_INFO.president}<br>📋 Secretary: ${CLUB_INFO.secretary}<br>📍 ${CLUB_INFO.address}<br><br>For blood emergencies, the fastest route is the <b>Request Blood form</b> — donors are alerted in 60 seconds.`,
+   q:['Request Blood','Who runs this?']},
   {p:/thank|good|great|amazing|awesome|helpful|brilliant/i,
    r:"🙏 Thank you! Every person who registers as a donor is a hero. If you ever need blood — we're here 24/7.<br><br>Share Rotary Blood Line with your family and friends — the more donors we have, the more lives we save. 🩸",
    q:['Register as Donor','Share this site']},
@@ -3761,7 +3790,21 @@ const AI_KB=[
    r:"🏅 <b>Rotary Hero Recognition Program:</b><br><br>🌱 Register: +50 points<br>💉 Each donation: +250 points<br>💬 Respond to alert: +30 points<br><br>Top donors receive official Rotary recognition and badges!",
    q:['Register as Donor','How to earn points?']},
 ];
-const AI_DEFAULT_QUICK=['🆘 Request Blood','🩸 Become Donor','🔬 Blood Types','📞 Emergency Contact','ℹ️ How It Works'];
+const AI_DEFAULT_QUICK=['🆘 Request Blood','🩸 Blood Stock','👑 Who runs this?','🗺️ Areas Covered','ℹ️ How It Works'];
+
+function aiLiveStock(){
+  const s = window._LIVE_STATS;
+  if(!s) return '🩸 Live blood stock is loading — ask me again in a few seconds!';
+  const by = s.byBloodType || {};
+  const types = ['O+','O-','A+','A-','B+','B-','AB+','AB-'];
+  const rows = types.map(t => {
+    const n = by[t] || 0;
+    return (n > 0 ? '🟢' : '⚪') + ' <b>' + t + '</b>: ' + n + ' donor' + (n === 1 ? '' : 's');
+  }).join('<br>');
+  return '🩸 <b>Live Donor Availability</b> (right now):<br><br>' + rows +
+    '<br><br>👥 Total: <b>' + (s.totalDonors || 0) + '</b> registered · <b>' + (s.eligibleNow || 0) +
+    '</b> eligible today<br><br>Need one? Submit a request — matching donors are alerted in 60 seconds.';
+}
 
 function aiGetReply(msg){
   const lc=msg.toLowerCase().trim();
@@ -3772,8 +3815,8 @@ function aiGetReply(msg){
     const c=BLOOD_COMPAT[bt];
     if(c) return {r:`🩸 <b>${bt} Blood Group</b><br>✅ Can donate to: ${c.donate.join(', ')}<br>🔴 Can receive from: ${c.receive.join(', ')}<br><br>Want to register as a <b>${bt} donor</b>?`,q:[`Register as ${bt} donor`,`Request ${bt} blood`,'Back to menu']};
   }
-  for(const k of AI_KB){if(k.p.test(lc))return{r:k.r,q:k.q};}
-  return{r:"I'm not sure about that, but I'm here to help! Try asking about:<br>• 🆘 How to request blood urgently<br>• 🩸 How to register as a donor<br>• 🔬 Blood type compatibility<br>• 💡 How Rotary Blood Line works",q:AI_DEFAULT_QUICK};
+  for(const k of AI_KB){if(k.p.test(lc))return{r:k.r==='__LIVE_STOCK__'?aiLiveStock():k.r,q:k.q};}
+  return{r:"I'm not sure about that one, but try asking me:<br>• 🩸 \"Blood availability\" — live stock by group<br>• 👑 \"Who is the president?\" — club leadership<br>• 🗺️ \"Which areas do you cover?\"<br>• 🆘 \"I need blood urgently\"<br>• 🔬 \"O+ compatibility\"",q:AI_DEFAULT_QUICK};
 }
 
 let _aiOpen=false;
