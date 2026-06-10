@@ -287,9 +287,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="fld"><label>Auto-escalation</label><select id="sAuto"><option value="true">On — system escalates automatically</option><option value="false">Off — manual escalation only</option></select></div>
         <div class="fld"><label>Layer 3 expert phone numbers (comma-separated)</label><input id="sExperts" placeholder="9876543210, 9123456780"></div>
         <div class="fld"><label>AI WhatsApp numbers per country (JSON — "default" required; number must be a paired session)</label><input id="sAiNums" placeholder='{"default":"918667571800","TH":"66XXXXXXXXX"}'></div>
-        <div class="fld"><label>AI Rotarian name (used in all bot replies)</label><input id="sAiName" placeholder="Rtn. Thuli"></div>
-        <div class="fld"><label>Donor first WhatsApp message ({ai} {code} {name} placeholders)</label><input id="sDonorHi" placeholder="Hi {ai}! 🩸 I want to become a blood donor…"></div>
-        <div class="fld"><label>Requester first WhatsApp message ({ai} {code} {name} placeholders)</label><input id="sReqHi" placeholder="Hi {ai}! 🆘 I urgently need help finding blood…"></div>
+        <div class="fld"><label>AI Rotarian name (used in all bot replies)</label><input id="sAiName" placeholder="BloodLine AI"></div>
+        <div class="fld"><label>Donor first WhatsApp message ({ai} {code} {name} placeholders)</label><input id="sDonorHi" placeholder="Hi {ai} 🩸 I want to become a blood donor in your team…"></div>
+        <div class="fld"><label>Requester first WhatsApp message ({ai} {code} {name} placeholders)</label><input id="sReqHi" placeholder="Hi {ai} 🆘 I urgently need blood for a patient…"></div>
         <button class="btn-main" style="max-width:220px" onclick="saveSettings()">💾 Save Settings</button>
       </div>
     </div>
@@ -770,7 +770,7 @@ async function sendBlast(){
 /* ── Settings ── */
 async function loadSettings(){
   const r=await J('/api/admin/settings'); if(r.code!==200)return;
-  document.getElementById('sL1').value=r.d.layer1WaitMin??10;document.getElementById('sFU').value=r.d.teamFollowUpMin??15;document.getElementById('sAiNums').value=r.d.aiNumbers||'{"default":"918667571800"}';document.getElementById('sAiName').value=r.d.aiName||'Rtn. Thuli';document.getElementById('sDonorHi').value=r.d.donorHiMsg||'';document.getElementById('sReqHi').value=r.d.requesterHiMsg||'';
+  document.getElementById('sL1').value=r.d.layer1WaitMin??10;document.getElementById('sFU').value=r.d.teamFollowUpMin??15;document.getElementById('sAiNums').value=r.d.aiNumbers||'{"default":"918667571800"}';document.getElementById('sAiName').value=r.d.aiName||'BloodLine AI';document.getElementById('sDonorHi').value=r.d.donorHiMsg||'';document.getElementById('sReqHi').value=r.d.requesterHiMsg||'';
   document.getElementById('sL2').value=r.d.layer2WaitMin??10;
   document.getElementById('sMax').value=r.d.maxDonorsPerAlert??20;
   document.getElementById('sRad').value=r.d.defaultRadius??50;
@@ -778,7 +778,7 @@ async function loadSettings(){
   document.getElementById('sExperts').value=r.d.expertPhones||'';
 }
 async function saveSettings(){
-  const body={layer1WaitMin:Number(document.getElementById('sL1').value),teamFollowUpMin:Number(document.getElementById('sFU').value)||15,aiNumbers:document.getElementById('sAiNums').value,aiName:document.getElementById('sAiName').value||'Rtn. Thuli',donorHiMsg:document.getElementById('sDonorHi').value,requesterHiMsg:document.getElementById('sReqHi').value,layer2WaitMin:Number(document.getElementById('sL2').value),maxDonorsPerAlert:Number(document.getElementById('sMax').value),defaultRadius:Number(document.getElementById('sRad').value),autoEscalate:document.getElementById('sAuto').value==='true',expertPhones:document.getElementById('sExperts').value};
+  const body={layer1WaitMin:Number(document.getElementById('sL1').value),teamFollowUpMin:Number(document.getElementById('sFU').value)||15,aiNumbers:document.getElementById('sAiNums').value,aiName:document.getElementById('sAiName').value||'BloodLine AI',donorHiMsg:document.getElementById('sDonorHi').value,requesterHiMsg:document.getElementById('sReqHi').value,layer2WaitMin:Number(document.getElementById('sL2').value),maxDonorsPerAlert:Number(document.getElementById('sMax').value),defaultRadius:Number(document.getElementById('sRad').value),autoEscalate:document.getElementById('sAuto').value==='true',expertPhones:document.getElementById('sExperts').value};
   const r=await J('/api/admin/settings',{method:'POST',body:JSON.stringify(body)});
   toast(r.d.ok?'Settings saved':'Failed',!r.d.ok);
 }

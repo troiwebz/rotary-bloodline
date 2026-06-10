@@ -299,12 +299,12 @@ function aiNumbers() {
     return m;
   } catch { return { default: '918667571800' }; }
 }
-function aiName() { return db.getSettings().aiName || 'Rtn. Thuli'; }
+function aiName() { return db.getSettings().aiName || 'BloodLine AI'; }
 app.get('/api/config', (req, res) => {
   const st = db.getSettings();
   res.json({ ok: true, aiNumbers: aiNumbers(), aiName: aiName(),
-    donorHiMsg: st.donorHiMsg || 'Hi {ai}! 🩸 I want to become a blood donor with Rotary Blood Line. My verify code: {code}',
-    requesterHiMsg: st.requesterHiMsg || 'Hi {ai}! 🆘 I urgently need help finding blood. My verify code: {code}' });
+    donorHiMsg: st.donorHiMsg || "Hi {ai} 🩸 I want to become a blood donor in your team. Add me to your system. Let's save lives!",
+    requesterHiMsg: st.requesterHiMsg || "Hi {ai} 🆘 I urgently need blood for a patient. Please help me — every minute matters." });
 });
 
 // ── Master WhatsApp re-pair: wipe session → fresh QR ──────────────────────────
