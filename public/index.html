@@ -2837,8 +2837,8 @@ html,body{overflow-x:hidden;max-width:100%}
     </div>
     <div class="rm-final-step">
       <div class="rm-fs-label" data-i18n>⬇ FINAL STEP — don't skip this</div>
-      <a class="rm-wa rm-wa-final" id="rmWaConfirm" href="https://wa.me/918667571800?text=I+just+requested+blood+on+Rotary+Blood+Line" target="_blank" data-i18n>💬 Confirm to Master Rotarian on WhatsApp</a>
-      <div class="rm-fs-note" data-i18n>One tap sends your request details to our Master Rotarian — your case gets personal eyes on it immediately.</div>
+      <a class="rm-wa rm-wa-final" id="rmWaConfirm" href="https://wa.me/918667571800?text=I+just+requested+blood+on+Rotary+Blood+Line" target="_blank" data-i18n>💬 Get Live Updates on WhatsApp — tap & send Hi</a>
+      <div class="rm-fs-note" data-i18n>One tap opens WhatsApp — just hit send, and BloodLine AI will message you the moment a donor says YES. No need to keep this page open.</div>
     </div>
     <div class="rm-emergency">
       <span class="rm-emergency-title">🆘 Still urgent? Call directly:</span>
@@ -4025,7 +4025,10 @@ async function aiMissionDispatch(b){
     + 'Name: ' + b.name + '\nBlood type: ' + b.bloodType + '\nHospital: ' + b.hospital
     + '\nMy number: +91' + String(b.phone).replace(/^91/,'') + '\n\nPlease confirm my request is being handled. 🙏');
   const waBtn = document.getElementById('rmWaConfirm');
-  if(waBtn) waBtn.href = 'https://wa.me/' + AI_WA + '?text=' + waMsg;
+  if(waBtn){
+    const tpl = (_CFG.requesterHiMsg||'Hi {ai} 🆘 I urgently need blood for a patient.').replace('{ai}', _CFG.aiName||'BloodLine AI').replace('{code}','').replace('{name}','');
+    waBtn.href = 'https://wa.me/' + AI_WA + '?text=' + encodeURIComponent(tpl);
+  }
   loadStats();
   return r;
 }
@@ -4421,24 +4424,10 @@ function _panelsReq(){
         <label class="fwiz-label">${t('WhatsApp Number')}</label>
         <div class="fwiz-phone-wrap">
           <div class="fwiz-pfx"><img src="https://flagcdn.com/w20/in.png" alt="" style="width:18px"> +91</div>
-          <input id="r-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="${t('10-digit number')}" oninput="vfyReset()" onkeydown="if(event.key==='Enter')wizNext()">
+          <input id="r-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="${t('10-digit number')}" onkeydown="if(event.key==='Enter')wizNext()">
         </div>
       </div>
-      <!-- Connect to the AI first — mission starts inside YOUR conversation -->
-      <div class="fwiz-group" id="vfyBox" style="background:#ECFDF5;border:1.5px solid #6EE7B7;border-radius:12px;padding:14px 16px">
-        <div style="font-size:12px;font-weight:800;color:#047857;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:8px">🤖 ${t('First: connect to BloodLine AI, our AI Rotarian')}</div>
-        <div id="vfyIdle">
-          <div style="font-size:11.5px;color:#065F46;line-height:1.6;margin-bottom:10px">${t('One tap opens WhatsApp — hit send, and the AI will track your case and update you live in that chat.')}</div>
-          <button type="button" id="vfyBtn" onclick="vfyStart()" style="width:100%;padding:12px;border:none;border-radius:10px;background:#25D366;color:#fff;font-weight:800;font-size:13.5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">💬 ${t('Connect on WhatsApp')}</button>
-        </div>
-        <div id="vfyWait" style="display:none;text-align:center">
-          <div class="radar-spinner" style="margin:0 auto 8px;border-top-color:#16A34A"></div>
-          <div style="font-size:12px;color:#065F46;font-weight:700">${t('Waiting for your Hi… send the message in WhatsApp')}</div>
-          <button type="button" onclick="vfyRecheck(this)" style="margin-top:10px;width:100%;padding:11px;border:none;border-radius:10px;background:#16A34A;color:#fff;font-weight:800;font-size:12.5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">✅ ${t("I've sent it — Check now")}</button>
-          <button type="button" onclick="vfyStart()" style="margin-top:8px;background:none;border:none;color:#047857;font-size:11px;text-decoration:underline;cursor:pointer">${t('Reopen WhatsApp')}</button>
-        </div>
-        <div id="vfyDone" style="display:none;text-align:center;font-size:14px;font-weight:900;color:#16A34A;font-family:'Plus Jakarta Sans',sans-serif">✅ ${t('Connected — BloodLine AI is with you. Continue!')}</div>
-      </div>
+
     </div>`,
     /* Step 2 */
     `<div class="fwiz-panel">
@@ -4513,24 +4502,10 @@ function _panelsDon(){
         <label class="fwiz-label">${t('WhatsApp Number')} <span style="font-weight:400;color:var(--muted)">${t('(only for urgent matches)')}</span></label>
         <div class="fwiz-phone-wrap don">
           <div class="fwiz-pfx"><img src="https://flagcdn.com/w20/in.png" alt="" style="width:18px"> +91</div>
-          <input id="d-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="${t('10-digit number')}" oninput="vfyReset()" onkeydown="if(event.key==='Enter')wizNext()">
+          <input id="d-phone" type="tel" maxlength="10" inputmode="numeric" placeholder="${t('10-digit number')}" onkeydown="if(event.key==='Enter')wizNext()">
         </div>
       </div>
-      <!-- WhatsApp verification gate -->
-      <div class="fwiz-group" id="vfyBox" style="background:#ECFDF5;border:1.5px solid #6EE7B7;border-radius:12px;padding:14px 16px">
-        <div style="font-size:12px;font-weight:800;color:#047857;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:8px">🔐 ${t('Step 1: Verify your WhatsApp')}</div>
-        <div id="vfyIdle">
-          <div style="font-size:11.5px;color:#065F46;line-height:1.6;margin-bottom:10px">${t('Tap below — WhatsApp opens with a code message to our AI Rotarian. Just hit send and come back.')}</div>
-          <button type="button" id="vfyBtn" onclick="vfyStart()" style="width:100%;padding:12px;border:none;border-radius:10px;background:#25D366;color:#fff;font-weight:800;font-size:13.5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">💬 ${t('Verify via WhatsApp')}</button>
-        </div>
-        <div id="vfyWait" style="display:none;text-align:center">
-          <div class="radar-spinner" style="margin:0 auto 8px;border-top-color:#16A34A"></div>
-          <div style="font-size:12px;color:#065F46;font-weight:700">${t('Waiting for your Hi… send the message in WhatsApp')}</div>
-          <button type="button" onclick="vfyRecheck(this)" style="margin-top:10px;width:100%;padding:11px;border:none;border-radius:10px;background:#16A34A;color:#fff;font-weight:800;font-size:12.5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">✅ ${t("I've sent it — Check now")}</button>
-          <button type="button" onclick="vfyStart()" style="margin-top:8px;background:none;border:none;color:#047857;font-size:11px;text-decoration:underline;cursor:pointer">${t('Reopen WhatsApp')}</button>
-        </div>
-        <div id="vfyDone" style="display:none;text-align:center;font-size:14px;font-weight:900;color:#16A34A;font-family:'Plus Jakarta Sans',sans-serif">✅ ${t('WhatsApp verified — continue!')}</div>
-      </div>
+
     </div>`,
     /* Step 2 */
     `<div class="fwiz-panel">
@@ -4887,7 +4862,6 @@ function _wizValidate(){
       if(!v('r-name')) return 'Please enter your full name.';
       const d=(document.getElementById('r-phone')?.value||'').replace(/\D/g,'');
       if(!d||d.length!==10) return 'Please enter a valid 10-digit WhatsApp number.';
-      if(!_vfy.verified) return t('Please connect to BloodLine AI first — tap the green button.');
     }
     if(_wizStep===2 && !v('r-blood')) return 'Please select the blood type needed.';
     if(_wizStep===3 && !v('r-hospital')) return 'Please enter the hospital name.';
@@ -4895,7 +4869,6 @@ function _wizValidate(){
     if(_wizStep===1){
       if(!v('d-name')) return 'Please enter your full name.';
       const d=(document.getElementById('d-phone')?.value||'').replace(/\D/g,'');
-      if(d.length===10 && !_vfy.verified) return t('Please verify your WhatsApp first — tap the green verify button.');
       if(!d||d.length!==10) return 'Please enter a valid 10-digit WhatsApp number.';
     }
     if(_wizStep===2 && !v('d-blood')) return 'Please select your blood type.';

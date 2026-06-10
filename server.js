@@ -691,11 +691,10 @@ app.post('/api/donors/register', async (req, res) => {
   if (!name || !phone || !bloodType || !area)
     return res.status(400).json({ ok: false, msg: 'All fields required' });
 
-  // WhatsApp must be verified upfront — STRICT, no exceptions
+  // Flow: form first, WhatsApp activation last. Donor is created now;
+  // their Hi to BloodLine AI completes activation automatically (tryHandshake).
   const cleanPh = String(phone).replace(/\D/g, '');
   const vEntry = loadVerify().find(v => v.phone === cleanPh && v.verified);
-  if (!vEntry)
-    return res.status(403).json({ ok: false, code: 'VERIFY_REQUIRED', msg: 'Please verify your WhatsApp first — tap the green verify button.' });
 
   const result = db.registerDonor(name, phone, bloodType, area, lastDonation, camp, {
     pincode: pincode ? String(pincode).replace(/\D/g, '').slice(0, 6) : null,
@@ -841,12 +840,8 @@ app.post('/api/requests', async (req, res) => {
   if (!name || !phone || !bloodType || !hospital)
     return res.status(400).json({ ok: false, msg: 'Name, phone, blood type and hospital are required.' });
 
-  // Requester must be connected to the AI first — STRICT, no exceptions
-  const cleanReqPh = String(phone).replace(/\D/g, '');
-  const reqVerified = loadVerify().find(v => v.phone === cleanReqPh && v.verified)
-    || db.getAllDonors().find(d => d.waVerified && (d.phone === cleanReqPh));
-  if (!reqVerified)
-    return res.status(403).json({ ok: false, code: 'VERIFY_REQUIRED', msg: 'Please connect to Rtn. Uyir on WhatsApp first.' });
+  // Mission dispatches immediately — the requester's Hi (final step)
+  // opens their live-update channel (tryRequesterHello).
 
   const request = db.addRequest(name, phone, bloodType, hospital, units, urgency);
   db.patchRequest(request.id, { layer: 1, layerHistory: [{ layer: 1, at: Date.now(), by: 'system' }] });
@@ -1056,6 +1051,31 @@ app.get('/api/verify/status', (req, res) => {
 });
 
 // Incoming VERIFY-code (or any message from a pending phone) → confirm + reply
+// Requester connects on WhatsApp after submitting → instant live status reply
+async function tryRequesterHello(from) {
+  const clean = String(from).replace(/\D/g, '').replace(/^91/, '');
+  const reqs = db.getRequests(500)
+    .filter(r => String(r.phone).replace(/\D/g, '').replace(/^91/, '') === clean)
+    .filter(r => !['fulfilled', 'cancelled'].includes(r.status))
+    .filter(r => Date.now() - r.createdAt < 48 * 3600000)
+    .sort((a, b) => b.createdAt - a.createdAt);
+  const r = reqs[0];
+  if (!r) return false;
+  if (!r.requesterConnected) db.patchRequest(r.id, { requesterConnected: true, requesterConnectedAt: Date.now() });
+  const alerted = (r.matchedDonors || []).length;
+  const yes = (r.responses || []).filter(x => x.response === 'yes').length;
+  await wa.sendMessage(from,
+`🤝 *Connected!* ${aiName()} here — I'm personally running your case.
+
+🩸 *${r.bloodType}* for *${r.hospital || 'your hospital'}*
+📡 ${alerted > 0 ? alerted + ' donors alerted' : 'Frontline Rotarians alerted'}${yes > 0 ? ' · ✅ ' + yes + ' donor(s) said YES!' : ''}
+
+I'll message you here the MOMENT a donor confirms. Track live:
+https://rotary-bloodline.vercel.app/track.html?id=${r.id}`);
+  audit('requester_connected', 'system', { requestId: r.id, phone: clean.slice(-4) });
+  return true;
+}
+
 async function tryVerify(from, body) {
   const clean = String(from).replace(/\D/g, '').replace(/^91/, '');
   const list = loadVerify();
@@ -1089,15 +1109,26 @@ async function tryHandshake(from, body) {
   if (!donor.waVerified) {
     db.updateDonor(donor.id, { waVerified: true, waVerifiedAt: Date.now() });
     const profileUrl = 'https://rotary-bloodline.vercel.app/profile.html?id=' + donor.id + '&p=' + donor.phone.slice(-4);
-    await wa.sendWelcome(donor.name, donor.phone, donor.bloodType, donor.area, 'master', profileUrl);
+    await wa.sendMessage(donor.phone,
+`🎉 *REGISTRATION COMPLETE, ${donor.name}!* You're officially a Rotary Blood Line hero. 🦸
+
+✅ Blood type: *${donor.bloodType}*
+✅ Area: *${donor.area || 'Puducherry'}*
+✅ WhatsApp: verified — alerts active
+
+Nothing else to do — you can close the website! When *${donor.bloodType}* blood is urgently needed near you, I'll message you RIGHT HERE. Reply *YES* then and you become someone's miracle. 🩸
+
+⭐ Your Hero Profile: ${profileUrl}
+
+— ${aiName()}, your AI Rotarian 🤖`);
     audit('wa_handshake', 'donor:' + donor.id, { name: donor.name });
     broadcastSSE('donor_verified', { name: donor.name, bloodType: donor.bloodType });
     console.log(`[HANDSHAKE] ${donor.name} (#${donor.id}) is now WA-verified`);
   } else {
     await wa.sendMessage(donor.phone,
-`⚙️ Vanakkam *${donor.name}*! ${aiName()} here — your Bloodline is active and you're fully verified. 🩸
+`🤝 Vanakkam *${donor.name}*! ${aiName()} here — you're already registered and active as a *${donor.bloodType}* donor. 🩸
 
-Ask me anything, or just stay ready: when *${donor.bloodType}* blood is needed near you, I'll reach out. 🙏`);
+Stay ready: when blood is needed near you, I'll message you right here. 🙏`);
   }
   return true;
 }
@@ -1105,6 +1136,7 @@ Ask me anything, or just stay ready: when *${donor.bloodType}* blood is needed n
 async function processDonorReply(from, body, requestId) {
   // Pre-registration verification code?
   if (await tryVerify(from, body)) return { type: 'verify' };
+  if (await tryRequesterHello(from)) return { type: 'requester_hello' };
   // Greeting from a registered donor? Handle the handshake, skip response logging
   if (await tryHandshake(from, body)) return { type: 'handshake' };
 
