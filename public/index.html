@@ -755,13 +755,20 @@ footer{background:#070B14;padding:72px 52px 44px}
 .jt-info{font-size:11px;color:#64748B;margin-top:1px}
 
 /* ── REQUEST SUCCESS MODAL ───────────────────────── */
-.req-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:2000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.req-modal-overlay{display:none;position:fixed;inset:0;background:rgba(4,8,16,.78);z-index:2000;align-items:flex-start;justify-content:center;padding:28px 16px;backdrop-filter:blur(8px);overflow-y:auto}
 .req-modal-overlay.open{display:flex}
-.req-modal{background:#fff;border-radius:28px;padding:40px 36px;max-width:500px;width:100%;text-align:center;box-shadow:0 48px 120px rgba(0,0,0,.5);animation:modalPop .45s cubic-bezier(.34,1.56,.64,1)}
-@keyframes modalPop{from{transform:scale(.82) translateY(24px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-.rm-icon{font-size:62px;margin-bottom:16px;display:block;animation:heartbeat 2s ease-in-out infinite}
-.rm-title{font-size:28px;font-weight:900;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.6px;margin-bottom:10px}
-.rm-body{font-size:15px;color:#64748B;line-height:1.75;margin-bottom:20px}
+.req-modal{background:#fff;border-radius:26px;padding:0;max-width:500px;width:100%;text-align:center;box-shadow:0 48px 120px rgba(0,0,0,.55);animation:modalPop .45s cubic-bezier(.34,1.56,.64,1);margin:auto;overflow:hidden}
+@keyframes modalPop{from{transform:scale(.86) translateY(28px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+/* Gradient header band */
+.rm-hd{position:relative;background:linear-gradient(140deg,#0B1120 0%,#16213D 55%,#1E1B3A 100%);padding:30px 30px 24px;overflow:hidden}
+.rm-hd::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(220,38,38,.22) 0%,transparent 70%);pointer-events:none}
+.rm-hd::after{content:'';position:absolute;bottom:-60px;left:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.16) 0%,transparent 70%);pointer-events:none}
+.rm-x{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .18s;z-index:2}
+.rm-x:hover{background:rgba(255,255,255,.22)}
+.rm-icon{font-size:46px;margin-bottom:10px;display:block;animation:heartbeat 2s ease-in-out infinite;position:relative;z-index:1}
+.rm-title{font-size:24px;font-weight:900;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.5px;margin-bottom:8px;position:relative;z-index:1}
+.rm-body{font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.7;position:relative;z-index:1;max-width:400px;margin:0 auto}
+.rm-content{padding:20px 24px 24px}
 .rm-nearest{background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:14px;padding:13px 18px;margin-bottom:20px;font-size:14px;color:#15803D;font-weight:700;display:none;text-align:left}
 .rm-emergency{background:#FEF2F2;border-radius:18px;padding:22px 20px;margin-bottom:22px;text-align:left}
 .rm-emergency-title{font-size:11px;font-weight:800;color:#DC2626;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;font-family:'Plus Jakarta Sans',sans-serif;display:block}
@@ -979,11 +986,14 @@ footer{background:#070B14;padding:72px 52px 44px}
 
 /* ══ MOBILE POLISH — modal, sequence, wizard form ════ */
 @media(max-width:600px){
-  /* Success / mission modal */
-  .req-modal{padding:24px 16px 18px;border-radius:22px;max-width:100%}
-  .rm-icon{font-size:40px}
-  .rm-title{font-size:21px}
-  .rm-body{font-size:13px;line-height:1.6}
+  /* Success / mission modal — bottom sheet */
+  .req-modal-overlay{padding:0;align-items:flex-end}
+  .req-modal{max-width:100%;border-radius:24px 24px 0 0;max-height:94vh;overflow-y:auto;margin:0}
+  .rm-hd{padding:24px 20px 20px}
+  .rm-content{padding:16px 14px 18px}
+  .rm-icon{font-size:38px;margin-bottom:8px}
+  .rm-title{font-size:20px}
+  .rm-body{font-size:12.5px;line-height:1.6}
   .rm-seq{padding:13px 12px;border-radius:12px}
   .seq-hd{font-size:9.5px;letter-spacing:.1em}
   .seq-line{font-size:11.5px;gap:7px;padding:6px 0;flex-wrap:wrap}
@@ -2764,9 +2774,13 @@ html,body{overflow-x:hidden;max-width:100%}
 <!-- ═══════════ REQUEST SUCCESS MODAL ═══════════ -->
 <div class="req-modal-overlay" id="reqModal">
   <div class="req-modal">
-    <span class="rm-icon">🚨</span>
-    <div class="rm-title" id="rmTitle">Donors Alerted!</div>
-    <p class="rm-body" id="rmBody">Matching donors are being alerted on WhatsApp right now.</p>
+    <div class="rm-hd">
+      <button class="rm-x" onclick="closeReqModal()">✕</button>
+      <span class="rm-icon">🚨</span>
+      <div class="rm-title" id="rmTitle">Donors Alerted!</div>
+      <p class="rm-body" id="rmBody">Matching donors are being alerted on WhatsApp right now.</p>
+    </div>
+    <div class="rm-content">
     <div class="rm-nearest" id="rmNearest">🏃 Nearest donor on the way…</div>
 
     <!-- AI Mission Sequence — every line is a real system action -->
@@ -2795,6 +2809,7 @@ html,body{overflow-x:hidden;max-width:100%}
       <a class="rm-call" href="tel:+918667571800">📞 Call Blood Line: +91 86675 71800</a>
     </div>
     <button class="rm-close" onclick="closeReqModal()">✓ Close &amp; Continue</button>
+    </div>
   </div>
 </div>
 
