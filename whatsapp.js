@@ -1,39 +1,41 @@
+/**
+ * whatsapp.js — multi-session WhatsApp engine.
+ * 'master' session always runs; each zone can have its own paired number
+ * (enabled from Mission Control). Sessions persist on the Railway volume.
+ */
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode  = require('qrcode-terminal');
 const fs      = require('fs');
 const path    = require('path');
-
-let client  = null;
-let ready   = false;
-let lastQR  = null;   // stored so admin can fetch it
-let retries = 0;
-let onIncoming = null; // server.js registers a handler for donor replies
-
-function setOnMessage(fn) { onIncoming = fn; }
 
 // ── Auth data: Railway volume when PERSIST_DIR set, else next to server.js ───
 const AUTH_DIR = process.env.PERSIST_DIR
   ? path.join(process.env.PERSIST_DIR, '.wwebjs_auth')
   : path.join(__dirname, '.wwebjs_auth');
 
-// ── Remove stale SingletonLock before every init ──────────────────────────────
-function clearLock() {
-  // Check both the project dir and CWD (preview tool may use either)
-  const paths = [
-    path.join(AUTH_DIR, 'session-bloodline', 'SingletonLock'),
-    path.join(process.cwd(), '.wwebjs_auth', 'session-bloodline', 'SingletonLock'),
-  ];
-  paths.forEach(p => {
-    try { if (fs.existsSync(p)) { fs.unlinkSync(p); console.log('[WA] Cleared lock:', p); } } catch {}
-  });
+let onIncoming = null; // server.js registers a handler for donor replies
+function setOnMessage(fn) { onIncoming = fn; }
+
+// id → { client, ready, lastQR, retries, stopping }
+const sessions = new Map();
+
+const clientIdFor = id => id === 'master' ? 'bloodline' : `bloodline-${id}`;
+
+// ── Remove stale SingletonLock before init ────────────────────────────────────
+function clearLock(id) {
+  const p = path.join(AUTH_DIR, `session-${clientIdFor(id)}`, 'SingletonLock');
+  try { if (fs.existsSync(p)) { fs.unlinkSync(p); console.log('[WA] Cleared lock:', p); } } catch {}
 }
 
-function initWhatsApp() {
-  clearLock();
-  lastQR = null;
+function initSession(id) {
+  const existing = sessions.get(id);
+  if (existing && existing.client) return;           // already running
+  const st = { client: null, ready: false, lastQR: null, retries: existing?.retries || 0, stopping: false };
+  sessions.set(id, st);
+  clearLock(id);
 
-  client = new Client({
-    authStrategy: new LocalAuth({ clientId: 'bloodline', dataPath: AUTH_DIR }),
+  const client = new Client({
+    authStrategy: new LocalAuth({ clientId: clientIdFor(id), dataPath: AUTH_DIR }),
     puppeteer: {
       headless: true,
       protocolTimeout: 180000,
@@ -43,92 +45,105 @@ function initWhatsApp() {
         '--disable-dev-shm-usage',
         '--disable-gpu',
         '--disable-extensions',
-        '--single-process',
       ]
     }
   });
+  st.client = client;
 
   client.on('qr', qr => {
-    lastQR = qr;
-    retries++;
-    console.log('\n══════════════════════════════════════════════');
-    console.log('📱  SCAN THIS QR IN WHATSAPP');
-    console.log('    WhatsApp → Linked Devices → Link a Device');
-    console.log('══════════════════════════════════════════════\n');
-    qrcode.generate(qr, { small: true });
-    console.log('\n══════════════════════════════════════════════\n');
+    st.lastQR = qr;
+    st.retries++;
+    console.log(`\n[WA:${id}] 📱 SCAN QR — WhatsApp → Linked Devices → Link a Device`);
+    if (id === 'master') qrcode.generate(qr, { small: true });
   });
 
   client.on('ready', () => {
-    ready  = true;
-    lastQR = null;
-    retries = 0;
-    console.log('\n✅  WhatsApp CONNECTED — Rotary Blood Line is live and sending messages!\n');
+    st.ready  = true;
+    st.lastQR = null;
+    st.retries = 0;
+    console.log(`\n✅ [WA:${id}] CONNECTED — session live\n`);
   });
 
-  // ── Incoming donor replies (YES / NO / CALL) ────────────────────────────────
+  // Donor replies can land on ANY session — same pipeline
   client.on('message', async msg => {
     try {
-      // Only direct chats — ignore groups, broadcasts, status updates
       if (!msg.from || !msg.from.endsWith('@c.us')) return;
       const phone = msg.from.replace('@c.us', '');
-      console.log(`[WA] Reply from ${phone}: "${(msg.body || '').slice(0, 60)}"`);
+      console.log(`[WA:${id}] Reply from ${phone}: "${(msg.body || '').slice(0, 60)}"`);
       if (onIncoming) await onIncoming(phone, msg.body || '');
     } catch (e) {
-      console.error('[WA] Incoming handler error:', e.message);
+      console.error(`[WA:${id}] Incoming handler error:`, e.message);
     }
   });
 
   client.on('auth_failure', msg => {
-    ready = false;
-    console.error('[WA] Auth failed:', msg, '— clearing session and retrying…');
-    // Clear the session so next init does a fresh QR
-    try {
-      const sessionDir = path.join(AUTH_DIR, 'session-bloodline');
-      fs.rmSync(sessionDir, { recursive: true, force: true });
-    } catch {}
-    setTimeout(initWhatsApp, 5000);
+    st.ready = false;
+    console.error(`[WA:${id}] Auth failed:`, msg, '— clearing session and retrying…');
+    try { fs.rmSync(path.join(AUTH_DIR, `session-${clientIdFor(id)}`), { recursive: true, force: true }); } catch {}
+    if (!st.stopping) setTimeout(() => { sessions.delete(id); initSession(id); }, 5000);
   });
 
   client.on('disconnected', reason => {
-    ready = false;
-    console.log('[WA] Disconnected:', reason, '— reconnecting in 15s…');
-    setTimeout(() => { clearLock(); initWhatsApp(); }, 15000);
+    st.ready = false;
+    console.log(`[WA:${id}] Disconnected:`, reason, '— reconnecting in 15s…');
+    if (!st.stopping) setTimeout(() => { sessions.delete(id); initSession(id); }, 15000);
   });
 
   client.initialize().catch(err => {
-    ready = false;
-    retries++;  // Always increment so wait grows: 10s, 20s, 30s … 60s max
-    const wait = Math.min(60000, 10000 * retries);
-    console.error(`[WA] Init error (retry ${retries}, in ${wait/1000}s):`, err.message);
-    setTimeout(() => { clearLock(); initWhatsApp(); }, wait);
+    st.ready = false;
+    st.retries++;
+    const wait = Math.min(60000, 10000 * st.retries);
+    console.error(`[WA:${id}] Init error (retry ${st.retries}, in ${wait / 1000}s):`, err.message);
+    if (!st.stopping) setTimeout(() => { sessions.delete(id); initSession(id); }, wait);
   });
+}
+
+async function destroySession(id) {
+  const st = sessions.get(id);
+  if (!st) return;
+  st.stopping = true;
+  try { await st.client?.destroy(); } catch {}
+  sessions.delete(id);
+  console.log(`[WA:${id}] Session stopped`);
+}
+
+// Wipe a zone's pairing entirely (forces fresh QR next enable)
+function clearSessionData(id) {
+  try { fs.rmSync(path.join(AUTH_DIR, `session-${clientIdFor(id)}`), { recursive: true, force: true }); } catch {}
+}
+
+function initWhatsApp() { initSession('master'); }
+
+function isReady(id = 'master')   { return !!sessions.get(id)?.ready; }
+function getLastQR(id = 'master') { return sessions.get(id)?.lastQR || null; }
+function sessionState(id) {
+  const st = sessions.get(id);
+  return { running: !!st, connected: !!st?.ready, hasQR: !!st?.lastQR };
 }
 
 // ── Normalize phone → WhatsApp ID ─────────────────────────────────────────────
 function formatPhone(raw) {
   const digits = String(raw).replace(/\D/g, '');
-  // Already has country code 91 (12 digits)
   if (digits.startsWith('91') && digits.length === 12) return digits + '@c.us';
-  // 10-digit Indian number
   if (digits.length === 10) return '91' + digits + '@c.us';
-  // Fallback
   return digits + '@c.us';
 }
 
-async function sendMessage(phone, message) {
-  if (!ready || !client) return false;
+// Send via a specific session; falls back to master if that zone isn't ready
+async function sendMessage(phone, message, via = 'master') {
+  let st = sessions.get(via);
+  if (!st?.ready) st = sessions.get('master');
+  if (!st?.ready) return false;
   try {
-    const chatId = formatPhone(phone);
-    await client.sendMessage(chatId, message);
+    await st.client.sendMessage(formatPhone(phone), message);
     return true;
   } catch (e) {
-    console.error('[WA] Send error:', e.message);
+    console.error(`[WA:${via}] Send error:`, e.message);
     return false;
   }
 }
 
-async function alertDonors(donors, request) {
+async function alertDonors(donors, request, via = 'master') {
   const urgencyLabel = request.urgency === 'critical' ? '🚨 CRITICAL EMERGENCY' : '🩸 Blood Needed';
   let sent = 0;
   for (const donor of donors) {
@@ -154,14 +169,14 @@ To decline — reply *NO*
 Thank you for being a community hero 🦸
 — Rotary Club of Legacy, Puducherry`;
 
-    const ok = await sendMessage(donor.phone, msg);
+    const ok = await sendMessage(donor.phone, msg, via);
     if (ok) sent++;
     await new Promise(r => setTimeout(r, 800));
   }
   return sent;
 }
 
-async function sendWelcome(name, phone, bloodType, area) {
+async function sendWelcome(name, phone, bloodType, area, via = 'master') {
   const msg =
 `🩸 Welcome to Rotary Blood Line!
 
@@ -175,10 +190,10 @@ You are now part of Puducherry's first automated blood network.
 *You are a hero.* 🦸
 
 — Rotary Club of Legacy, Puducherry (District 2981)`;
-  return sendMessage(phone, msg);
+  return sendMessage(phone, msg, via);
 }
 
-async function confirmToRequester(requesterPhone, donor, bloodType) {
+async function confirmToRequester(requesterPhone, donor, bloodType, via = 'master') {
   const msg =
 `✅ Rotary Blood Line — Donor Found!
 
@@ -191,10 +206,10 @@ Please call the donor and coordinate with your hospital blood bank.
 
 We hope for a speedy recovery 🙏
 — Rotary Club of Legacy, Puducherry`;
-  return sendMessage(requesterPhone, msg);
+  return sendMessage(requesterPhone, msg, via);
 }
 
-async function sendReminderToDonor(donor, waitingCount) {
+async function sendReminderToDonor(donor, waitingCount, via = 'master') {
   const msg =
 `🩸 Rotary Blood Line — You Can Donate Again!
 
@@ -206,13 +221,11 @@ Visit any blood bank or reply *READY* to be matched today.
 
 You are a hero 🦸
 — Rotary Club of Legacy, Puducherry`;
-  return sendMessage(donor.phone, msg);
+  return sendMessage(donor.phone, msg, via);
 }
 
-function isReady()  { return ready; }
-function getLastQR() { return lastQR; }
-
 module.exports = {
-  initWhatsApp, sendMessage, alertDonors, sendWelcome,
-  confirmToRequester, sendReminderToDonor, isReady, getLastQR, setOnMessage
+  initWhatsApp, initSession, destroySession, clearSessionData, sessionState,
+  sendMessage, alertDonors, sendWelcome, confirmToRequester, sendReminderToDonor,
+  isReady, getLastQR, setOnMessage
 };

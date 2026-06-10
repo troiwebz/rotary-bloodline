@@ -165,8 +165,22 @@ Please track this case and step in if no donor confirms. 🙏
   return targets.length;
 }
 
+function saveZones(z) { fs.writeFileSync(ZONES_FILE, JSON.stringify(z, null, 2)); }
+
 // ── Init WhatsApp (non-fatal — server still runs without it) ──────────────────
-try { wa.initWhatsApp(); } catch(e) { console.warn('[WA] Init skipped:', e.message); }
+try {
+  wa.initWhatsApp();
+  // Bring up each zone's own WhatsApp session if enabled from Mission Control
+  loadZones().filter(z => z.waEnabled).forEach(z => {
+    try { wa.initSession(z.id); } catch (e) { console.warn(`[WA:${z.id}] init failed:`, e.message); }
+  });
+} catch(e) { console.warn('[WA] Init skipped:', e.message); }
+
+// Route sends through the hospital's zone session when that zone has its own number
+function viaForHospital(hospital) {
+  const z = getZoneForArea(hospital);
+  return (z && z.waEnabled) ? z.id : 'master';
+}
 
 // ── SSE endpoint — real-time updates ─────────────────────────────────────────
 app.get('/api/live', (req, res) => {
@@ -702,8 +716,10 @@ app.post('/api/requests', async (req, res) => {
   // Bloodline Team — coordinators alerted per their scope (all / radius)
   alertTeam(request, capped.length).catch(() => {});
 
-  // Fire WhatsApp alerts in background (non-blocking)
-  wa.alertDonors(capped, request).then(sent => {
+  // Fire WhatsApp alerts in background (non-blocking) — via the zone's own
+  // WhatsApp when it has one, falling back to master automatically
+  const _via = viaForHospital(hospital);
+  wa.alertDonors(capped, request, _via).then(sent => {
     console.log(`[WA] Sent ${sent}/${capped.length} alerts for request #${request.id}`);
     const stats = db.getStats();
     broadcastSSE('blood_requested', {
@@ -950,6 +966,70 @@ app.delete('/api/admin/team/:id', requireMaster, (req, res) => {
   saveTeam(loadTeam().filter(x => x.id !== Number(req.params.id)));
   audit('team_delete', req.auth.actor, { memberId: Number(req.params.id) });
   res.json({ ok: true });
+});
+
+// ── Admin: per-zone WhatsApp sessions ─────────────────────────────────────────
+app.get('/api/admin/zone-wa', requireMaster, (req, res) => {
+  const zones = loadZones().map(z => ({
+    id: z.id, name: z.name, emoji: z.emoji,
+    enabled: !!z.waEnabled,
+    ...wa.sessionState(z.id),
+  }));
+  res.json({ master: wa.sessionState('master'), zones });
+});
+
+app.post('/api/admin/zone-wa/:zoneId/enable', requireMaster, async (req, res) => {
+  const zones = loadZones();
+  const z = zones.find(x => x.id === req.params.zoneId);
+  if (!z) return res.status(404).json({ ok: false });
+  const enable = !!req.body?.enabled;
+  z.waEnabled = enable;
+  saveZones(zones);
+  if (enable) wa.initSession(z.id);
+  else { await wa.destroySession(z.id); }
+  audit('zone_wa_' + (enable ? 'enable' : 'disable'), req.auth.actor, { zoneId: z.id });
+  res.json({ ok: true, enabled: enable, ...wa.sessionState(z.id) });
+});
+
+app.post('/api/admin/zone-wa/:zoneId/reset', requireMaster, async (req, res) => {
+  await wa.destroySession(req.params.zoneId);
+  wa.clearSessionData(req.params.zoneId);
+  const z = loadZones().find(x => x.id === req.params.zoneId);
+  if (z?.waEnabled) wa.initSession(req.params.zoneId);
+  audit('zone_wa_reset', req.auth.actor, { zoneId: req.params.zoneId });
+  res.json({ ok: true });
+});
+
+// QR for a zone — master, or the zone's own manager
+app.get('/api/admin/zone-wa/:zoneId/qr', requireAuth, (req, res) => {
+  const zid = req.params.zoneId;
+  if (req.auth.role === 'zone' && req.auth.zoneId !== zid)
+    return res.status(403).json({ ok: false, msg: 'Not your zone' });
+  res.json({ ok: true, ...wa.sessionState(zid), qr: wa.getLastQR(zid) });
+});
+
+// Master sends the scan instructions to the zone manager on WhatsApp
+app.post('/api/admin/zone-wa/:zoneId/send-link', requireMaster, async (req, res) => {
+  const zid = req.params.zoneId;
+  const zones = loadZones();
+  const z = zones.find(x => x.id === zid);
+  const mgr = loadManagers().find(m => m.zoneId === zid);
+  if (!z || !mgr?.phone) return res.status(404).json({ ok: false, msg: 'Zone manager phone not set' });
+  const ok = await wa.sendMessage(mgr.phone,
+`📱 *${z.name} — Connect your Zone WhatsApp*
+
+Hi *${mgr.name}*, Mission Control has enabled a dedicated WhatsApp line for your zone.
+
+To activate it:
+1. Open https://rotary-bloodline.vercel.app/admin.html
+2. Log in with your zone credentials (${mgr.username})
+3. Open the *📱 Zone WhatsApp* tab
+4. Scan the QR with the ZONE phone → WhatsApp → Linked Devices → Link a Device
+
+Once scanned, all alerts for ${z.name} go out from your zone's own number. 🙏
+— Rotary Blood Line Mission Control`);
+  audit('zone_wa_link_sent', req.auth.actor, { zoneId: zid, to: mgr.username });
+  res.json({ ok, msg: ok ? 'Scan instructions sent to ' + mgr.name : 'Master WhatsApp not connected' });
 });
 
 // ── Admin: zone managers — master only ───────────────────────────────────────

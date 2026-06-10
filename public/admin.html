@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mission Control — Rotary Blood Line</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <style>
 :root{--bg:#0A0F1E;--panel:#111A30;--panel2:#0D1526;--line:rgba(255,255,255,.08);--tx:#E2E8F0;--tx2:rgba(255,255,255,.5);--tx3:rgba(255,255,255,.32);--red:#DC2626;--red2:#F87171;--gold:#D97706;--purple:#7C3AED;--green:#16A34A;--blue:#3B82F6}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -145,6 +146,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <button class="nav-item on" data-pg="overview" onclick="go('overview')">📊 Overview</button>
     <button class="nav-item" data-pg="requests" onclick="go('requests')">🆘 Live Requests</button>
     <button class="nav-item" data-pg="donors" onclick="go('donors')">🦸 Donors</button>
+    <button class="nav-item zone-only" data-pg="zonewa" onclick="go('zonewa');zwPoll()" style="display:none">📱 Zone WhatsApp</button>
     <button class="nav-item master-only" data-pg="zones" onclick="go('zones')">📍 Zones &amp; Managers</button>
     <button class="nav-item master-only" data-pg="partners" onclick="go('partners')">🤝 Partners</button>
     <button class="nav-item master-only" data-pg="connectors" onclick="go('connectors')">🌐 Network Heroes</button>
@@ -197,6 +199,23 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </table><div class="empty" id="donorEmpty" style="display:none">No donors registered yet. Share the website to grow the network!</div></div>
     </div>
 
+    <!-- ZONE WHATSAPP (zone manager) -->
+    <div class="page" id="pg-zonewa">
+      <div class="page-h"><div><h2>Zone WhatsApp</h2><p>Pair your zone's own WhatsApp number — alerts for your zone send from it</p></div></div>
+      <div class="panel" style="max-width:480px;text-align:center">
+        <div id="zwStatus" class="pill warn" style="margin-bottom:18px">Checking…</div>
+        <div id="zwQrWrap" style="display:none;background:#fff;border-radius:16px;padding:16px;display:none;margin:0 auto 16px;width:fit-content">
+          <canvas id="zwQr"></canvas>
+        </div>
+        <div style="text-align:left;color:var(--tx2);font-size:13px;line-height:2;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 18px">
+          <b>On the ZONE phone:</b><br>
+          1. Open <b>WhatsApp</b><br>
+          2. Tap <b>⋮ → Linked Devices → Link a Device</b><br>
+          3. Scan the code above
+        </div>
+      </div>
+    </div>
+
     <!-- ZONES -->
     <div class="page" id="pg-zones">
       <div class="page-h"><div><h2>Zones &amp; Managers</h2><p>Give sub-Rotary members scoped control of their zones</p></div><button class="btn-add" onclick="openMgrModal()">+ Add Zone Manager</button></div>
@@ -204,6 +223,10 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <thead><tr><th>Name</th><th>Username</th><th>Zone</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="mgrRows"></tbody>
       </table></div>
+      <div class="panel" style="overflow-x:auto"><h3>📱 Zone WhatsApp Lines</h3>
+        <p style="color:var(--tx3);font-size:12px;margin:-6px 0 14px">Give a zone its own WhatsApp number — its alerts then send from that number (master is the fallback). Enable, then send scan instructions to the manager.</p>
+        <table><thead><tr><th>Zone</th><th>Status</th><th>Actions</th></tr></thead><tbody id="zwRows"></tbody></table>
+      </div>
       <div class="panel" style="overflow-x:auto"><h3>Zones</h3><table>
         <thead><tr><th>Zone</th><th>Donors</th><th>Alert Number</th></tr></thead>
         <tbody id="zoneRows"></tbody>
@@ -389,9 +412,10 @@ function enter(who){
   document.getElementById('whoName').textContent = ROLE==='master' ? 'Master Admin' : (who.name||who.username);
   document.getElementById('whoRole').textContent = ROLE==='master' ? 'Full system control' : ('Zone: '+(ZONE?.name||''));
   document.querySelectorAll('.master-only').forEach(el=>el.style.display = ROLE==='master'?'flex':'none');
+  document.querySelectorAll('.zone-only').forEach(el=>el.style.display = ROLE==='zone'?'flex':'none');
   if(ROLE==='zone'){document.getElementById('ovSub').textContent='Zone view — '+(ZONE?.name||'');document.getElementById('donorScope').textContent='Donors in '+(ZONE?.name||'your zone')+' · phones masked, reveals are audited';}
   loadOverview(); loadRequests(); loadDonors();
-  if(ROLE==='master'){loadZonesMgrs();loadPartners();loadConnectors();loadTeam();loadSettings();loadAudit();}
+  if(ROLE==='master'){loadZonesMgrs();loadPartners();loadConnectors();loadTeam();loadSettings();loadAudit();loadZoneWa();setInterval(loadZoneWa,20000);}
   setInterval(loadRequests, 30000); setInterval(loadOverview, 60000);
 }
 async function boot(){
@@ -485,6 +509,61 @@ async function reveal(id){
 }
 async function modDonor(id,patch){const r=await J(`/api/admin/donor/${id}/update`,{method:'POST',body:JSON.stringify(patch)});if(r.d.ok){toast('Donor updated');loadDonors();}else toast(r.d.msg||'Failed',true);}
 async function delDonor(id){if(!confirm('Permanently delete this donor?'))return;await J(`/api/admin/donor/${id}`,{method:'DELETE'});toast('Donor deleted');loadDonors();}
+
+/* ── Per-zone WhatsApp lines ── */
+async function loadZoneWa(){
+  const r=await J('/api/admin/zone-wa'); if(r.code!==200)return;
+  const rows=(r.d.zones||[]);
+  document.getElementById('zwRows').innerHTML=rows.map(z=>{
+    const st = z.connected ? '<span class="pill ok">🟢 Connected — own number live</span>'
+      : z.enabled && z.hasQR ? '<span class="pill warn">📱 Awaiting scan</span>'
+      : z.enabled ? '<span class="pill warn">⏳ Starting…</span>'
+      : '<span class="pill off">Master line (shared)</span>';
+    return `<tr><td><b>${z.emoji||'📍'} ${esc(z.name)}</b></td><td>${st}</td>
+      <td style="white-space:nowrap">
+        <button class="act ${z.enabled?'can':'ful'}" onclick="zwEnable('${z.id}',${!z.enabled})">${z.enabled?'Disable':'Enable own number'}</button>
+        ${z.enabled?`<button class="act rev" onclick="zwSendLink('${z.id}')">📨 Send scan link</button>`:''}
+        ${z.enabled?`<button class="act del" onclick="zwReset('${z.id}')">↺ Re-pair</button>`:''}
+      </td></tr>`;
+  }).join('');
+}
+async function zwEnable(id,on){
+  const r=await J('/api/admin/zone-wa/'+id+'/enable',{method:'POST',body:JSON.stringify({enabled:on})});
+  toast(r.d.ok?(on?'Zone WhatsApp starting — QR ready in ~30s':'Zone line disabled — back to master'):'Failed',!r.d.ok);
+  setTimeout(loadZoneWa, 1200);
+}
+async function zwSendLink(id){
+  const r=await J('/api/admin/zone-wa/'+id+'/send-link',{method:'POST'});
+  toast(r.d.msg||'Sent', !r.d.ok);
+}
+async function zwReset(id){
+  if(!confirm('Wipe this zone\'s pairing and start a fresh QR?'))return;
+  await J('/api/admin/zone-wa/'+id+'/reset',{method:'POST'});
+  toast('Pairing reset — fresh QR in ~30s');
+  setTimeout(loadZoneWa, 1500);
+}
+
+/* Zone manager: live QR poller */
+let _zwTimer=null;
+async function zwPoll(){
+  if(ROLE!=='zone'||!ZONE)return;
+  async function tick(){
+    const r=await J('/api/admin/zone-wa/'+ZONE.id+'/qr'); if(r.code!==200)return;
+    const stEl=document.getElementById('zwStatus'), wrap=document.getElementById('zwQrWrap');
+    if(r.d.connected){stEl.className='pill ok';stEl.textContent='✅ CONNECTED — your zone sends from its own number';wrap.style.display='none';return;}
+    if(r.d.qr){
+      stEl.className='pill warn';stEl.textContent='📱 Scan now — refreshes automatically';
+      wrap.style.display='block';
+      QRCode.toCanvas(document.getElementById('zwQr'), r.d.qr, {width:280,margin:1});
+    } else if(r.d.running){
+      stEl.className='pill warn';stEl.textContent='⏳ Generating QR… wait ~30s';wrap.style.display='none';
+    } else {
+      stEl.className='pill off';stEl.textContent='Not enabled yet — ask Mission Control to enable your zone line';wrap.style.display='none';
+    }
+  }
+  if(_zwTimer)clearInterval(_zwTimer);
+  tick(); _zwTimer=setInterval(tick, 9000);
+}
 
 /* ── Zones & Managers ── */
 async function loadZonesMgrs(){

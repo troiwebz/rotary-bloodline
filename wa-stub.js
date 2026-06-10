@@ -12,4 +12,8 @@ module.exports = {
   confirmToRequester: () => Promise.resolve(),
   sendReminderToDonor:() => Promise.resolve(),
   setOnMessage:       () => {},
+  initSession:        () => {},
+  destroySession:     () => Promise.resolve(),
+  clearSessionData:   () => {},
+  sessionState:       () => ({ running: false, connected: false, hasQR: false }),
 };
