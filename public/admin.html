@@ -609,7 +609,7 @@ async function loadZonesMgrs(){
   }).join('');
   const zr=await J('/api/zones');
   document.getElementById('zoneRows').innerHTML=(zr.d||[]).map(z=>
-    `<tr><td><b>${z.emoji||'📍'} ${esc(z.name)}</b></td><td>${z.donorCount??0}</td><td>${esc(z.waNumber||'—')}</td></tr>`).join('');
+    `<tr><td><b>${z.emoji||'📍'} ${esc(z.name)}</b></td><td>${z.donorCount??0}</td><td>${esc(z.waNumber||'—')} <button class="act rev" onclick="editZoneNum('${z.id}','${esc(z.waNumber||'')}')">✏️</button></td></tr>`).join('');
   const sel=document.getElementById('mZone');
   sel.innerHTML=zones.map(z=>`<option value="${esc(z.id)}">${esc(z.name)}</option>`).join('');
 }
