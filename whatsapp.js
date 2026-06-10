@@ -9,9 +9,46 @@ const fs      = require('fs');
 const path    = require('path');
 
 // ── Auth data: Railway volume when PERSIST_DIR set, else next to server.js ───
-const AUTH_DIR = process.env.PERSIST_DIR
-  ? path.join(process.env.PERSIST_DIR, '.wwebjs_auth')
-  : path.join(__dirname, '.wwebjs_auth');
+// Chromium cannot reliably reuse a profile that lives on the Railway volume
+// (network FS leftovers → launch exit Code 21). So: RUN from container-local
+// disk, BACK UP to the volume. On boot we restore volume → local; after
+// connect we sync local → volume so pairings survive redeploys.
+const VOLUME_AUTH = process.env.PERSIST_DIR ? path.join(process.env.PERSIST_DIR, '.wwebjs_auth') : null;
+const AUTH_DIR = VOLUME_AUTH ? '/tmp/.wwebjs_auth' : path.join(__dirname, '.wwebjs_auth');
+
+const SKIP_RE = /^(Singleton|Crashpad|.*\.lock$)/;
+function copyProfile(src, dst) {
+  if (!src || !fs.existsSync(src)) return false;
+  fs.mkdirSync(dst, { recursive: true });
+  for (const ent of fs.readdirSync(src, { withFileTypes: true })) {
+    if (SKIP_RE.test(ent.name)) continue;
+    const s2 = path.join(src, ent.name), d2 = path.join(dst, ent.name);
+    try {
+      if (ent.isDirectory()) copyProfile(s2, d2);
+      else if (ent.isFile()) fs.copyFileSync(s2, d2);
+      // symlinks (Chromium socket leftovers) are skipped entirely
+    } catch {}
+  }
+  return true;
+}
+if (VOLUME_AUTH) {
+  try {
+    fs.rmSync(AUTH_DIR, { recursive: true, force: true });
+    const ok = copyProfile(VOLUME_AUTH, AUTH_DIR);
+    console.log(ok ? '[WA] Restored auth from volume → local disk' : '[WA] No volume auth yet — fresh start');
+  } catch (e) { console.warn('[WA] Volume restore failed:', e.message); }
+}
+let _syncBusy = false;
+function syncAuthToVolume(reason) {
+  if (!VOLUME_AUTH || _syncBusy) return;
+  _syncBusy = true;
+  try {
+    copyProfile(AUTH_DIR, VOLUME_AUTH);
+    console.log('[WA] Auth synced to volume (' + reason + ')');
+  } catch (e) { console.warn('[WA] Auth sync failed:', e.message); }
+  _syncBusy = false;
+}
+if (VOLUME_AUTH) setInterval(() => syncAuthToVolume('periodic'), 5 * 60000).unref();
 
 let onIncoming = null; // server.js registers a handler for donor replies
 function setOnMessage(fn) { onIncoming = fn; }
@@ -78,6 +115,7 @@ function initSession(id) {
     st.retries = 0;
     _retryMemory.delete(id);
     st.number = client.info?.wid?.user || null;
+    setTimeout(() => syncAuthToVolume('session ready'), 15000);
     console.log(`\n✅ [WA:${id}] CONNECTED — session live as +${st.number || '?'}\n`);
   });
 
