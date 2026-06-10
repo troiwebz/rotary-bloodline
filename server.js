@@ -85,6 +85,37 @@ app.get('/api/wa-qr', (req, res) => {
   res.json({ ok: true, connected: false, qr });
 });
 
+// ── WhatsApp admin page — renders the QR as a scannable image ────────────────
+app.get('/wa-admin', (req, res) => {
+  res.type('html').send(`<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WhatsApp Connect — Rotary Blood Line</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+body{font-family:-apple-system,Segoe UI,sans-serif;background:#0B1120;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;text-align:center;padding:20px}
+h1{font-size:22px;margin-bottom:6px}p{color:#94a3b8;font-size:14px;max-width:420px;line-height:1.6}
+#qr{background:#fff;padding:16px;border-radius:16px;margin:24px 0;display:none}
+#status{font-size:15px;font-weight:700;padding:10px 24px;border-radius:24px;margin-top:8px}
+.wait{background:rgba(245,158,11,.15);color:#FBBF24}.ok{background:rgba(16,163,74,.2);color:#34D399}
+</style></head><body>
+<h1>🩸 Rotary Blood Line — WhatsApp</h1>
+<p>Open WhatsApp on the coordinator phone → <b>Linked Devices</b> → <b>Link a Device</b> → scan this code.</p>
+<canvas id="qr"></canvas>
+<div id="status" class="wait">Checking…</div>
+<script>
+async function poll(){
+  try{
+    const d = await fetch('/api/wa-qr').then(r=>r.json());
+    const c = document.getElementById('qr'), s = document.getElementById('status');
+    if(d.connected){ c.style.display='none'; s.className='ok'; s.textContent='✅ WhatsApp CONNECTED — messages are flowing'; return; }
+    if(d.qr){ c.style.display='block'; QRCode.toCanvas(c, d.qr, {width:300,margin:1}); s.className='wait'; s.textContent='📱 Scan now — QR refreshes every ~30s'; }
+    else { c.style.display='none'; s.className='wait'; s.textContent='⏳ WhatsApp initialising… wait 30s'; }
+  }catch(e){ document.getElementById('status').textContent='⚠️ Server unreachable'; }
+}
+poll(); setInterval(poll, 10000);
+</script></body></html>`);
+});
+
 // ── Stats ─────────────────────────────────────────────────────────────────────
 app.get('/api/stats', (req, res) => {
   const s = db.getStats();
@@ -437,13 +468,17 @@ app.post('/api/requests', async (req, res) => {
   const nearest = capped[0];
 
   // Respond to client RIGHT AWAY — don't wait for all WhatsApp sends
+  const waLive = wa.isReady();
   res.json({
-    ok:      true,
-    matched: capped.length,
-    alerted: capped.length,
+    ok:       true,
+    matched:  capped.length,
+    alerted:  capped.length,
     radius,
-    nearest: nearest ? `${nearest.name} — ${nearest.area} (${nearest.distanceKm} km)` : null,
-    msg:     `✅ Alerting ${capped.length} ${bloodType} donors near ${hospital}. WhatsApp messages are being sent now. Nearest donor: ${nearest?.name} (${nearest?.distanceKm} km away).`
+    whatsapp: waLive,
+    nearest:  nearest ? `${nearest.name} — ${nearest.area} (${nearest.distanceKm} km)` : null,
+    msg: waLive
+      ? `✅ Alerting ${capped.length} ${bloodType} donors near ${hospital}. WhatsApp messages are being sent now. Nearest donor: ${nearest?.name} (${nearest?.distanceKm} km away).`
+      : `✅ ${capped.length} ${bloodType} donors matched near ${hospital}. WhatsApp is reconnecting — the Rotary coordinator has been notified and donors will be alerted shortly. Nearest donor: ${nearest?.name} (${nearest?.distanceKm} km away).`
   });
 
   // Fire WhatsApp alerts in background (non-blocking)
@@ -460,7 +495,7 @@ app.post('/api/requests', async (req, res) => {
 
   // Zone-aware notification: also alert the zone manager for this hospital's zone
   try {
-    const zone = getZoneForArea(hospital) || getZoneForArea(area);
+    const zone = getZoneForArea(hospital) || getZoneForArea(req.body.area);
     if (zone && zone.waNumber) {
       const zoneMsg = `🚨 *ZONE ALERT — ${zone.name}*\n\nBlood request received!\n*Patient:* ${name}\n*Blood Type:* ${bloodType}\n*Hospital:* ${hospital}\n*Urgency:* ${urgency.toUpperCase()}\n*Donors alerted:* ${capped.length}\n\nPlease coordinate with zone donors if needed.`;
       wa.sendMessage(zone.waNumber, zoneMsg).catch(()=>{});
@@ -484,25 +519,37 @@ app.post('/api/requests/:id/fulfill', async (req, res) => {
   res.json({ ok: true, msg: 'Request fulfilled. Donor and patient notified.' });
 });
 
-// ── WhatsApp webhook — donor replies ──────────────────────────────────────────
-// When a donor replies YES/1/COMING/CALL to a WhatsApp alert, we track it
-app.post('/api/wa-reply', async (req, res) => {
-  const { from, body, requestId } = req.body;
-  if (!from) return res.status(400).json({ ok: false });
-
+// ── Donor reply processing (shared by WhatsApp listener + webhook) ────────────
+// Classifies YES/NO, finds which request the donor is answering, records it,
+// pushes SSE to the site, and sends a follow-up WhatsApp confirmation.
+async function processDonorReply(from, body, requestId) {
   const msg  = (body || '').toLowerCase().trim();
   let type   = 'responded';
   if (['no','2','busy','cant','cannot','not available','decline'].some(w => msg.includes(w))) type = 'declined';
   else if (['yes','1','coming','on way','ok','call','going','ready'].some(w => msg.includes(w))) type = 'responding';
 
-  const result = db.recordDonorResponse(from, requestId || 0, type);
+  // Auto-resolve the request when the listener doesn't know it:
+  // newest open request (last 48h) whose alerted-donor list includes this phone.
+  let reqId = Number(requestId) || 0;
+  if (!reqId) {
+    const clean  = String(from).replace(/\D/g, '');
+    const donor  = db.getAllDonors().find(d =>
+      d.phone === clean || '91' + d.phone === clean || d.phone === '91' + clean);
+    const cutoff = Date.now() - 48 * 3600000;
+    const open   = db.getRequests(200).filter(r =>
+      ['alerted', 'donor_responding'].includes(r.status) && (r.createdAt || 0) > cutoff);
+    let match = donor && open.find(r => (r.matchedDonors || []).includes(donor.id));
+    if (!match && donor) match = open.find(r => r.bloodType === donor.bloodType);
+    if (match) reqId = match.id;
+  }
+
+  const result = db.recordDonorResponse(from, reqId, type);
   broadcastSSE('donor_replied', result.entry);
 
-  // If responding, send them a confirmation
-  if (type === 'responding' && wa.isReady()) {
-    const reqs = db.getRequests(200);
-    const req2 = reqs.find(r => r.id === Number(requestId));
-    if (req2) {
+  // Follow-up message to the donor
+  if (wa.isReady()) {
+    const req2 = db.getRequests(200).find(r => r.id === reqId);
+    if (type === 'responding' && req2) {
       await wa.sendMessage(from,
 `✅ Thank you for responding!
 
@@ -512,9 +559,27 @@ Please head to *${req2.hospital}* immediately and tell the blood bank:
 
 You are saving a life 🙏
 — Rotary Blood Line`);
+    } else if (type === 'declined') {
+      await wa.sendMessage(from,
+`🙏 No problem — thank you for letting us know.
+
+We'll reach out next time someone near you needs your blood type.
+— Rotary Blood Line`);
     }
   }
-  res.json({ ok: true });
+  return { type, requestId: reqId };
+}
+
+// Live WhatsApp replies → same pipeline
+if (wa.setOnMessage) wa.setOnMessage((phone, body) =>
+  processDonorReply(phone, body, 0).catch(e => console.error('[WA] Reply error:', e.message)));
+
+// ── WhatsApp webhook — donor replies (manual/external trigger) ────────────────
+app.post('/api/wa-reply', async (req, res) => {
+  const { from, body, requestId } = req.body;
+  if (!from) return res.status(400).json({ ok: false });
+  const out = await processDonorReply(from, body, requestId);
+  res.json({ ok: true, ...out });
 });
 
 // ── Manual blast ──────────────────────────────────────────────────────────────

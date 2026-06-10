@@ -11,4 +11,5 @@ module.exports = {
   sendWelcome:        () => Promise.resolve(),
   confirmToRequester: () => Promise.resolve(),
   sendReminderToDonor:() => Promise.resolve(),
+  setOnMessage:       () => {},
 };

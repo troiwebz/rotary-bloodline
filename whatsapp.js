@@ -7,6 +7,9 @@ let client  = null;
 let ready   = false;
 let lastQR  = null;   // stored so admin can fetch it
 let retries = 0;
+let onIncoming = null; // server.js registers a handler for donor replies
+
+function setOnMessage(fn) { onIncoming = fn; }
 
 // ── Auth data always stored next to server.js, not CWD ───────────────────────
 const AUTH_DIR = path.join(__dirname, '.wwebjs_auth');
@@ -59,6 +62,19 @@ function initWhatsApp() {
     lastQR = null;
     retries = 0;
     console.log('\n✅  WhatsApp CONNECTED — Rotary Blood Line is live and sending messages!\n');
+  });
+
+  // ── Incoming donor replies (YES / NO / CALL) ────────────────────────────────
+  client.on('message', async msg => {
+    try {
+      // Only direct chats — ignore groups, broadcasts, status updates
+      if (!msg.from || !msg.from.endsWith('@c.us')) return;
+      const phone = msg.from.replace('@c.us', '');
+      console.log(`[WA] Reply from ${phone}: "${(msg.body || '').slice(0, 60)}"`);
+      if (onIncoming) await onIncoming(phone, msg.body || '');
+    } catch (e) {
+      console.error('[WA] Incoming handler error:', e.message);
+    }
   });
 
   client.on('auth_failure', msg => {
@@ -196,5 +212,5 @@ function getLastQR() { return lastQR; }
 
 module.exports = {
   initWhatsApp, sendMessage, alertDonors, sendWelcome,
-  confirmToRequester, sendReminderToDonor, isReady, getLastQR
+  confirmToRequester, sendReminderToDonor, isReady, getLastQR, setOnMessage
 };
