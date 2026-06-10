@@ -4053,6 +4053,23 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeWizard(
   }
 
   // ── Reveal the location card with radar data ──────────────────────────────
+  // User is far outside the Puducherry/Tamil Nadu service area
+  function revealOutOfArea(distKm){
+    var btn=document.querySelector('.loc-cta-btn');
+    document.getElementById('locRevArea').textContent = 'Outside Service Area';
+    document.getElementById('locRevZone').textContent = 'Nearest coverage: ~' + Math.round(distKm) + ' km away';
+    document.getElementById('locPillText').textContent = '🌏 You are outside our service area';
+    document.getElementById('locPillWrap').style.display = 'block';
+    document.getElementById('locRevCount').textContent = '—';
+    document.getElementById('locDonorsMsg').textContent =
+      'Rotary Blood Line currently serves Puducherry & Tamil Nadu. The live donor network activates when you are in the service region.';
+    var btRow = document.getElementById('locRevBtRow'); if(btRow) btRow.innerHTML='';
+    document.getElementById('locLocked').style.display = 'none';
+    document.getElementById('locRevealed').style.display = 'flex';
+    document.getElementById('locRevealed').style.flexDirection = 'column';
+    if(btn){ btn.style.display='none'; }
+  }
+
   function revealLocCard(lat, lng, areaName){
     var btn=document.querySelector('.loc-cta-btn');
     var area = areaName || 'Puducherry';
@@ -4140,6 +4157,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeWizard(
         fetch(API_BASE+'/api/detect-area?lat='+lat+'&lon='+lng)
           .then(function(r){ return r.ok ? r.json() : {area:'Puducherry'}; })
           .then(function(d){
+            // If the nearest service area is >100 km away, the user is outside coverage
+            if(d.distanceKm != null && d.distanceKm > 100){ revealOutOfArea(d.distanceKm); return; }
             revealLocCard(lat, lng, d.area || d.nearest || 'Puducherry');
           })
           .catch(function(){
