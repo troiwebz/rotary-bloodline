@@ -857,7 +857,12 @@ app.post('/api/requests', async (req, res) => {
     !(isNight && d.nightOk === false) &&
     d.distanceKm <= (Number(d.maxTravelKm) || 999));
   const inRange     = willing.filter(d => d.distanceKm <= radius);
-  const toAlert     = inRange.length > 0 ? inRange : willing;
+  // Progressive relaxation — an emergency must NEVER be silent if any
+  // eligible donor exists: in-radius → any distance → ignore night/travel
+  // preferences as the last resort (a 2am ping beats an unanswered request).
+  let toAlert = inRange;
+  if (toAlert.length === 0) toAlert = willing;
+  if (toAlert.length === 0) toAlert = sorted;
   const settings    = db.getSettings();
   const capped      = toAlert.slice(0, settings.maxDonorsPerAlert || 20);
 
