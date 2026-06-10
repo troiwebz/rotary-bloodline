@@ -565,10 +565,15 @@ app.post('/api/requests', async (req, res) => {
 
   // Respond to client RIGHT AWAY — don't wait for all WhatsApp sends
   const waLive = wa.isReady();
+  const partnersCt = loadPartners().filter(p => p.active !== false).length;
   res.json({
     ok:       true,
     matched:  capped.length,
     alerted:  capped.length,
+    within50: inRange.length,
+    dbTotal:  donors.length,
+    partners: partnersCt,
+    zoneNotified: !!getZoneForArea(hospital),
     radius,
     whatsapp: waLive,
     nearest:  nearest ? `${nearest.name} — ${nearest.area} (${nearest.distanceKm} km)` : null,

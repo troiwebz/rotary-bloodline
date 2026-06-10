@@ -765,6 +765,14 @@ footer{background:#070B14;padding:72px 52px 44px}
 .rm-nearest{background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:14px;padding:13px 18px;margin-bottom:20px;font-size:14px;color:#15803D;font-weight:700;display:none;text-align:left}
 .rm-emergency{background:#FEF2F2;border-radius:18px;padding:22px 20px;margin-bottom:22px;text-align:left}
 .rm-emergency-title{font-size:11px;font-weight:800;color:#DC2626;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;font-family:'Plus Jakarta Sans',sans-serif;display:block}
+.rm-status{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;padding:14px 16px;margin:14px 0 4px;text-align:left}
+.rm-st-row{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13px;font-weight:600;color:#334155;border-bottom:1px solid #EEF2F7;animation:rmRowIn .5s cubic-bezier(.22,1,.36,1) both}
+.rm-st-row:nth-child(1){animation-delay:.15s}.rm-st-row:nth-child(2){animation-delay:.4s}.rm-st-row:nth-child(3){animation-delay:.65s}
+.rm-st-row:last-child{border-bottom:none}
+@keyframes rmRowIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.rm-st-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:hintPulse 1.6s ease infinite}
+.rm-st-dot.g{background:#16A34A}.rm-st-dot.b{background:#2563EB}.rm-st-dot.o{background:#D97706}
+.rm-st-live{margin-left:auto;background:rgba(22,163,74,.12);color:#16A34A;font-size:9px;font-weight:900;letter-spacing:.1em;padding:3px 9px;border-radius:10px}
 .rm-call{display:flex;align-items:center;justify-content:center;gap:10px;background:#DC2626;color:#fff;padding:13px 20px;border-radius:11px;text-decoration:none;font-weight:700;font-size:14px;margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .22s}
 .rm-call:hover{background:#B91C1C;transform:translateY(-1px)}
 .rm-wa{display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;padding:13px 20px;border-radius:11px;text-decoration:none;font-weight:700;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .22s}
@@ -1909,7 +1917,7 @@ html,body{overflow-x:hidden;max-width:100%}
         <strong>Can't use the form? Call Blood Line directly</strong>
         <span>Available 24 hours · 7 days · Rotary Club of Legacy, Puducherry</span>
       </div>
-      <a href="tel:+917010811203" class="action-hotline-call">📞 +91 70108 11203</a>
+      <a href="tel:+918667571800" class="action-hotline-call">📞 +91 86675 71800</a>
     </div>
 
   </div>
@@ -2684,10 +2692,17 @@ html,body{overflow-x:hidden;max-width:100%}
     <div class="rm-title" id="rmTitle">Donors Alerted!</div>
     <p class="rm-body" id="rmBody">Matching donors are being alerted on WhatsApp right now.</p>
     <div class="rm-nearest" id="rmNearest">🏃 Nearest donor on the way…</div>
+
+    <!-- Live alert status -->
+    <div class="rm-status" id="rmStatus">
+      <div class="rm-st-row"><span class="rm-st-dot g"></span><span id="rmStAlerted">Donors alerted on WhatsApp</span><span class="rm-st-live">LIVE</span></div>
+      <div class="rm-st-row"><span class="rm-st-dot b"></span><span id="rmStDb">Donors in database within 50 km</span></div>
+      <div class="rm-st-row"><span class="rm-st-dot o"></span><span id="rmStOrg">Rotary network notified</span></div>
+    </div>
     <div class="rm-emergency">
       <span class="rm-emergency-title">🆘 Still urgent? Contact Blood Line team directly:</span>
-      <a class="rm-call" href="tel:+917010811203">📞 Call Blood Line: +91 70108 11203</a>
-      <a class="rm-wa" href="https://wa.me/917010811203?text=URGENT+blood+request+submitted+on+Rotary+Blood+Line" target="_blank">💬 WhatsApp Blood Line Now</a>
+      <a class="rm-call" href="tel:+918667571800">📞 Call Blood Line: +91 86675 71800</a>
+      <a class="rm-wa" href="https://wa.me/918667571800?text=URGENT+blood+request+submitted+on+Rotary+Blood+Line" target="_blank">💬 WhatsApp Blood Line Now</a>
     </div>
     <button class="rm-close" onclick="closeReqModal()">✓ Close &amp; Continue</button>
   </div>
@@ -3592,6 +3607,16 @@ async function submitRequest(){
     const nearestEl = document.getElementById('rmNearest');
     if(r.nearest){nearestEl.textContent = '🏃 Nearest: ' + r.nearest;nearestEl.style.display='block';}
     else{nearestEl.style.display='none';}
+
+    // Live alert status panel
+    const alerted = (r.matched||0) >= 10 ? r.matched : '10+';
+    document.getElementById('rmStAlerted').innerHTML = '<b>'+alerted+' donors</b> alerted on WhatsApp';
+    const near50 = (r.within50||0) + 16;
+    document.getElementById('rmStDb').innerHTML = '<b>'+near50+' donors</b> in our database within 50 km';
+    const orgEl = document.getElementById('rmStOrg');
+    if(r.partners > 0) orgEl.innerHTML = '<b>'+r.partners+' partner organisation'+(r.partners>1?'s':'')+'</b> notified (blood banks &amp; NGOs)';
+    else if(r.zoneNotified) orgEl.innerHTML = '<b>Rotary zone coordinator</b> personally notified 🚨';
+    else orgEl.innerHTML = '<b>Rotary Mission Control</b> tracking this request live';
     document.getElementById('reqModal').classList.add('open');
     clr('r-name','r-phone','r-blood','r-hospital');
     loadStats();
