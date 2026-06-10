@@ -185,6 +185,7 @@ async function destroySession(id) {
 // Wipe a zone's pairing entirely (forces fresh QR next enable)
 function clearSessionData(id) {
   try { fs.rmSync(path.join(AUTH_DIR, `session-${clientIdFor(id)}`), { recursive: true, force: true }); } catch {}
+  if (VOLUME_AUTH) { try { fs.rmSync(path.join(VOLUME_AUTH, `session-${clientIdFor(id)}`), { recursive: true, force: true }); } catch {} }
 }
 
 function initWhatsApp() { initSession('master'); }
