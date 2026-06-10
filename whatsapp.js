@@ -27,10 +27,11 @@ function clearLock(id) {
   try { if (fs.existsSync(p)) { fs.unlinkSync(p); console.log('[WA] Cleared lock:', p); } } catch {}
 }
 
+const _retryMemory = new Map();   // id → retry count, survives session deletion
 function initSession(id) {
   const existing = sessions.get(id);
   if (existing && existing.client) return;           // already running
-  const st = { client: null, ready: false, lastQR: null, retries: existing?.retries || 0, stopping: false };
+  const st = { client: null, ready: false, lastQR: null, retries: _retryMemory.get(id) || 0, stopping: false };
   sessions.set(id, st);
   clearLock(id);
 
@@ -62,6 +63,7 @@ function initSession(id) {
     st.ready  = true;
     st.lastQR = null;
     st.retries = 0;
+    _retryMemory.delete(id);
     st.number = client.info?.wid?.user || null;
     console.log(`\n✅ [WA:${id}] CONNECTED — session live as +${st.number || '?'}\n`);
   });
@@ -108,6 +110,7 @@ function initSession(id) {
   client.initialize().catch(err => {
     st.ready = false;
     st.retries++;
+    _retryMemory.set(id, st.retries);
     if (st.retries > 6) {
       console.error(`[WA:${id}] Giving up after ${st.retries} failed launches — re-enable from Mission Control to retry.`);
       sessions.delete(id);

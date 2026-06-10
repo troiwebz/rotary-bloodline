@@ -261,10 +261,10 @@ app.post('/api/push/test', requireMaster, async (req, res) => {
 // ── Init WhatsApp (non-fatal — server still runs without it) ──────────────────
 try {
   wa.initWhatsApp();
-  // Bring up each zone's own WhatsApp session if enabled from Mission Control
-  loadZones().filter(z => z.waEnabled).forEach(z => {
-    try { wa.initSession(z.id); } catch (e) { console.warn(`[WA:${z.id}] init failed:`, e.message); }
-  });
+  // Zone sessions are NOT auto-started on boot — each Chromium instance
+  // competes for container memory and can starve the critical master
+  // session. Zones start on-demand when enabled/QR-requested from
+  // Mission Control. Master always boots alone for maximum reliability.
 } catch(e) { console.warn('[WA] Init skipped:', e.message); }
 
 // Route sends through the hospital's zone session when that zone has its own number
@@ -1010,7 +1010,7 @@ app.post('/api/verify/start', (req, res) => {
   const phone = String(req.body?.phone || '').replace(/\D/g, '');
   const name  = String(req.body?.name || '').slice(0, 60);
   if (phone.length !== 10) return res.status(400).json({ ok: false, msg: 'Valid 10-digit phone required' });
-  if (!wa.isReady()) return res.json({ ok: true, skip: true });   // WA engine down → don't block donors
+  if (!wa.isReady()) return res.json({ ok: true, skip: true, pending: true });   // WA engine down → allow but mark pending (NOT verified)
   let list = loadVerify().filter(v => Date.now() - v.at < 24 * 3600000);  // prune old
   let entry = list.find(v => v.phone === phone && !v.verified);
   if (!entry) {

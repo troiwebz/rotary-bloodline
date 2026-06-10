@@ -2968,6 +2968,7 @@ const TA = {
   "Verify via WhatsApp":"வாட்ஸ்அப் மூலம் உறுதிசெய்",
   "I've sent it — Check now":"அனுப்பிவிட்டேன் — இப்போது சரிபார்",
   "Checking…":"சரிபார்க்கிறது…",
+  "Saved — we'll confirm your WhatsApp on first contact. Continue!":"சேமிக்கப்பட்டது — முதல் தொடர்பில் உறுதிசெய்வோம். தொடரவும்!",
   "Not received yet — send the message first":"இன்னும் வரவில்லை — முதலில் அனுப்பவும்",
   "Waiting for your Hi… send the message in WhatsApp":"உங்கள் Hi-க்காக காத்திருக்கிறோம்… வாட்ஸ்அப்பில் அனுப்பவும்",
   "Reopen WhatsApp":"வாட்ஸ்அப்பை மீண்டும் திற",
@@ -4772,7 +4773,13 @@ async function vfyStart(){
   if(ph.length!==10){ _wizShowErr(t('Please enter a valid 10-digit WhatsApp number.')); return; }
   let r={};
   try{ r=await post('/api/verify/start',{phone:ph,name}); }catch(e){}
-  if(r.skip){ _vfy={phone:ph,verified:true,skip:true}; _vfyShow('done'); return; }
+  if(r.skip){
+    // WhatsApp engine temporarily down — allow through but be honest
+    _vfy={phone:ph,verified:true,skip:true};
+    const d=document.getElementById('vfyDone');
+    if(d) d.innerHTML='⏳ '+t('Saved — we\'ll confirm your WhatsApp on first contact. Continue!');
+    _vfyShow('done'); return;
+  }
   if(!r.ok){ _wizShowErr(r.msg||'Could not start verification'); return; }
   _vfy.phone=ph; _vfy.verified=false;
   const msg=encodeURIComponent('Hi Rtn. Uyir! Verifying my WhatsApp for Rotary Blood Line. Code: '+r.code);
