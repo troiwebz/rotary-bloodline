@@ -290,6 +290,26 @@ app.get('/api/live', (req, res) => {
   req.on('close', () => sseClients.delete(res));
 });
 
+// ── Public config — per-country AI WhatsApp numbers for wa.me links ──────────
+function aiNumbers() {
+  const st = db.getSettings();
+  try {
+    const m = typeof st.aiNumbers === 'string' ? JSON.parse(st.aiNumbers) : (st.aiNumbers || {});
+    if (!m.default) m.default = '918667571800';
+    return m;
+  } catch { return { default: '918667571800' }; }
+}
+app.get('/api/config', (req, res) => res.json({ ok: true, aiNumbers: aiNumbers() }));
+
+// ── Master WhatsApp re-pair: wipe session → fresh QR ──────────────────────────
+app.post('/api/admin/master-wa/reset', requireMaster, async (req, res) => {
+  await wa.destroySession('master');
+  wa.clearSessionData('master');
+  wa.initSession('master');
+  audit('master_wa_reset', req.auth.actor, {});
+  res.json({ ok: true, msg: 'Master session wiped — fresh QR in ~30s' });
+});
+
 // ── Status ────────────────────────────────────────────────────────────────────
 app.get('/api/status', (req, res) => {
   res.json({ whatsapp: wa.isReady(), uptime: Math.round(process.uptime()), ok: true });

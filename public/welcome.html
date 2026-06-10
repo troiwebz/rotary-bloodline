@@ -356,13 +356,23 @@ function init() {
 
 init();
 
-// Hi-handshake deep link
-(function(){
+// Hi-handshake deep link — number resolved per country from Mission Control config
+(async function(){
   const q = new URLSearchParams(window.location.search);
   const name = q.get('name')||'', blood = q.get('blood')||'', did = q.get('did')||'';
   const msg = 'Hi! I\'m ' + name + ', I just registered as a ' + blood + ' donor on Rotary Blood Line.' + (did ? ' ID-' + did : '');
+  let num = '918667571800';
+  try{
+    const API = ['localhost','127.0.0.1'].includes(location.hostname) ? '' : 'https://rotary-bloodline-production-d586.up.railway.app';
+    const cfg = await fetch(API+'/api/config').then(r=>r.json());
+    const m = cfg.aiNumbers||{};
+    const TZ_CC = {'Asia/Kolkata':'IN','Asia/Calcutta':'IN','Asia/Bangkok':'TH'};
+    num = m[TZ_CC[Intl.DateTimeFormat().resolvedOptions().timeZone]||''] || m.default || num;
+  }catch(e){}
   const btn = document.getElementById('hiBtn');
-  if(btn) btn.href = 'https://wa.me/918667571800?text=' + encodeURIComponent(msg);
+  if(btn) btn.href = 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
+  // update the displayed save-number too
+  document.querySelectorAll('b').forEach(b=>{ if(b.textContent.includes('86675 71800')) b.textContent='+'+num.replace(/^91/,'91 ').replace(/(\d{5})(\d{5})$/,'$1 $2'); });
 })();
 </script>
 </body>

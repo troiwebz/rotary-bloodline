@@ -3042,6 +3042,23 @@ function applyLang(){
 }
 document.addEventListener('DOMContentLoaded', applyLang);
 
+// ═══ AI WhatsApp number — per-country, set from Mission Control ═══════════════
+let AI_WA = '918667571800';
+(async function(){
+  try{
+    const cfg = await fetch(API_BASE+'/api/config').then(r=>r.json());
+    const m = cfg.aiNumbers || {};
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    const TZ_CC = {'Asia/Kolkata':'IN','Asia/Calcutta':'IN','Asia/Bangkok':'TH','Asia/Colombo':'LK',
+      'Asia/Dubai':'AE','Asia/Singapore':'SG','Asia/Kuala_Lumpur':'MY','America/New_York':'US','Europe/London':'GB'};
+    const cc = TZ_CC[tz] || '';
+    AI_WA = m[cc] || m.default || AI_WA;
+    // Update static links that carry the number
+    const waBtn = document.getElementById('rmWaConfirm');
+    if(waBtn) waBtn.href = waBtn.href.replace(/wa\.me\/\d+/, 'wa.me/'+AI_WA);
+  }catch(e){}
+})();
+
 // ═══ PWA PUSH — instant, free, unbannable alerts ══════════════════════════════
 let _swReg = null;
 const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -3979,7 +3996,7 @@ async function aiMissionDispatch(b){
     + 'Name: ' + b.name + '\nBlood type: ' + b.bloodType + '\nHospital: ' + b.hospital
     + '\nMy number: +91' + String(b.phone).replace(/^91/,'') + '\n\nPlease confirm my request is being handled. 🙏');
   const waBtn = document.getElementById('rmWaConfirm');
-  if(waBtn) waBtn.href = 'https://wa.me/918667571800?text=' + waMsg;
+  if(waBtn) waBtn.href = 'https://wa.me/' + AI_WA + '?text=' + waMsg;
   loadStats();
   return r;
 }
@@ -4754,7 +4771,7 @@ async function vfyStart(){
   if(!r.ok){ _wizShowErr(r.msg||'Could not start verification'); return; }
   _vfy.phone=ph; _vfy.verified=false;
   const msg=encodeURIComponent('Hi Rtn. Uyir! Verifying my WhatsApp for Rotary Blood Line. Code: '+r.code);
-  window.open('https://wa.me/918667571800?text='+msg,'_blank');
+  window.open('https://wa.me/'+AI_WA+'?text='+msg,'_blank');
   _vfyShow('wait');
   if(_vfy.timer) clearInterval(_vfy.timer);
   _vfy.timer=setInterval(async ()=>{

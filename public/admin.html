@@ -286,6 +286,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
         </div>
         <div class="fld"><label>Auto-escalation</label><select id="sAuto"><option value="true">On — system escalates automatically</option><option value="false">Off — manual escalation only</option></select></div>
         <div class="fld"><label>Layer 3 expert phone numbers (comma-separated)</label><input id="sExperts" placeholder="9876543210, 9123456780"></div>
+        <div class="fld"><label>AI WhatsApp numbers per country (JSON — "default" required; number must be a paired session)</label><input id="sAiNums" placeholder='{"default":"918667571800","TH":"66XXXXXXXXX"}'></div>
         <button class="btn-main" style="max-width:220px" onclick="saveSettings()">💾 Save Settings</button>
       </div>
     </div>
@@ -766,7 +767,7 @@ async function sendBlast(){
 /* ── Settings ── */
 async function loadSettings(){
   const r=await J('/api/admin/settings'); if(r.code!==200)return;
-  document.getElementById('sL1').value=r.d.layer1WaitMin??10;document.getElementById('sFU').value=r.d.teamFollowUpMin??15;
+  document.getElementById('sL1').value=r.d.layer1WaitMin??10;document.getElementById('sFU').value=r.d.teamFollowUpMin??15;document.getElementById('sAiNums').value=r.d.aiNumbers||'{"default":"918667571800"}';
   document.getElementById('sL2').value=r.d.layer2WaitMin??10;
   document.getElementById('sMax').value=r.d.maxDonorsPerAlert??20;
   document.getElementById('sRad').value=r.d.defaultRadius??50;
@@ -774,7 +775,7 @@ async function loadSettings(){
   document.getElementById('sExperts').value=r.d.expertPhones||'';
 }
 async function saveSettings(){
-  const body={layer1WaitMin:Number(document.getElementById('sL1').value),teamFollowUpMin:Number(document.getElementById('sFU').value)||15,layer2WaitMin:Number(document.getElementById('sL2').value),maxDonorsPerAlert:Number(document.getElementById('sMax').value),defaultRadius:Number(document.getElementById('sRad').value),autoEscalate:document.getElementById('sAuto').value==='true',expertPhones:document.getElementById('sExperts').value};
+  const body={layer1WaitMin:Number(document.getElementById('sL1').value),teamFollowUpMin:Number(document.getElementById('sFU').value)||15,aiNumbers:document.getElementById('sAiNums').value,layer2WaitMin:Number(document.getElementById('sL2').value),maxDonorsPerAlert:Number(document.getElementById('sMax').value),defaultRadius:Number(document.getElementById('sRad').value),autoEscalate:document.getElementById('sAuto').value==='true',expertPhones:document.getElementById('sExperts').value};
   const r=await J('/api/admin/settings',{method:'POST',body:JSON.stringify(body)});
   toast(r.d.ok?'Settings saved':'Failed',!r.d.ok);
 }

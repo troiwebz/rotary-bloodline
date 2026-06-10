@@ -163,6 +163,7 @@ const DEFAULT_SETTINGS = {
   layer2WaitMin:       10,   // minutes before Layer 2 → 3
   teamFollowUpMin:     15,   // minutes of silence before team CALL alert
   expertPhones:        '',   // comma-separated coordinator numbers for Layer 3
+  aiNumbers:           '{"default":"918667571800"}',  // per-country wa.me numbers (JSON: {default, IN, TH, ...})
   updatedAt:           null,
 };
 
