@@ -51,6 +51,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,255,255,
 .vid-content{padding:0 80px;max-width:740px;position:relative;z-index:2}
 .vid-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(220,38,38,.18);border:1px solid rgba(220,38,38,.36);border-radius:30px;padding:8px 18px;font-size:11px;font-weight:700;color:#FCA5A5;letter-spacing:.8px;text-transform:uppercase;margin-bottom:28px;font-family:'Plus Jakarta Sans',sans-serif}
 .vid-tag .dot-live{width:7px;height:7px;border-radius:50%;background:#EF4444;box-shadow:0 0 8px #EF4444;animation:pulse 1.8s infinite}
+.hero-seconds{font-style:normal;color:#F87171;display:inline-block;animation:secTick 1s steps(1) infinite}
+@keyframes secTick{
+  0%{transform:scale(1);text-shadow:0 0 0 rgba(248,113,113,0)}
+  8%{transform:scale(1.06);text-shadow:0 0 28px rgba(248,113,113,.85)}
+  16%{transform:scale(1);text-shadow:0 0 6px rgba(248,113,113,.25)}
+  50%{transform:scale(1);text-shadow:0 0 0 rgba(248,113,113,0)}
+  58%{transform:scale(1.06);text-shadow:0 0 28px rgba(248,113,113,.85)}
+  66%{transform:scale(1);text-shadow:0 0 6px rgba(248,113,113,.25)}
+}
 .mission-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(220,38,38,.18);border:1px solid rgba(248,113,113,.4);color:#FCA5A5;font-size:12.5px;font-weight:800;letter-spacing:.08em;padding:9px 20px;border-radius:24px;margin-bottom:20px;backdrop-filter:blur(8px);text-transform:uppercase}
 .vid-content h2{font-size:clamp(26px,6.5vw,70px);font-weight:900;line-height:1.06;letter-spacing:-3.5px;color:#fff;margin-bottom:22px;text-shadow:0 2px 40px rgba(0,0,0,.5);font-family:'Plus Jakarta Sans',sans-serif}
 .vid-content h2 em{font-style:normal;color:#FCA5A5}
@@ -1607,7 +1616,7 @@ html,body{overflow-x:hidden;max-width:100%}
     <div class="vid-content">
       <div class="vid-tag"><span class="dot-live"></span>Real Story · Puducherry</div>
       <div class="mission-badge">🎯 OUR MISSION · BLOOD AT YOUR SIDE WITHIN 30 MINUTES</div>
-      <h2>When minutes decide a life,<br>we move in <em style="font-style:normal;color:#F87171">seconds</em>.</h2>
+      <h2>When minutes decide a life,<br>we move in <em class="hero-seconds">seconds</em>.</h2>
       <p>One form triggers the <b>3-Layer Lifeline</b> — our AI alerts registered donors in seconds, expands to the partner network, and escalates to Rotary experts until blood is found. Target: <b>30 minutes</b>.</p>
       <div class="vid-btns">
         <a href="#action" class="vid-btn-red">🆘 Request Blood Now</a>
