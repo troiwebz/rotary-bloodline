@@ -4810,7 +4810,7 @@ async function wizNext(){
       try{ if(r.donorId) localStorage.setItem('rb_donor_id', r.donorId); }catch(e){}
       // Final touch: instant alerts — one tap, woven into signup
       try{ await enablePush(); }catch(e){}
-      const p=new URLSearchParams({name:b.name,blood:b.bloodType,area:b.area,points:r.points||50,badge:r.badgeLabel||'New Hero',emoji:r.badgeEmoji||'🌱'});
+      const p=new URLSearchParams({name:b.name,blood:b.bloodType,area:b.area,points:r.points||50,badge:r.badgeLabel||'New Hero',emoji:r.badgeEmoji||'🌱',did:r.donorId||''});
       window.location.href='/welcome.html?'+p.toString();
     } else {
       _wizShowErr(r.msg||'Registration failed. This number may already be registered.');

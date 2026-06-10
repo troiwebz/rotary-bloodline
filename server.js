@@ -673,10 +673,8 @@ app.post('/api/donors/register', async (req, res) => {
   });
   if (!result.ok) return res.status(409).json(result);
 
-  // Welcome WhatsApp — includes the Hero Profile completion link
-  const profileUrl = 'https://rotary-bloodline.vercel.app/profile.html?id=' + result.donor.id
-    + '&p=' + result.donor.phone.slice(-4);
-  if (wa.isReady()) await wa.sendWelcome(name, phone, bloodType, area, 'master', profileUrl);
+  // NO proactive welcome DM — the donor says Hi to US first (the handshake),
+  // and the welcome arrives as a reply. We are never the stranger.
 
   const stats = db.getStats();
   broadcastSSE('donor_registered', { name, bloodType, area, stats });
@@ -964,7 +962,39 @@ You are what Rotary means. 🙏
 // ── Donor reply processing (shared by WhatsApp listener + webhook) ────────────
 // Classifies YES/NO, finds which request the donor is answering, records it,
 // pushes SSE to the site, and sends a follow-up WhatsApp confirmation.
+// ── The "Hi handshake" — donor messages US first, we're never strangers ───────
+// Detects a greeting / ID-tag from a registered donor, marks them WA-verified,
+// and replies with the Rtn. Uyir welcome. Returns true if handled.
+async function tryHandshake(from, body) {
+  const msg = (body || '').trim();
+  const isGreeting = /^(hi|hii+|hello|hai|hey|vanakkam|வணக்கம்)\b/i.test(msg) || /\bID-\d+\b/i.test(msg);
+  if (!isGreeting) return false;
+
+  const clean = String(from).replace(/\D/g, '');
+  const donor = db.getAllDonors().find(d =>
+    d.phone === clean || '91' + d.phone === clean || d.phone === '91' + clean);
+  if (!donor) return false;
+
+  if (!donor.waVerified) {
+    db.updateDonor(donor.id, { waVerified: true, waVerifiedAt: Date.now() });
+    const profileUrl = 'https://rotary-bloodline.vercel.app/profile.html?id=' + donor.id + '&p=' + donor.phone.slice(-4);
+    await wa.sendWelcome(donor.name, donor.phone, donor.bloodType, donor.area, 'master', profileUrl);
+    audit('wa_handshake', 'donor:' + donor.id, { name: donor.name });
+    broadcastSSE('donor_verified', { name: donor.name, bloodType: donor.bloodType });
+    console.log(`[HANDSHAKE] ${donor.name} (#${donor.id}) is now WA-verified`);
+  } else {
+    await wa.sendMessage(donor.phone,
+`⚙️ Vanakkam *${donor.name}*! Rtn. Uyir here — your Bloodline is active and you're fully verified. 🩸
+
+Ask me anything, or just stay ready: when *${donor.bloodType}* blood is needed near you, I'll reach out. 🙏`);
+  }
+  return true;
+}
+
 async function processDonorReply(from, body, requestId) {
+  // Greeting from a registered donor? Handle the handshake, skip response logging
+  if (await tryHandshake(from, body)) return { type: 'handshake' };
+
   const msg  = (body || '').toLowerCase().trim();
   let type   = 'responded';
   if (['no','2','busy','cant','cannot','not available','decline'].some(w => msg.includes(w))) type = 'declined';

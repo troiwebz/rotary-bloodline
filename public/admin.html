@@ -515,7 +515,7 @@ function renderDonors(){
       : '<span class="pill off" title="Area centroid only">📍 area</span>';
     const avail = (d.nightOk===true?'🌙':'')+(d.hasVehicle===true?'🛵':'')+(d.maxTravelKm?' ≤'+d.maxTravelKm+'km':'');
     return `<tr>
-      <td><b>${esc(d.name)}</b>${d.verified?' <span title="Verified">✅</span>':''}${d.camp?' <span class="pill l2" title="Registered at camp">🏕 '+esc(d.camp)+'</span>':''}</td>
+      <td><b>${esc(d.name)}</b>${d.waVerified?' <span title="Said Hi — WhatsApp verified, alerts are ban-safe">💬</span>':' <span title="Has not said Hi yet — nudge them to activate" style="opacity:.35">⚪</span>'}${d.verified?' <span title="Verified">✅</span>':''}${d.camp?' <span class="pill l2" title="Registered at camp">🏕 '+esc(d.camp)+'</span>':''}</td>
       <td><span class="bt-badge">${esc(d.bloodType)}</span></td>
       <td title="${esc(d.landmark||'')}">${esc(d.area||'—')}</td>
       <td>${precPill}</td>
