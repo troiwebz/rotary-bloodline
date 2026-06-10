@@ -979,6 +979,12 @@ footer{background:#070B14;padding:72px 52px 44px}
 @keyframes dropBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @media(max-width:600px){.sp-pop{left:12px;right:auto;bottom:86px;max-width:280px;padding:12px 14px 12px 12px}.sp-name{font-size:13px}}
 
+/* Language pill in menu bar */
+.lang-pill{display:inline-flex;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:3px;cursor:pointer;margin-right:12px;flex-shrink:0}
+.lp-seg{font-size:11.5px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:rgba(255,255,255,.55);padding:5px 12px;border-radius:16px;transition:all .2s;line-height:1}
+.lp-seg.on{background:#DC2626;color:#fff;box-shadow:0 2px 10px rgba(220,38,38,.4)}
+@media(max-width:768px){.lang-pill{margin-right:8px}.lp-seg{padding:5px 9px;font-size:10.5px}}
+
 /* Shining text — animated gradient sweep across letters */
 .shine-text{background:linear-gradient(110deg,#fff 38%,#34D399 48%,#60A5FA 52%,#fff 62%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:shineSweep 3s linear infinite}
 @keyframes shineSweep{0%{background-position:120% 0}100%{background-position:-120% 0}}
@@ -1810,7 +1816,6 @@ html,body{overflow-x:hidden;max-width:100%}
 
 <!-- ═══════════ NAV ═══════════ -->
 <nav>
-  <button id="langToggle" onclick="toggleLang()" style="position:fixed;bottom:24px;left:24px;z-index:1500;background:rgba(15,23,42,.92);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:24px;padding:9px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.35)">தமிழ்</button>
   <a href="#" class="nav-logo">
     <div class="nav-bloodline-logo">
       <span class="nbl-drop">🩸</span>
@@ -1827,6 +1832,9 @@ html,body{overflow-x:hidden;max-width:100%}
     <a href="#blood">Blood Status</a>
   </div>
   <div class="nav-cta-wrap">
+    <div class="lang-pill" onclick="toggleLang()" title="Switch language">
+      <span id="langEn" class="lp-seg on">EN</span><span id="langTa" class="lp-seg">தமிழ்</span>
+    </div>
     <a href="#action" class="nav-cta">🩸 Donate / Request</a>
   </div>
 </nav>
@@ -2823,13 +2831,13 @@ html,body{overflow-x:hidden;max-width:100%}
   <div class="ai-hdr">
     <div class="ai-hdr-avatar">⚙️</div>
     <div class="ai-hdr-info">
-      <h4>Rotary Face AI</h4>
-      <p>The face of Rotary Club of Legacy · Always on · No queues</p>
+      <h4>Rtn. Uyir <span style="font-size:10px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px;vertical-align:middle">உயிர்</span></h4>
+      <p>The World's First AI Rotarian · Serving as the Bloodline · Always on</p>
     </div>
     <button class="ai-close" onclick="toggleAI()">✕</button>
   </div>
   <div class="ai-msgs" id="aiMsgs">
-    <div class="ai-bubble bot">👋 Vanakkam! I'm <b>Rotary Face AI</b> — the official AI of Rotary Club of Legacy, Puducherry.<br><br>Ask me anything: <b>blood availability</b>, <b>who runs the club</b>, <b>areas we cover</b>, how to <b>request blood</b> or <b>become a donor</b>. I answer instantly, day or night.</div>
+    <div class="ai-bubble bot">👋 Vanakkam! I'm <b>Rtn. Uyir</b> (உயிர் — "life") — <b>the world's first AI Rotarian</b>, inducted by Rotary Club of Legacy, Puducherry to serve as your Bloodline.<br><br>Ask me anything: <b>blood availability</b>, <b>who runs the club</b>, <b>areas we cover</b>, how to <b>request blood</b> or <b>become a donor</b>. I never sleep, so you never wait.</div>
     <div class="ai-typing" id="aiTyping"><span></span><span></span><span></span></div>
   </div>
   <div class="ai-quick-row" id="aiQuick">
@@ -2848,15 +2856,15 @@ html,body{overflow-x:hidden;max-width:100%}
   <button class="ai-teaser-x" onclick="event.stopPropagation();dismissTeaser()">✕</button>
   <div class="ai-teaser-avatar">⚙️</div>
   <div class="ai-teaser-body">
-    <div class="ai-teaser-name">Rotary Face AI <span class="ai-teaser-tick">✓</span></div>
-    <div class="ai-teaser-msg">👋 Vanakkam! A Rotarian is on board to help you — need blood urgently or want to become a donor?</div>
+    <div class="ai-teaser-name">Rtn. Uyir · AI Rotarian <span class="ai-teaser-tick">✓</span></div>
+    <div class="ai-teaser-msg">👋 Vanakkam! I'm Rtn. Uyir, the world's first AI Rotarian — on duty as your Bloodline. Need blood urgently, or want to become a donor?</div>
     <div class="ai-teaser-time">just now</div>
   </div>
 </div>
 
-<button class="ai-fab" onclick="toggleAI()" id="aiFab" title="Rotary Face AI">
+<button class="ai-fab" onclick="toggleAI()" id="aiFab" title="Rtn. Uyir — AI Rotarian">
   ⚙️
-  <span class="ai-fab-label">Rotary Face AI</span>
+  <span class="ai-fab-label">Rtn. Uyir</span>
 </button>
 
 <script>
@@ -2962,8 +2970,8 @@ function toggleLang(){
   if(typeof _wizRender === 'function' && document.getElementById('fwizOverlay')?.classList.contains('open')) _wizRender();
 }
 function applyLang(){
-  const btn = document.getElementById('langToggle');
-  if(btn) btn.textContent = LANG === 'en' ? 'தமிழ்' : 'EN';
+  const en = document.getElementById('langEn'), ta = document.getElementById('langTa');
+  if(en && ta){ en.classList.toggle('on', LANG==='en'); ta.classList.toggle('on', LANG==='ta'); }
   // Static funnel chrome
   const map = [
     ['#sq1 .sq-txt', '🔍 Scanning internal database…'],
@@ -4007,6 +4015,9 @@ const CLUB_INFO = {
 };
 
 const AI_KB=[
+  {p:/your name|who are you|what are you|uyir|are you (a )?(bot|robot|ai|human)|introduce yourself/i,
+   r:`⚙️ I'm <b>Rtn. Uyir</b> (உயிர் — Tamil for "life").<br><br>I'm <b>the world's first AI Rotarian</b> — inducted by Rotary Club of Legacy, Puducherry, and my service role is the <b>Bloodline</b>: I match patients with blood donors in seconds, watch every request live, and escalate to my human fellow Rotarians when needed.<br><br>I work 24/7, never take leave, and my only mission is the 30-minute promise. 🩸`,
+   q:['Blood availability','Who runs the club?','Request blood']},
   {p:/president|chairman|chair man|who runs|who is behind|head of|leader of (the )?club|in charge/i,
    r:`👑 <b>Rotary Club of Legacy — Leadership</b><br><br>🎖️ President: <b>${CLUB_INFO.president}</b><br>📋 Secretary: <b>${CLUB_INFO.secretary}</b><br>🌐 District Governor: <b>${CLUB_INFO.dg}</b><br><br>📍 ${CLUB_INFO.district} · Club ID ${CLUB_INFO.clubId}<br>🏠 ${CLUB_INFO.address}`,
    q:['Which areas do you cover?','Blood availability','How do I join Rotary?']},
@@ -4099,7 +4110,7 @@ function aiGetReply(msg){
     if(c) return {r:`🩸 <b>${bt} Blood Group</b><br>✅ Can donate to: ${c.donate.join(', ')}<br>🔴 Can receive from: ${c.receive.join(', ')}<br><br>Want to register as a <b>${bt} donor</b>?`,q:[`Register as ${bt} donor`,`Request ${bt} blood`,'Back to menu']};
   }
   for(const k of AI_KB){if(k.p.test(lc))return{r:k.r==='__LIVE_STOCK__'?aiLiveStock():k.r,q:k.q};}
-  return{r:"I'm not sure about that one, but try asking me:<br>• 🩸 \"Blood availability\" — live stock by group<br>• 👑 \"Who is the president?\" — club leadership<br>• 🗺️ \"Which areas do you cover?\"<br>• 🆘 \"I need blood urgently\"<br>• 🔬 \"O+ compatibility\"",q:AI_DEFAULT_QUICK};
+  return{r:"I'm Rtn. Uyir — not sure about that one, but try asking me:<br>• 🩸 \"Blood availability\" — live stock by group<br>• 👑 \"Who is the president?\" — club leadership<br>• 🗺️ \"Which areas do you cover?\"<br>• 🆘 \"I need blood urgently\"<br>• 🔬 \"O+ compatibility\"",q:AI_DEFAULT_QUICK};
 }
 
 function dismissTeaser(){
