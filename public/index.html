@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rotary Blood Line — Puducherry | Rotary Club of Legacy</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0B1120">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1832,6 +1835,7 @@ html,body{overflow-x:hidden;max-width:100%}
     <a href="#blood" data-i18n>Blood Status</a>
   </div>
   <div class="nav-cta-wrap">
+    <button id="pushBell" onclick="enablePush()" title="Get instant blood alerts" style="display:none;background:rgba(220,38,38,.12);border:1px solid rgba(248,113,113,.4);border-radius:50%;width:36px;height:36px;font-size:15px;cursor:pointer;margin-right:10px;flex-shrink:0;animation:hintPulse 2s ease infinite">🔔</button>
     <div class="lang-pill" onclick="toggleLang()" title="Switch language">
       <span id="langEn" class="lp-seg on">EN</span><span id="langTa" class="lp-seg">தமிழ்</span>
     </div>
@@ -3024,6 +3028,42 @@ function applyLang(){
   });
 }
 document.addEventListener('DOMContentLoaded', applyLang);
+
+// ═══ PWA PUSH — instant, free, unbannable alerts ══════════════════════════════
+let _swReg = null;
+async function initPush(){
+  if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try{
+    _swReg = await navigator.serviceWorker.register('/sw.js');
+    const bell = document.getElementById('pushBell');
+    const sub = await _swReg.pushManager.getSubscription();
+    if(sub){ if(bell) bell.style.display='none'; syncSub(sub); }      // already on
+    else if(Notification.permission !== 'denied' && bell) bell.style.display='flex';
+  }catch(e){}
+}
+function urlB64(b){const p='='.repeat((4-b.length%4)%4);const r=(b+p).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(r);return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));}
+async function enablePush(){
+  try{
+    if(!_swReg) await initPush();
+    if(!_swReg) { alert('Notifications not supported on this browser'); return; }
+    const perm = await Notification.requestPermission();
+    if(perm !== 'granted') return;
+    const kr = await fetch(API_BASE+'/api/push/key').then(r=>r.json());
+    if(!kr.ok || !kr.key) return;
+    const sub = await _swReg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: urlB64(kr.key) });
+    await syncSub(sub);
+    const bell = document.getElementById('pushBell');
+    if(bell){ bell.textContent='✅'; setTimeout(()=>bell.style.display='none', 1500); }
+    if(typeof showToast === 'function') showToast('🔔 Instant alerts ON — you\'ll be notified when blood is needed','#16A34A');
+  }catch(e){ console.warn('push enable', e); }
+}
+async function syncSub(sub){
+  let donorId = null;
+  try{ donorId = localStorage.getItem('rb_donor_id'); }catch(e){}
+  await fetch(API_BASE+'/api/push/subscribe', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ sub, donorId: donorId ? Number(donorId) : undefined }) }).catch(()=>{});
+}
+document.addEventListener('DOMContentLoaded', initPush);
 
 // One-scan QR entry: ?register=1&camp=x opens donor wizard, ?request=1 opens request
 window._campTag = null;
@@ -4737,6 +4777,9 @@ async function wizNext(){
     const r=await post('/api/donors/register',b);
     if(r.ok){
       closeWizard();
+      try{ if(r.donorId) localStorage.setItem('rb_donor_id', r.donorId); }catch(e){}
+      // Final touch: instant alerts — one tap, woven into signup
+      try{ await enablePush(); }catch(e){}
       const p=new URLSearchParams({name:b.name,blood:b.bloodType,area:b.area,points:r.points||50,badge:r.badgeLabel||'New Hero',emoji:r.badgeEmoji||'🌱'});
       window.location.href='/welcome.html?'+p.toString();
     } else {

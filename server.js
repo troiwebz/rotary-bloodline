@@ -182,6 +182,82 @@ Please track this case and step in if no donor confirms. 🙏
 
 function saveZones(z) { fs.writeFileSync(ZONES_FILE, JSON.stringify(z, null, 2)); }
 
+// ── Web Push (PWA notifications) — free, unbannable alert channel ─────────────
+let webpush = null;
+try {
+  webpush = require('web-push');
+  if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    webpush.setVapidDetails('mailto:troiwebz@gmail.com',
+      process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
+  } else { webpush = null; console.warn('[PUSH] VAPID keys missing — push disabled'); }
+} catch (e) { console.warn('[PUSH] web-push not available:', e.message); }
+
+const PUSH_FILE = path.join(DATA_ROOT, 'push-subs.json');
+function loadSubs()  { try { return JSON.parse(fs.readFileSync(PUSH_FILE, 'utf8')); } catch { return []; } }
+function saveSubs(x) { fs.writeFileSync(PUSH_FILE, JSON.stringify(x, null, 2)); }
+
+async function sendPush(entry, payload) {
+  if (!webpush) return false;
+  try {
+    await webpush.sendNotification(entry.sub, JSON.stringify(payload));
+    return true;
+  } catch (e) {
+    if (e.statusCode === 404 || e.statusCode === 410) {
+      // Subscription expired — clean it up
+      saveSubs(loadSubs().filter(x => x.id !== entry.id));
+    }
+    return false;
+  }
+}
+
+// Push the matched donors (by donorId) — falls back to all subs in early phase
+async function pushAlertDonors(matchedIds, request) {
+  if (!webpush) return 0;
+  const subs = loadSubs();
+  const matchedSet = new Set(matchedIds);
+  let targets = subs.filter(x => x.donorId && matchedSet.has(Number(x.donorId)));
+  if (!targets.length) targets = subs;   // tiny-network phase: alert every subscriber
+  let sent = 0;
+  for (const t of targets) {
+    const ok = await sendPush(t, {
+      title: (request.urgency === 'critical' ? '🚨 CRITICAL: ' : '🩸 ') + request.bloodType + ' blood needed',
+      body: request.hospital + ' — tap to respond. Rotary Blood Line.',
+      url: '/track.html?id=' + request.id,
+      urgent: request.urgency === 'critical',
+      tag: 'req-' + request.id,
+    });
+    if (ok) sent++;
+  }
+  if (sent) console.log(`[PUSH] ${sent}/${targets.length} push alerts for request #${request.id}`);
+  return sent;
+}
+
+app.get('/api/push/key', (req, res) =>
+  res.json({ ok: !!webpush, key: process.env.VAPID_PUBLIC_KEY || null }));
+
+app.post('/api/push/subscribe', (req, res) => {
+  const { sub, donorId } = req.body || {};
+  if (!sub || !sub.endpoint) return res.status(400).json({ ok: false });
+  const subs = loadSubs();
+  const existing = subs.find(x => x.sub.endpoint === sub.endpoint);
+  if (existing) { existing.donorId = donorId || existing.donorId; existing.at = Date.now(); }
+  else subs.push({ id: (subs[subs.length-1]?.id || 0) + 1, sub, donorId: donorId || null, at: Date.now() });
+  saveSubs(subs);
+  res.json({ ok: true, total: subs.length });
+});
+
+// Master: test push to all subscribers
+app.post('/api/push/test', requireMaster, async (req, res) => {
+  const subs = loadSubs();
+  let sent = 0;
+  for (const t of subs) {
+    if (await sendPush(t, { title: '✅ Rotary Blood Line — Push Test',
+      body: 'If you see this, instant alerts are working on your device!', url: '/' })) sent++;
+  }
+  audit('push_test', req.auth.actor, { sent, total: subs.length });
+  res.json({ ok: true, sent, total: subs.length });
+});
+
 // ── Init WhatsApp (non-fatal — server still runs without it) ──────────────────
 try {
   wa.initWhatsApp();
@@ -756,6 +832,7 @@ app.post('/api/requests', async (req, res) => {
 
     alertConnectors(request).catch(() => {});
     alertTeam(request, 0).catch(() => {});
+    pushAlertDonors([], request).catch(() => {});
     try {
       const zone = getZoneForArea(hospital) || getZoneForArea(req.body.area);
       if (zone && zone.waNumber) {
@@ -803,6 +880,9 @@ app.post('/api/requests', async (req, res) => {
 
   // Bloodline Team — coordinators alerted per their scope (all / radius)
   alertTeam(request, capped.length).catch(() => {});
+
+  // PWA push — instant, free, unbannable
+  pushAlertDonors(capped.map(d => d.id), request).catch(() => {});
 
   // Fire WhatsApp alerts in background (non-blocking) — via the zone's own
   // WhatsApp when it has one, falling back to master automatically
