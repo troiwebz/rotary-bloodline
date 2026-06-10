@@ -910,6 +910,17 @@ footer{background:#070B14;padding:72px 52px 44px}
 /* Blinking title cursor */
 .t-cursor{display:inline-block;width:.14em;height:.78em;background:currentColor;margin-left:.12em;vertical-align:baseline;animation:curBlink 1.05s steps(1) infinite;opacity:.85;border-radius:2px}
 
+/* Recent-donor social-proof popup */
+.sp-pop{position:fixed;bottom:24px;left:24px;z-index:2500;display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,#111A30,#0D1526);border:1px solid rgba(248,113,113,.3);border-radius:18px;padding:14px 18px 14px 14px;box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04);max-width:330px;transform:translateX(-130%);opacity:0;transition:transform .55s cubic-bezier(.22,1,.36,1),opacity .4s;pointer-events:none}
+.sp-pop.show{transform:translateX(0);opacity:1}
+.sp-bt{width:44px;height:44px;border-radius:13px;background:#E53935;color:#fff;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;box-shadow:0 6px 16px rgba(229,57,53,.4)}
+.sp-name{font-size:14px;font-weight:800;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.2px}
+.sp-meta{font-size:11.5px;color:rgba(255,255,255,.45);margin-top:2px}
+.sp-tag{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:10px;font-weight:800;color:#4ADE80;background:rgba(22,163,74,.14);border:1px solid rgba(74,222,128,.25);padding:3px 9px;border-radius:10px;letter-spacing:.04em}
+.sp-drop{font-size:18px;align-self:flex-start;animation:dropBob 2s ease-in-out infinite}
+@keyframes dropBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@media(max-width:600px){.sp-pop{left:12px;right:auto;bottom:86px;max-width:280px;padding:12px 14px 12px 12px}.sp-name{font-size:13px}}
+
 /* Shining text — animated gradient sweep across letters */
 .shine-text{background:linear-gradient(110deg,#fff 38%,#34D399 48%,#60A5FA 52%,#fff 62%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:shineSweep 3s linear infinite}
 @keyframes shineSweep{0%{background-position:120% 0}100%{background-position:-120% 0}}
@@ -1693,12 +1704,6 @@ html,body{overflow-x:hidden;max-width:100%}
 </head>
 <body>
 
-<!-- ═══════════ AI WORLD FIRST BANNER ═══════════ -->
-<div class="ai-world-banner">
-  <span class="ai-wb-dot"></span>
-  🌍 World's First AI-Powered Blood Donor Coordination System &nbsp;·&nbsp; Dedicated by <strong>Rotary Club of Legacy, Puducherry</strong> &nbsp;·&nbsp; RI Club ID: 224440 &nbsp;·&nbsp; District 2981
-</div>
-
 <!-- ═══════════ NAV ═══════════ -->
 <nav>
   <a href="#" class="nav-logo">
@@ -1767,15 +1772,21 @@ html,body{overflow-x:hidden;max-width:100%}
   </div>
 </div>
 
-<!-- ═══════════ LATEST HERO TICKER ═══════════ -->
-<div id="heroTicker" style="background:#1E293B;padding:0;overflow:hidden;display:none">
-  <div style="max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:stretch;gap:0">
-    <div style="background:#E53935;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:12px 18px;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;flex-shrink:0">🩸 LATEST HERO</div>
-    <div id="tickerContent" style="flex:1;display:flex;align-items:center;gap:0;overflow:hidden">
-      <!-- filled by JS -->
-    </div>
-    <div style="background:#0F172A;color:#64748B;font-size:11px;font-weight:700;padding:12px 18px;white-space:nowrap;display:flex;align-items:center;flex-shrink:0" id="totalCounter">103 donors strong</div>
+<!-- ═══════════ AI WORLD FIRST BANNER (below hero) ═══════════ -->
+<div class="ai-world-banner">
+  <span class="ai-wb-dot"></span>
+  🌍 World's First AI-Powered Blood Donor Coordination System &nbsp;·&nbsp; Dedicated by <strong>Rotary Club of Legacy, Puducherry</strong> &nbsp;·&nbsp; RI Club ID: 224440 &nbsp;·&nbsp; District 2981
+</div>
+
+<!-- ═══════════ RECENT DONOR SOCIAL-PROOF POPUP ═══════════ -->
+<div class="sp-pop" id="spPop">
+  <div class="sp-bt" id="spBt">O+</div>
+  <div class="sp-body">
+    <div class="sp-name" id="spName">—</div>
+    <div class="sp-meta">📍 <span id="spArea">—</span> · <span id="spTime">now</span></div>
+    <div class="sp-tag">✓ Registered as a blood donor</div>
   </div>
+  <div class="sp-drop">🩸</div>
 </div>
 
 <!-- ═══════════ FORMS (after hero) ═══════════ -->
@@ -3301,33 +3312,32 @@ async function loadStats(){
 }
 
 // Load most recent registered donor for the hero ticker
+let _spList=[], _spIdx=0, _spTimer=null;
 async function loadRecentDonors(){
   try{
-    const data = await fetch(API_BASE+'/api/recent-donors?n=5').then(r=>r.json());
+    const data = await fetch(API_BASE+'/api/recent-donors?n=8').then(r=>r.json());
     if(!data||!data.length) return;
-    const ticker = document.getElementById('heroTicker');
-    const content = document.getElementById('tickerContent');
-    if(!ticker||!content) return;
-
-    // Build scrolling items
-    const btColors={'O+':'#E53935','O-':'#C62828','A+':'#1E88E5','A-':'#1565C0','B+':'#43A047','B-':'#2E7D32','AB+':'#FB8C00','AB-':'#E65100'};
-    const items = data.map(d => {
-      const ago = timeAgoFeed(d.createdAt);
-      const col = btColors[d.bloodType]||'#E53935';
-      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 24px;border-right:1px solid #334155;white-space:nowrap;flex-shrink:0">
-        <span style="width:30px;height:30px;border-radius:8px;background:${col};color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">${d.bloodType}</span>
-        <span style="color:#F1F5F9;font-size:13px;font-weight:700">${d.name}</span>
-        <span style="color:#64748B;font-size:12px">from</span>
-        <span style="color:#94A3B8;font-size:12px;font-weight:600">${d.area}</span>
-        <span style="color:#475569;font-size:11px">· ${ago}</span>
-        <span style="color:#E53935;font-size:14px;margin-left:4px">🩸</span>
-      </div>`;
-    }).join('');
-
-    // Duplicate for seamless loop
-    content.innerHTML = `<div id="tickerScroll" style="display:flex;animation:tickerMove ${Math.max(20, data.length * 8)}s linear infinite">${items}${items}</div>`;
-    ticker.style.display = 'block';
+    _spList = data;
+    if(!_spTimer) startSocialProof();
   }catch(e){}
+}
+function startSocialProof(){
+  const pop=document.getElementById('spPop');
+  if(!pop) return;
+  const btColors={'O+':'#E53935','O-':'#C62828','A+':'#1E88E5','A-':'#1565C0','B+':'#43A047','B-':'#2E7D32','AB+':'#FB8C00','AB-':'#E65100'};
+  function showOne(){
+    if(!_spList.length) return;
+    const d=_spList[_spIdx % _spList.length]; _spIdx++;
+    document.getElementById('spBt').textContent = d.bloodType||'🩸';
+    document.getElementById('spBt').style.background = btColors[d.bloodType]||'#E53935';
+    document.getElementById('spName').textContent = d.name||'A donor';
+    document.getElementById('spArea').textContent = d.area||'Tamil Nadu';
+    document.getElementById('spTime').textContent = timeAgoFeed(d.createdAt);
+    pop.classList.add('show');
+    setTimeout(()=>pop.classList.remove('show'), 6500);
+  }
+  setTimeout(showOne, 3500);                 // first appearance
+  _spTimer = setInterval(showOne, 15000);    // then every 15s
 }
 
 // SSE: refresh ticker when a new donor registers
