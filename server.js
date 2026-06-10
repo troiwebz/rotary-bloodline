@@ -131,6 +131,40 @@ function donorInZone(d, zone) {
     (d.area || '').toLowerCase().includes(a.split(',')[0].toLowerCase()));
 }
 
+// ── Rotary Bloodline Team — club coordinators alerted on requests ─────────────
+// scope 'all' → every request; scope 'radius' → only requests within radiusKm
+// of the member's area (radius configurable per member from the dashboard)
+const TEAM_FILE = path.join(DATA_ROOT, 'team.json');
+function loadTeam()  { try { return JSON.parse(fs.readFileSync(TEAM_FILE, 'utf8')); } catch { return []; } }
+function saveTeam(t) { fs.writeFileSync(TEAM_FILE, JSON.stringify(t, null, 2)); }
+
+async function alertTeam(request, alertedCount) {
+  const members = loadTeam().filter(m => m.active !== false && m.phone);
+  if (!members.length) return 0;
+  // Distance of each member's area to the hospital
+  const withDist = geo.sortByProximity(members, request.hospital);
+  const targets = withDist.filter(m =>
+    m.scope !== 'radius' || m.distanceKm <= (Number(m.radiusKm) || 10));
+  for (const m of targets) {
+    wa.sendMessage(m.phone,
+`🩸 *BLOODLINE TEAM — NEW REQUEST*
+
+Hi *${m.name}*, a request just came in${m.scope === 'radius' ? ` *${m.distanceKm} km* from you` : ''}.
+
+Blood Type: *${request.bloodType}* · Units: ${request.units || 1}
+Hospital: *${request.hospital}*
+Urgency: ${(request.urgency || 'normal').toUpperCase()}
+Patient contact: ${request.phone}
+Donors alerted: ${alertedCount}
+
+Please track this case and step in if no donor confirms. 🙏
+— Rotary Blood Line Mission Control`).catch(() => {});
+    await new Promise(r => setTimeout(r, 700));
+  }
+  if (targets.length) console.log(`[TEAM] ${targets.length}/${members.length} team members alerted for #${request.id}`);
+  return targets.length;
+}
+
 // ── Init WhatsApp (non-fatal — server still runs without it) ──────────────────
 try { wa.initWhatsApp(); } catch(e) { console.warn('[WA] Init skipped:', e.message); }
 
@@ -614,6 +648,9 @@ app.post('/api/requests', async (req, res) => {
   // Network heroes get EVERY request by default — they source through big networks
   alertConnectors(request).catch(() => {});
 
+  // Bloodline Team — coordinators alerted per their scope (all / radius)
+  alertTeam(request, capped.length).catch(() => {});
+
   // Fire WhatsApp alerts in background (non-blocking)
   wa.alertDonors(capped, request).then(sent => {
     console.log(`[WA] Sent ${sent}/${capped.length} alerts for request #${request.id}`);
@@ -830,6 +867,37 @@ app.post('/api/admin/connectors/:id', requireMaster, (req, res) => {
 app.delete('/api/admin/connectors/:id', requireMaster, (req, res) => {
   saveConnectors(loadConnectors().filter(x => x.id !== Number(req.params.id)));
   audit('connector_delete', req.auth.actor, { connectorId: Number(req.params.id) });
+  res.json({ ok: true });
+});
+
+// ── Admin: Bloodline Team — master only ──────────────────────────────────────
+app.get('/api/admin/team', requireMaster, (req, res) => res.json(loadTeam()));
+
+app.post('/api/admin/team', requireMaster, (req, res) => {
+  const { name, phone, area, scope, radiusKm } = req.body || {};
+  if (!name || !phone) return res.status(400).json({ ok: false, msg: 'Name and phone required' });
+  const list = loadTeam();
+  const m = { id: (list[0]?.id || 0) + 1, name, phone: String(phone).replace(/\D/g, ''),
+    area: area || 'Puducherry', scope: scope === 'radius' ? 'radius' : 'all',
+    radiusKm: Number(radiusKm) || 10, active: true, createdAt: Date.now() };
+  list.unshift(m);
+  saveTeam(list);
+  audit('team_add', req.auth.actor, { name, scope: m.scope });
+  res.json({ ok: true, member: m });
+});
+
+app.post('/api/admin/team/:id', requireMaster, (req, res) => {
+  const list = loadTeam();
+  const m = list.find(x => x.id === Number(req.params.id));
+  if (!m) return res.status(404).json({ ok: false });
+  ['name', 'phone', 'area', 'scope', 'radiusKm', 'active'].forEach(k => { if (req.body[k] !== undefined) m[k] = req.body[k]; });
+  saveTeam(list);
+  res.json({ ok: true, member: m });
+});
+
+app.delete('/api/admin/team/:id', requireMaster, (req, res) => {
+  saveTeam(loadTeam().filter(x => x.id !== Number(req.params.id)));
+  audit('team_delete', req.auth.actor, { memberId: Number(req.params.id) });
   res.json({ ok: true });
 });
 

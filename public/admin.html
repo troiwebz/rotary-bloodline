@@ -148,6 +148,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <button class="nav-item master-only" data-pg="zones" onclick="go('zones')">📍 Zones &amp; Managers</button>
     <button class="nav-item master-only" data-pg="partners" onclick="go('partners')">🤝 Partners</button>
     <button class="nav-item master-only" data-pg="connectors" onclick="go('connectors')">🌐 Network Heroes</button>
+    <button class="nav-item master-only" data-pg="team" onclick="go('team')">🩸 Bloodline Team</button>
     <button class="nav-item master-only" data-pg="broadcast" onclick="go('broadcast')">📢 Broadcast</button>
     <button class="nav-item master-only" data-pg="settings" onclick="go('settings')">⚙️ Lifeline Settings</button>
     <button class="nav-item master-only" data-pg="audit" onclick="go('audit')">🛡️ Audit Log</button>
@@ -227,6 +228,15 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </table><div class="empty" id="connEmpty" style="display:none">No network heroes yet. Add well-connected Rotarians and blood-bank contacts — they get every request by default.</div></div>
     </div>
 
+    <!-- BLOODLINE TEAM -->
+    <div class="page" id="pg-team">
+      <div class="page-h"><div><h2>Rotary Bloodline Team</h2><p>Club coordinators who get WhatsApp alerts on requests — all of Tamil Nadu, or only near their area</p></div><button class="btn-add" onclick="openTeamModal()">+ Add Team Member</button></div>
+      <div class="panel" style="overflow-x:auto"><table>
+        <thead><tr><th>Name</th><th>Phone</th><th>Area</th><th>Alert Scope</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="teamRows"></tbody>
+      </table><div class="empty" id="teamEmpty" style="display:none">No team members yet. Add Rotarians who should be alerted whenever blood is requested.</div></div>
+    </div>
+
     <!-- BROADCAST -->
     <div class="page" id="pg-broadcast">
       <div class="page-h"><div><h2>Broadcast</h2><p>WhatsApp message to donors — use sparingly to protect trust</p></div></div>
@@ -285,6 +295,21 @@ tr:hover td{background:rgba(255,255,255,.02)}
   <div class="fld"><label>Network / Organisation</label><input id="cNetwork" placeholder="e.g. Red Cross volunteer, JIPMER contacts"></div>
   <div class="fld"><label>Area</label><input id="cArea" placeholder="Puducherry"></div>
   <div style="display:flex;gap:10px"><button class="btn-main" onclick="saveConn()">Add Hero</button><button class="act can" style="padding:13px 20px" onclick="closeModals()">Cancel</button></div>
+</div></div>
+
+<!-- Bloodline Team modal -->
+<div class="modal-bg" id="teamModal"><div class="modal">
+  <h3>Add Bloodline Team Member</h3>
+  <div class="fld"><label>Full name</label><input id="tName" placeholder="Rtn. Name"></div>
+  <div class="fld"><label>WhatsApp number</label><input id="tPhone" placeholder="98765 43210"></div>
+  <div class="fld"><label>Area (their location)</label><input id="tArea" placeholder="Puducherry"></div>
+  <div class="fld"><label>Alert scope</label>
+    <select id="tScope" onchange="document.getElementById('tRadiusWrap').style.display=this.value==='radius'?'block':'none'">
+      <option value="all">🌍 All requests — every request in the system</option>
+      <option value="radius">📍 Only requests near them (radius)</option>
+    </select></div>
+  <div class="fld" id="tRadiusWrap" style="display:none"><label>Radius (km)</label><input type="number" id="tRadius" value="10" min="2" max="100"></div>
+  <div style="display:flex;gap:10px"><button class="btn-main" onclick="saveTeamM()">Add Member</button><button class="act can" style="padding:13px 20px" onclick="closeModals()">Cancel</button></div>
 </div></div>
 
 <!-- Partner modal -->
@@ -365,7 +390,7 @@ function enter(who){
   document.querySelectorAll('.master-only').forEach(el=>el.style.display = ROLE==='master'?'flex':'none');
   if(ROLE==='zone'){document.getElementById('ovSub').textContent='Zone view — '+(ZONE?.name||'');document.getElementById('donorScope').textContent='Donors in '+(ZONE?.name||'your zone')+' · phones masked, reveals are audited';}
   loadOverview(); loadRequests(); loadDonors();
-  if(ROLE==='master'){loadZonesMgrs();loadPartners();loadConnectors();loadSettings();loadAudit();}
+  if(ROLE==='master'){loadZonesMgrs();loadPartners();loadConnectors();loadTeam();loadSettings();loadAudit();}
   setInterval(loadRequests, 30000); setInterval(loadOverview, 60000);
 }
 async function boot(){
@@ -535,6 +560,44 @@ async function saveConn(){
 }
 async function toggleConn(id,en){await J('/api/admin/connectors/'+id,{method:'POST',body:JSON.stringify({active:en})});loadConnectors();}
 async function delConn(id){if(!confirm('Remove this network hero?'))return;await J('/api/admin/connectors/'+id,{method:'DELETE'});toast('Removed');loadConnectors();}
+
+/* ── Bloodline Team ── */
+async function loadTeam(){
+  const r=await J('/api/admin/team'); if(r.code!==200)return;
+  const rows=r.d||[];
+  document.getElementById('teamEmpty').style.display=rows.length?'none':'block';
+  document.getElementById('teamRows').innerHTML=rows.map(m=>`<tr>
+    <td><b>🩸 ${esc(m.name)}</b></td><td>${esc(m.phone)}</td><td>${esc(m.area||'—')}</td>
+    <td>${m.scope==='radius'?'<span class="pill warn">📍 Within '+(m.radiusKm||10)+' km</span>':'<span class="pill l3">🌍 All requests</span>'}</td>
+    <td>${m.active!==false?'<span class="pill ok">Active</span>':'<span class="pill off">Paused</span>'}</td>
+    <td style="white-space:nowrap">
+      <button class="act rev" onclick="editTeamScope(${m.id},'${m.scope||'all'}',${m.radiusKm||10})">✏️ Scope</button>
+      <button class="act can" onclick="toggleTeamM(${m.id},${m.active===false})">${m.active===false?'Activate':'Pause'}</button>
+      <button class="act del" onclick="delTeamM(${m.id})">🗑</button></td></tr>`).join('');
+}
+function openTeamModal(){document.getElementById('teamModal').style.display='flex';}
+async function saveTeamM(){
+  const body={name:tName.value.trim(),phone:tPhone.value.trim(),area:tArea.value.trim(),scope:tScope.value,radiusKm:Number(tRadius.value)||10};
+  if(!body.name||!body.phone)return toast('Name + phone required',true);
+  const r=await J('/api/admin/team',{method:'POST',body:JSON.stringify(body)});
+  if(r.d.ok){toast('Team member added 🩸');closeModals();loadTeam();}else toast(r.d.msg||'Failed',true);
+}
+async function editTeamScope(id,curScope,curR){
+  const toRadius = curScope!=='radius';
+  let body;
+  if(toRadius){
+    const km=prompt('Alert only for requests within how many km of their area?', curR||10);
+    if(km===null)return;
+    body={scope:'radius',radiusKm:Number(km)||10};
+  } else {
+    if(!confirm('Switch to ALL requests (entire system)?'))return;
+    body={scope:'all'};
+  }
+  await J('/api/admin/team/'+id,{method:'POST',body:JSON.stringify(body)});
+  toast('Scope updated');loadTeam();
+}
+async function toggleTeamM(id,en){await J('/api/admin/team/'+id,{method:'POST',body:JSON.stringify({active:en})});loadTeam();}
+async function delTeamM(id){if(!confirm('Remove this team member?'))return;await J('/api/admin/team/'+id,{method:'DELETE'});toast('Removed');loadTeam();}
 
 /* ── Broadcast ── */
 async function sendBlast(){
