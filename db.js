@@ -164,6 +164,9 @@ const DEFAULT_SETTINGS = {
   teamFollowUpMin:     15,   // minutes of silence before team CALL alert
   expertPhones:        '',   // comma-separated coordinator numbers for Layer 3
   aiNumbers:           '{"default":"918667571800"}',  // per-country wa.me numbers (JSON: {default, IN, TH, ...})
+  aiName:              'Rtn. Thuli',   // the AI Rotarian's name (துளி = drop)
+  donorHiMsg:          'Hi {ai}! 🩸 I want to become a blood donor with Rotary Blood Line. My verify code: {code}',
+  requesterHiMsg:      'Hi {ai}! 🆘 I urgently need help finding blood. My verify code: {code}',
   updatedAt:           null,
 };
 

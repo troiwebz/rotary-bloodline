@@ -2849,13 +2849,13 @@ html,body{overflow-x:hidden;max-width:100%}
   <div class="ai-hdr">
     <div class="ai-hdr-avatar">⚙️</div>
     <div class="ai-hdr-info">
-      <h4>Rtn. Uyir <span style="font-size:10px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px;vertical-align:middle">உயிர்</span></h4>
+      <h4>Rtn. Thuli <span style="font-size:10px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px;vertical-align:middle">துளி</span></h4>
       <p>The World's First AI Rotarian · Serving as the Bloodline · Always on</p>
     </div>
     <button class="ai-close" onclick="toggleAI()">✕</button>
   </div>
   <div class="ai-msgs" id="aiMsgs">
-    <div class="ai-bubble bot">👋 Vanakkam! I'm <b>Rtn. Uyir</b> (உயிர் — "life") — <b>the world's first AI Rotarian</b>, inducted by Rotary Club of Legacy, Puducherry to serve as your Bloodline.<br><br>Ask me anything: <b>blood availability</b>, <b>who runs the club</b>, <b>areas we cover</b>, how to <b>request blood</b> or <b>become a donor</b>. I never sleep, so you never wait.</div>
+    <div class="ai-bubble bot">👋 Vanakkam! I'm <b>Rtn. Thuli</b> (துளி — "a drop") — <b>the world's first AI Rotarian</b>. Every drop is a promise — I'm the drop that answers, serving Rotary Club of Legacy, Puducherry as your Bloodline.<br><br>Ask me anything: <b>blood availability</b>, <b>who runs the club</b>, <b>areas we cover</b>, how to <b>request blood</b> or <b>become a donor</b>. I never sleep, so you never wait.</div>
     <div class="ai-typing" id="aiTyping"><span></span><span></span><span></span></div>
   </div>
   <div class="ai-quick-row" id="aiQuick">
@@ -2874,15 +2874,15 @@ html,body{overflow-x:hidden;max-width:100%}
   <button class="ai-teaser-x" onclick="event.stopPropagation();dismissTeaser()">✕</button>
   <div class="ai-teaser-avatar">⚙️</div>
   <div class="ai-teaser-body">
-    <div class="ai-teaser-name">Rtn. Uyir · AI Rotarian <span class="ai-teaser-tick">✓</span></div>
-    <div class="ai-teaser-msg">👋 Vanakkam! I'm Rtn. Uyir, the world's first AI Rotarian — on duty as your Bloodline. Need blood urgently, or want to become a donor?</div>
+    <div class="ai-teaser-name">Rtn. Thuli · AI Rotarian <span class="ai-teaser-tick">✓</span></div>
+    <div class="ai-teaser-msg">👋 Vanakkam! I'm Rtn. Thuli, the world's first AI Rotarian — on duty as your Bloodline. Need blood urgently, or want to become a donor?</div>
     <div class="ai-teaser-time">just now</div>
   </div>
 </div>
 
-<button class="ai-fab" onclick="toggleAI()" id="aiFab" title="Rtn. Uyir — AI Rotarian">
+<button class="ai-fab" onclick="toggleAI()" id="aiFab" title="Rtn. Thuli — AI Rotarian">
   ⚙️
-  <span class="ai-fab-label">Rtn. Uyir</span>
+  <span class="ai-fab-label">Rtn. Thuli</span>
 </button>
 
 <script>
@@ -2973,11 +2973,11 @@ const TA = {
   "Next →":"அடுத்து →",
   "Pincode":"அஞ்சல் குறியீடு",
   "Step 1: Verify your WhatsApp":"படி 1: உங்கள் வாட்ஸ்அப்பை உறுதிசெய்யவும்",
-  "First: connect to Rtn. Uyir, our AI Rotarian":"முதலில்: எங்கள் AI ரோட்டேரியன் Rtn. Uyir-உடன் இணையுங்கள்",
+  "First: connect to Rtn. Thuli, our AI Rotarian":"முதலில்: எங்கள் AI ரோட்டேரியன் Rtn. Thuli-உடன் இணையுங்கள்",
   "One tap opens WhatsApp — hit send, and the AI will track your case and update you live in that chat.":"ஒரே தட்டில் வாட்ஸ்அப் திறக்கும் — அனுப்பவும்; AI உங்கள் கோரிக்கையை அந்த அரட்டையிலேயே நேரடியாக புதுப்பிக்கும்.",
   "Connect on WhatsApp":"வாட்ஸ்அப்பில் இணை",
-  "Connected — Rtn. Uyir is with you. Continue!":"இணைந்தது — Rtn. Uyir உங்களுடன். தொடரவும்!",
-  "Please connect to Rtn. Uyir first — tap the green button.":"முதலில் Rtn. Uyir-உடன் இணையவும் — பச்சை பொத்தானைத் தட்டவும்.",
+  "Connected — Rtn. Thuli is with you. Continue!":"இணைந்தது — Rtn. Thuli உங்களுடன். தொடரவும்!",
+  "Please connect to Rtn. Thuli first — tap the green button.":"முதலில் Rtn. Thuli-உடன் இணையவும் — பச்சை பொத்தானைத் தட்டவும்.",
   "Tap below — WhatsApp opens with a code message to our AI Rotarian. Just hit send and come back.":"கீழே தட்டவும் — எங்கள் AI ரோட்டேரியனுக்கு குறியீட்டுடன் வாட்ஸ்அப் திறக்கும். அனுப்பிவிட்டு திரும்பவும்.",
   "Verify via WhatsApp":"வாட்ஸ்அப் மூலம் உறுதிசெய்",
   "I've sent it — Check now":"அனுப்பிவிட்டேன் — இப்போது சரிபார்",
@@ -3063,9 +3063,13 @@ document.addEventListener('DOMContentLoaded', applyLang);
 
 // ═══ AI WhatsApp number — per-country, set from Mission Control ═══════════════
 let AI_WA = '918667571800';
+let _CFG = { aiName:'Rtn. Thuli',
+  donorHiMsg:'Hi {ai}! 🩸 I want to become a blood donor with Rotary Blood Line. My verify code: {code}',
+  requesterHiMsg:'Hi {ai}! 🆘 I urgently need help finding blood. My verify code: {code}' };
 (async function(){
   try{
     const cfg = await fetch(API_BASE+'/api/config').then(r=>r.json());
+    _CFG = { ..._CFG, ...cfg };
     const m = cfg.aiNumbers || {};
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
     const TZ_CC = {'Asia/Kolkata':'IN','Asia/Calcutta':'IN','Asia/Bangkok':'TH','Asia/Colombo':'LK',
@@ -4175,8 +4179,8 @@ const CLUB_INFO = {
 };
 
 const AI_KB=[
-  {p:/your name|who are you|what are you|uyir|are you (a )?(bot|robot|ai|human)|introduce yourself/i,
-   r:`⚙️ I'm <b>Rtn. Uyir</b> (உயிர் — Tamil for "life").<br><br>I'm <b>the world's first AI Rotarian</b> — inducted by Rotary Club of Legacy, Puducherry, and my service role is the <b>Bloodline</b>: I match patients with blood donors in seconds, watch every request live, and escalate to my human fellow Rotarians when needed.<br><br>I work 24/7, never take leave, and my only mission is the 30-minute promise. 🩸`,
+  {p:/your name|who are you|what are you|uyir|thuli|துளி|are you (a )?(bot|robot|ai|human)|introduce yourself/i,
+   r:`⚙️ I'm <b>Rtn. Thuli</b> (துளி — Tamil for "a drop of blood").<br><br>I'm <b>the world's first AI Rotarian</b> — inducted by Rotary Club of Legacy, Puducherry. My name means a <b>drop of blood</b> — because <i>"every drop is a promise kept."</i> I match patients with donors in seconds, watch every request live, and escalate to my human fellow Rotarians when needed.<br><br>I work 24/7, never take leave, and my only mission is the 30-minute promise. 🩸`,
    q:['Blood availability','Who runs the club?','Request blood']},
   {p:/president|chairman|chair man|who runs|who is behind|head of|leader of (the )?club|in charge/i,
    r:`👑 <b>Rotary Club of Legacy — Leadership</b><br><br>🎖️ President: <b>${CLUB_INFO.president}</b><br>📋 Secretary: <b>${CLUB_INFO.secretary}</b><br>🌐 District Governor: <b>${CLUB_INFO.dg}</b><br><br>📍 ${CLUB_INFO.district} · Club ID ${CLUB_INFO.clubId}<br>🏠 ${CLUB_INFO.address}`,
@@ -4270,7 +4274,7 @@ function aiGetReply(msg){
     if(c) return {r:`🩸 <b>${bt} Blood Group</b><br>✅ Can donate to: ${c.donate.join(', ')}<br>🔴 Can receive from: ${c.receive.join(', ')}<br><br>Want to register as a <b>${bt} donor</b>?`,q:[`Register as ${bt} donor`,`Request ${bt} blood`,'Back to menu']};
   }
   for(const k of AI_KB){if(k.p.test(lc))return{r:k.r==='__LIVE_STOCK__'?aiLiveStock():k.r,q:k.q};}
-  return{r:"I'm Rtn. Uyir — not sure about that one, but try asking me:<br>• 🩸 \"Blood availability\" — live stock by group<br>• 👑 \"Who is the president?\" — club leadership<br>• 🗺️ \"Which areas do you cover?\"<br>• 🆘 \"I need blood urgently\"<br>• 🔬 \"O+ compatibility\"",q:AI_DEFAULT_QUICK};
+  return{r:"I'm Rtn. Thuli — not sure about that one, but try asking me:<br>• 🩸 \"Blood availability\" — live stock by group<br>• 👑 \"Who is the president?\" — club leadership<br>• 🗺️ \"Which areas do you cover?\"<br>• 🆘 \"I need blood urgently\"<br>• 🔬 \"O+ compatibility\"",q:AI_DEFAULT_QUICK};
 }
 
 function dismissTeaser(){
@@ -4416,7 +4420,7 @@ function _panelsReq(){
       </div>
       <!-- Connect to the AI first — mission starts inside YOUR conversation -->
       <div class="fwiz-group" id="vfyBox" style="background:#ECFDF5;border:1.5px solid #6EE7B7;border-radius:12px;padding:14px 16px">
-        <div style="font-size:12px;font-weight:800;color:#047857;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:8px">🤖 ${t('First: connect to Rtn. Uyir, our AI Rotarian')}</div>
+        <div style="font-size:12px;font-weight:800;color:#047857;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:8px">🤖 ${t('First: connect to Rtn. Thuli, our AI Rotarian')}</div>
         <div id="vfyIdle">
           <div style="font-size:11.5px;color:#065F46;line-height:1.6;margin-bottom:10px">${t('One tap opens WhatsApp — hit send, and the AI will track your case and update you live in that chat.')}</div>
           <button type="button" id="vfyBtn" onclick="vfyStart()" style="width:100%;padding:12px;border:none;border-radius:10px;background:#25D366;color:#fff;font-weight:800;font-size:13.5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">💬 ${t('Connect on WhatsApp')}</button>
@@ -4427,7 +4431,7 @@ function _panelsReq(){
           <button type="button" onclick="vfyRecheck(this)" style="margin-top:10px;width:100%;padding:11px;border:none;border-radius:10px;background:#16A34A;color:#fff;font-weight:800;font-size:12.5px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">✅ ${t("I've sent it — Check now")}</button>
           <button type="button" onclick="vfyStart()" style="margin-top:8px;background:none;border:none;color:#047857;font-size:11px;text-decoration:underline;cursor:pointer">${t('Reopen WhatsApp')}</button>
         </div>
-        <div id="vfyDone" style="display:none;text-align:center;font-size:14px;font-weight:900;color:#16A34A;font-family:'Plus Jakarta Sans',sans-serif">✅ ${t('Connected — Rtn. Uyir is with you. Continue!')}</div>
+        <div id="vfyDone" style="display:none;text-align:center;font-size:14px;font-weight:900;color:#16A34A;font-family:'Plus Jakarta Sans',sans-serif">✅ ${t('Connected — Rtn. Thuli is with you. Continue!')}</div>
       </div>
     </div>`,
     /* Step 2 */
@@ -4790,7 +4794,8 @@ async function vfyStart(){
   try{ r=await post('/api/verify/start',{phone:ph,name}); }catch(e){}
   if(!r.ok){ _wizShowErr(r.msg || t('Verification service is starting up — please try again in 2–3 minutes.')); return; }
   _vfy.phone=ph; _vfy.verified=false;
-  const msg=encodeURIComponent('Hi Rtn. Uyir! Verifying my WhatsApp for Rotary Blood Line. Code: '+r.code);
+  const tpl = (_wizType==='donor' ? _CFG.donorHiMsg : _CFG.requesterHiMsg) || 'Hi {ai}! My verify code: {code}';
+  const msg = encodeURIComponent(tpl.replace('{ai}', _CFG.aiName||'Rtn. Thuli').replace('{code}', r.code).replace('{name}', name));
   window.open('https://wa.me/'+AI_WA+'?text='+msg,'_blank');
   _vfyShow('wait');
   if(_vfy.timer) clearInterval(_vfy.timer);
@@ -4876,7 +4881,7 @@ function _wizValidate(){
       if(!v('r-name')) return 'Please enter your full name.';
       const d=(document.getElementById('r-phone')?.value||'').replace(/\D/g,'');
       if(!d||d.length!==10) return 'Please enter a valid 10-digit WhatsApp number.';
-      if(!_vfy.verified) return t('Please connect to Rtn. Uyir first — tap the green button.');
+      if(!_vfy.verified) return t('Please connect to Rtn. Thuli first — tap the green button.');
     }
     if(_wizStep===2 && !v('r-blood')) return 'Please select the blood type needed.';
     if(_wizStep===3 && !v('r-hospital')) return 'Please enter the hospital name.';

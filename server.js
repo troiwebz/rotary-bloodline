@@ -299,7 +299,13 @@ function aiNumbers() {
     return m;
   } catch { return { default: '918667571800' }; }
 }
-app.get('/api/config', (req, res) => res.json({ ok: true, aiNumbers: aiNumbers() }));
+function aiName() { return db.getSettings().aiName || 'Rtn. Thuli'; }
+app.get('/api/config', (req, res) => {
+  const st = db.getSettings();
+  res.json({ ok: true, aiNumbers: aiNumbers(), aiName: aiName(),
+    donorHiMsg: st.donorHiMsg || 'Hi {ai}! 🩸 I want to become a blood donor with Rotary Blood Line. My verify code: {code}',
+    requesterHiMsg: st.requesterHiMsg || 'Hi {ai}! 🆘 I urgently need help finding blood. My verify code: {code}' });
+});
 
 // ── Master WhatsApp re-pair: wipe session → fresh QR ──────────────────────────
 app.post('/api/admin/master-wa/reset', requireMaster, async (req, res) => {
@@ -1035,7 +1041,7 @@ app.post('/api/verify/recheck', async (req, res) => {
     entry.verified = true;
     saveVerify(list);
     wa.sendMessage(phone,
-`✅ *WhatsApp verified!* Vanakkam — Rtn. Uyir here. 🤝
+`✅ *WhatsApp verified!* Vanakkam — ${aiName()} here. 🤝
 
 Go back to the website and tap *Continue*. I'll keep you updated right here. 🩸`).catch(() => {});
     console.log(`[VERIFY] ${phone} verified via chat recheck`);
@@ -1059,7 +1065,7 @@ async function tryVerify(from, body) {
   entry.verified = true;
   saveVerify(list);
   await wa.sendMessage(from,
-`✅ *WhatsApp verified!* Vanakkam ${entry.name || 'hero'} — Rtn. Uyir here. 🤝
+`✅ *WhatsApp verified!* Vanakkam ${entry.name || 'hero'} — ${aiName()} here. 🤝
 
 I'm with you now — go back to the website and tap *Continue*. I'll keep you updated right here in this chat. 🩸`);
   audit('wa_verify', 'phone:' + clean.slice(-4), {});
@@ -1089,7 +1095,7 @@ async function tryHandshake(from, body) {
     console.log(`[HANDSHAKE] ${donor.name} (#${donor.id}) is now WA-verified`);
   } else {
     await wa.sendMessage(donor.phone,
-`⚙️ Vanakkam *${donor.name}*! Rtn. Uyir here — your Bloodline is active and you're fully verified. 🩸
+`⚙️ Vanakkam *${donor.name}*! ${aiName()} here — your Bloodline is active and you're fully verified. 🩸
 
 Ask me anything, or just stay ready: when *${donor.bloodType}* blood is needed near you, I'll reach out. 🙏`);
   }
@@ -1136,7 +1142,7 @@ async function processDonorReply(from, body, requestId) {
 A *${req2.bloodType}* donor replied YES and is heading to *${req2.hospital}*.
 
 Track live: https://rotary-bloodline.vercel.app/track.html?id=${req2.id}
-— Rtn. Uyir, Rotary Blood Line`).catch(() => {});
+— ${aiName()}, Rotary Blood Line`).catch(() => {});
 
       await wa.sendMessage(from,
 `✅ Thank you for responding!
