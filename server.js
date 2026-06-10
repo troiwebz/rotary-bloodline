@@ -685,10 +685,10 @@ app.post('/api/donors/register', async (req, res) => {
   if (!name || !phone || !bloodType || !area)
     return res.status(400).json({ ok: false, msg: 'All fields required' });
 
-  // WhatsApp must be verified upfront (OTP-style) while the engine is up
+  // WhatsApp must be verified upfront — STRICT, no exceptions
   const cleanPh = String(phone).replace(/\D/g, '');
   const vEntry = loadVerify().find(v => v.phone === cleanPh && v.verified);
-  if (wa.isReady() && !vEntry)
+  if (!vEntry)
     return res.status(403).json({ ok: false, code: 'VERIFY_REQUIRED', msg: 'Please verify your WhatsApp first — tap the green verify button.' });
 
   const result = db.registerDonor(name, phone, bloodType, area, lastDonation, camp, {
@@ -835,11 +835,11 @@ app.post('/api/requests', async (req, res) => {
   if (!name || !phone || !bloodType || !hospital)
     return res.status(400).json({ ok: false, msg: 'Name, phone, blood type and hospital are required.' });
 
-  // Requester must be connected to the AI first (skip if WA engine down)
+  // Requester must be connected to the AI first — STRICT, no exceptions
   const cleanReqPh = String(phone).replace(/\D/g, '');
   const reqVerified = loadVerify().find(v => v.phone === cleanReqPh && v.verified)
     || db.getAllDonors().find(d => d.waVerified && (d.phone === cleanReqPh));
-  if (wa.isReady() && !reqVerified)
+  if (!reqVerified)
     return res.status(403).json({ ok: false, code: 'VERIFY_REQUIRED', msg: 'Please connect to Rtn. Uyir on WhatsApp first.' });
 
   const request = db.addRequest(name, phone, bloodType, hospital, units, urgency);
@@ -1010,7 +1010,8 @@ app.post('/api/verify/start', (req, res) => {
   const phone = String(req.body?.phone || '').replace(/\D/g, '');
   const name  = String(req.body?.name || '').slice(0, 60);
   if (phone.length !== 10) return res.status(400).json({ ok: false, msg: 'Valid 10-digit phone required' });
-  if (!wa.isReady()) return res.json({ ok: true, skip: true, pending: true });   // WA engine down → allow but mark pending (NOT verified)
+  if (!wa.isReady()) return res.status(503).json({ ok: false, code: 'WA_DOWN',
+    msg: 'Verification service is starting up — please try again in 2–3 minutes.' });
   let list = loadVerify().filter(v => Date.now() - v.at < 24 * 3600000);  // prune old
   let entry = list.find(v => v.phone === phone && !v.verified);
   if (!entry) {
