@@ -422,7 +422,14 @@ function enter(who){
   document.getElementById('whoRole').textContent = ROLE==='master' ? 'Full system control' : ('Zone: '+(ZONE?.name||''));
   document.querySelectorAll('.master-only').forEach(el=>el.style.display = ROLE==='master'?'flex':'none');
   document.querySelectorAll('.zone-only').forEach(el=>el.style.display = ROLE==='zone'?'flex':'none');
-  if(ROLE==='zone'){document.getElementById('ovSub').textContent='Zone view — '+(ZONE?.name||'');document.getElementById('donorScope').textContent='Donors in '+(ZONE?.name||'your zone')+' · phones masked, reveals are audited';}
+  if(ROLE==='zone'){
+    document.getElementById('ovSub').textContent='Zone view — '+(ZONE?.name||'');
+    document.getElementById('donorScope').textContent='Donors in '+(ZONE?.name||'your zone')+' · phones masked, reveals are audited';
+    const P=who.perms||{donors:true,requests:true,whatsapp:true};
+    if(!P.donors)   document.querySelector('[data-pg="donors"]').style.display='none';
+    if(!P.requests) document.querySelector('[data-pg="requests"]').style.display='none';
+    if(!P.whatsapp) document.querySelector('[data-pg="zonewa"]').style.display='none';
+  }
   loadOverview(); loadRequests(); loadDonors();
   if(ROLE==='master'){loadZonesMgrs();loadPartners();loadConnectors();loadTeam();loadSettings();loadAudit();loadZoneWa();setInterval(loadZoneWa,20000);}
   setInterval(loadRequests, 30000); setInterval(loadOverview, 60000);
@@ -599,7 +606,9 @@ async function loadZonesMgrs(){
   const zones=r.d.zones||[];
   document.getElementById('mgrRows').innerHTML=(r.d.managers||[]).map(m=>{
     const z=zones.find(x=>x.id===m.zoneId);
-    return `<tr><td><b>${esc(m.name)}</b></td><td>${esc(m.username)}</td><td>${esc(z?.name||m.zoneId)}</td><td>${esc(m.phone||'—')}</td>
+    const P=m.perms||{donors:true,requests:true,whatsapp:true};
+    const pchip=(k,lbl,emo)=>`<button class="act ${P[k]?'ful':'can'}" style="margin:1px 2px;font-size:10px;padding:4px 8px" title="Toggle ${lbl} access" onclick="togglePerm('${esc(m.username)}','${k}',${!P[k]})">${emo} ${lbl}${P[k]?' ✓':' ✕'}</button>`;
+    return `<tr><td><b>${esc(m.name)}</b><div style="margin-top:4px;white-space:nowrap">${pchip('donors','Donors','🦸')}${pchip('requests','Requests','🆘')}${pchip('whatsapp','WhatsApp','📱')}</div></td><td>${esc(m.username)}</td><td>${esc(z?.name||m.zoneId)}</td><td>${esc(m.phone||'—')}</td>
       <td>${m.active!==false?'<span class="pill ok">Active</span>':'<span class="pill off">Disabled</span>'}</td>
       <td style="white-space:nowrap">
         <button class="act rev" onclick="editMgrPhone('${esc(m.username)}','${esc(m.phone||'')}')">📞 Phone</button>
@@ -621,6 +630,15 @@ async function saveMgr(){
   const r=await J('/api/admin/managers',{method:'POST',body:JSON.stringify(body)});
   if(r.d.ok){toast('Manager added');closeModals();loadZonesMgrs();}else toast(r.d.msg||'Failed',true);
 }
+async function togglePerm(u,key,val){
+  const r0=await J('/api/admin/managers');
+  const m=(r0.d.managers||[]).find(x=>x.username===u);
+  const perms={...(m?.perms||{donors:true,requests:true,whatsapp:true}),[key]:val};
+  const r=await J('/api/admin/managers/'+u,{method:'POST',body:JSON.stringify({perms})});
+  toast(r.d.ok?(val?'Granted '+key+' to '+u:'Revoked '+key+' from '+u+' — applies on their next login'):'Failed',!r.d.ok);
+  loadZonesMgrs();
+}
+
 async function editZoneNum(id,cur){
   const n=prompt('Zone alert/WhatsApp number (with or without +91):',cur);
   if(n===null)return;

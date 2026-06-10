@@ -71,6 +71,21 @@ function requireMaster(req, res, next) {
   if (isMaster(req)) { req.auth = { role: 'master', actor: 'master' }; return next(); }
   res.status(403).json({ ok: false, msg: 'Master admin key required' });
 }
+const DEFAULT_PERMS = { donors: true, requests: true, whatsapp: true };
+function permsFor(username) {
+  const m = loadManagers().find(x => x.username === username);
+  return { ...DEFAULT_PERMS, ...(m?.perms || {}) };
+}
+function hasPerm(req, key) {
+  if (req.auth?.role === 'master') return true;
+  return !!(req.auth?.perms?.[key]);
+}
+function requirePerm(key) {
+  return (req, res, next) => hasPerm(req, key)
+    ? next()
+    : res.status(403).json({ ok: false, msg: 'Permission "' + key + '" not granted by Mission Control' });
+}
+
 function requireAuth(req, res, next) {
   if (isMaster(req)) { req.auth = { role: 'master', actor: 'master' }; return next(); }
   const z = zoneSession(req);
@@ -506,7 +521,7 @@ app.post('/api/respond', async (req, res) => {
 });
 
 // ── Donors ────────────────────────────────────────────────────────────────────
-app.get('/api/donors', requireAuth, (req, res) => {
+app.get('/api/donors', requireAuth, requirePerm('donors'), (req, res) => {
   let donors = db.getAllDonors();
   // Zone admins only see their own zone
   if (req.auth.role === 'zone') {
@@ -527,7 +542,7 @@ app.get('/api/donors', requireAuth, (req, res) => {
 });
 
 // ── Audited phone reveal — zone admins get the number only when acting ────────
-app.post('/api/admin/reveal-phone', requireAuth, (req, res) => {
+app.post('/api/admin/reveal-phone', requireAuth, requirePerm('donors'), (req, res) => {
   const donor = db.getAllDonors().find(d => d.id === Number(req.body?.donorId));
   if (!donor) return res.status(404).json({ ok: false });
   if (req.auth.role === 'zone') {
@@ -540,7 +555,7 @@ app.post('/api/admin/reveal-phone', requireAuth, (req, res) => {
 });
 
 // ── Donor moderation (verify / deactivate) — zone-scoped ─────────────────────
-app.post('/api/admin/donor/:id/update', requireAuth, (req, res) => {
+app.post('/api/admin/donor/:id/update', requireAuth, requirePerm('donors'), (req, res) => {
   const donor = db.getAllDonors().find(d => d.id === Number(req.params.id));
   if (!donor) return res.status(404).json({ ok: false });
   if (req.auth.role === 'zone') {
@@ -845,7 +860,7 @@ app.post('/api/admin/reset-data', (req, res) => {
 });
 
 // ── Admin: requests with layer status + manual escalation ────────────────────
-app.get('/api/admin/requests', requireAuth, (req, res) => {
+app.get('/api/admin/requests', requireAuth, requirePerm('requests'), (req, res) => {
   let requests = db.getRequests(Number(req.query.limit) || 100);
   if (req.auth.role === 'zone') {
     const zone = loadZones().find(z => z.id === req.auth.zoneId);
@@ -858,7 +873,7 @@ app.get('/api/admin/requests', requireAuth, (req, res) => {
   res.json(requests);
 });
 
-app.post('/api/admin/requests/:id/escalate', requireAuth, async (req, res) => {
+app.post('/api/admin/requests/:id/escalate', requireAuth, requirePerm('requests'), async (req, res) => {
   const r = db.getRequests(500).find(x => x.id === Number(req.params.id));
   if (!r) return res.status(404).json({ ok: false });
   const toLayer = Math.min(3, (r.layer || 1) + 1);
@@ -866,14 +881,14 @@ app.post('/api/admin/requests/:id/escalate', requireAuth, async (req, res) => {
   res.json({ ok: done, layer: toLayer });
 });
 
-app.post('/api/admin/requests/:id/fulfill', requireAuth, (req, res) => {
+app.post('/api/admin/requests/:id/fulfill', requireAuth, requirePerm('requests'), (req, res) => {
   db.updateRequestStatus(Number(req.params.id), 'fulfilled');
   audit('request_fulfill', req.auth.actor, { requestId: Number(req.params.id) });
   broadcastSSE('request_fulfilled', { requestId: Number(req.params.id) });
   res.json({ ok: true });
 });
 
-app.post('/api/admin/requests/:id/cancel', requireAuth, (req, res) => {
+app.post('/api/admin/requests/:id/cancel', requireAuth, requirePerm('requests'), (req, res) => {
   db.updateRequestStatus(Number(req.params.id), 'cancelled');
   audit('request_cancel', req.auth.actor, { requestId: Number(req.params.id) });
   res.json({ ok: true });
@@ -1015,7 +1030,7 @@ app.post('/api/admin/zone-wa/:zoneId/reset', requireMaster, async (req, res) => 
 });
 
 // QR for a zone — master, or the zone's own manager
-app.get('/api/admin/zone-wa/:zoneId/qr', requireAuth, (req, res) => {
+app.get('/api/admin/zone-wa/:zoneId/qr', requireAuth, requirePerm('whatsapp'), (req, res) => {
   const zid = req.params.zoneId;
   if (req.auth.role === 'zone' && req.auth.zoneId !== zid)
     return res.status(403).json({ ok: false, msg: 'Not your zone' });
@@ -1048,7 +1063,7 @@ Once scanned, all alerts for ${z.name} go out from your zone's own number. 🙏
 
 // ── Admin: zone managers — master only ───────────────────────────────────────
 app.get('/api/admin/managers', requireMaster, (req, res) => {
-  const managers = loadManagers().map(m => ({ ...m, password: undefined }));
+  const managers = loadManagers().map(m => ({ ...m, password: undefined, perms: { ...DEFAULT_PERMS, ...(m.perms || {}) } }));
   res.json({ managers, zones: loadZones() });
 });
 
@@ -1067,7 +1082,7 @@ app.post('/api/admin/managers/:username', requireMaster, (req, res) => {
   const managers = loadManagers();
   const m = managers.find(x => x.username === req.params.username);
   if (!m) return res.status(404).json({ ok: false });
-  ['password', 'name', 'zoneId', 'phone', 'active'].forEach(k => { if (req.body[k] !== undefined) m[k] = req.body[k]; });
+  ['password', 'name', 'zoneId', 'phone', 'active', 'perms'].forEach(k => { if (req.body[k] !== undefined) m[k] = req.body[k]; });
   saveManagers(managers);
   audit('manager_update', req.auth.actor, { username: m.username });
   res.json({ ok: true });
@@ -1093,6 +1108,7 @@ app.get('/api/admin/whoami', requireAuth, (req, res) => {
     out.username = req.auth.username;
     out.name     = req.auth.name;
     out.zone     = loadZones().find(z => z.id === req.auth.zoneId) || null;
+    out.perms    = permsFor(req.auth.username);
   }
   res.json(out);
 });
@@ -1126,7 +1142,7 @@ app.post('/api/zone/login', (req, res) => {
   const zones = loadZones();
   const zone  = zones.find(z => z.id === mgr.zoneId);
   const token = crypto.randomBytes(24).toString('hex');
-  zoneTokens.set(token, { username: mgr.username, name: mgr.name, zoneId: mgr.zoneId });
+  zoneTokens.set(token, { username: mgr.username, name: mgr.name, zoneId: mgr.zoneId, perms: permsFor(mgr.username) });
   audit('zone_login', mgr.username, { zoneId: mgr.zoneId });
   res.json({ ok: true, token, manager: { username: mgr.username, name: mgr.name, zoneId: mgr.zoneId, active: mgr.active }, zone });
 });
