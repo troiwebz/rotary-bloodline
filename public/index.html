@@ -3031,15 +3031,45 @@ document.addEventListener('DOMContentLoaded', applyLang);
 
 // ═══ PWA PUSH — instant, free, unbannable alerts ══════════════════════════════
 let _swReg = null;
+const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const IS_STANDALONE = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
 async function initPush(){
+  const bell = document.getElementById('pushBell');
+  // iOS Safari tab: push only works AFTER Add to Home Screen — show bell as install guide
+  if(IS_IOS && !IS_STANDALONE){
+    if('serviceWorker' in navigator){ try{ navigator.serviceWorker.register('/sw.js'); }catch(e){} }
+    if(bell){ bell.style.display='flex'; bell.onclick = showIosGuide; }
+    return;
+  }
   if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
   try{
     _swReg = await navigator.serviceWorker.register('/sw.js');
-    const bell = document.getElementById('pushBell');
     const sub = await _swReg.pushManager.getSubscription();
     if(sub){ if(bell) bell.style.display='none'; syncSub(sub); }      // already on
     else if(Notification.permission !== 'denied' && bell) bell.style.display='flex';
   }catch(e){}
+}
+
+function showIosGuide(){
+  let g = document.getElementById('iosGuide');
+  if(!g){
+    g = document.createElement('div');
+    g.id = 'iosGuide';
+    g.innerHTML = '<div style="position:fixed;inset:0;background:rgba(4,8,16,.8);backdrop-filter:blur(6px);z-index:4000;display:flex;align-items:flex-end;justify-content:center" onclick="this.parentNode.remove()">'
+      + '<div style="background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 40px;max-width:480px;width:100%;text-align:center;color:#0F172A" onclick="event.stopPropagation()">'
+      + '<div style="font-size:38px;margin-bottom:10px">🔔</div>'
+      + '<div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:19px;font-weight:900;margin-bottom:8px">Get instant blood alerts on iPhone</div>'
+      + '<div style="font-size:13px;color:#64748B;line-height:1.7;margin-bottom:18px">Apple requires the app on your Home Screen first — 15 seconds:</div>'
+      + '<div style="text-align:left;font-size:14px;line-height:2.4;background:#F8FAFC;border-radius:14px;padding:16px 20px">'
+      + '1. Tap the <b>Share button</b> <span style="border:1.5px solid #94A3B8;border-radius:6px;padding:1px 8px">⬆️</span> below<br>'
+      + '2. Scroll → tap <b>"Add to Home Screen"</b><br>'
+      + '3. Open the new <b>🩸 Blood Line</b> app icon<br>'
+      + '4. Tap the 🔔 bell there → <b>Allow</b></div>'
+      + '<button onclick="document.getElementById(\'iosGuide\').remove()" style="margin-top:18px;background:#0F172A;color:#fff;border:none;border-radius:12px;padding:13px 30px;font-weight:800;font-size:14px;font-family:\'Plus Jakarta Sans\',sans-serif">Got it</button>'
+      + '</div></div>';
+    document.body.appendChild(g);
+  }
 }
 function urlB64(b){const p='='.repeat((4-b.length%4)%4);const r=(b+p).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(r);return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));}
 async function enablePush(){
